@@ -1,0 +1,1541 @@
+                T U B E :  Torus Ultra Blitz Empire
+                   CS 351 S'03 Final Group Project
+
+           Version 2 TUBE communications protocol document
+
+
+                                                Spec version: 0.9.2
+                                        TUBE protocol referenced: 2
+
+---------------------
+((p0)) Table of Contents
+ (p1) Protocol overview
+ (p2) Frames
+ (p3) Element syntax
+ (p4) Messages
+ (p5) Keyword summary and cross-references
+ (p6) Other information
+ (p7) Document revision history
+
+---------------------
+((p1)) Protocol overview
+
+((p1.1)) The TUBE Client-Server communications protocol is based on
+Elements (p3), Messages (p4), and Frames (p2).  An Element is either a
+Keyword, an Integer, or a String.  A Message is made up of one or more
+Elements, the first of which is always a Keyword, and separated by
+spaces.  A single Frame always conveys a single Message.
+
+((p1.2)) This document describes version 2 of the TUBE protocol.
+
+---------------------
+((p2)) Frames
+
+((p2.1)) A TUBE Frame, regardless of what Message it represents, is
+transmitted as counted strings of bytes, formatted according to a
+specific rigid syntax (p2.2.2) such that specific semantic constraints
+(p2.3) are satisfied.
+
+((p2.2)) TUBE Frame syntax rules
+
+((p2.2.1)) Throughout this document, the following conventions are
+used to describe syntax:
+
+  ((p2.2.1.1)) Lowercase names represent non-terminals,
+  ((p2.2.1.2)) +  represents concatenation,
+  ((p2.2.1.3)) -> indicates a legal rewriting of a non-terminal.
+               Multiple rewritings are represented by multiple uses of
+               -> under the same non-terminal.  A line withothing after
+               the -> implies the non-terminal may be rewritten as the
+               empty string.
+  ((p2.2.1.4)) A character in single quotes represents that character
+               literally.
+  ((p2.2.1.5)) Text in double quotes representa a meta-comment that
+               describes a legal rewriting informally.
+
+((p2.2.2)) Frame syntax rules
+
+frame	-> count+':'+data+optret+'\n'
+
+count	-> digit+count
+	-> digit
+
+digit	-> "One of the characters '0', '1', '2', '3', '4', '5', '6',
+            '7', '8', '9'"
+
+data	->
+	-> byte+data
+
+byte	-> "Any one of the 256 possible values on 8 bits, without restriction"
+
+optret	->
+	-> '\r'
+
+((p2.3)) Frame semantic constraints
+
+((p2.3.1)) The size of the data in a Frame is limited to the range
+from 0 to 999999 bytes, inclusive.
+
+((p2.3.2)) The count of a frame, interpreted as a decimal integer,
+must exactly equal the number of bytes in the data.  (Thus, the count
+does NOT include the ':', nor the '\n', nor the size of the count
+itself.)
+
+((p2.4)) Sample legal and illegal Frames
+
+((p2.4.1)) Here is a sequence of four Frames that, though they are not
+legal TUBE Messages (because the data is not a TUBE Message), they ARE
+legally framed.
+
+2:Hi
+0000000:
+11:
+
+foo bar
+!
+31::Don't
+87:be fooled, we're OoB!
+
+((p2.4.1.1)) The above message sequence yields a 2 byte data: "Hi",
+then a 0 byte data: "", then an 11 byte data: "\n\nfoo bar\n!", and
+finally a 31 byte data: ":Don't\n87:be fooled, we're OoB!".
+
+((p2.4.2)) None of these strings is a legal Frame (with explanations
+why not):
+
+((p2.4.2.1))
+  2:Hi
+1 0:abcdefghij
+0 :
+
+((p2.4.2.1.1)) Bad syntax:  Whitespace before/during/after count.
+
+((p2.4.2.2))
+-1:
+
+((p2.4.2.2.1)) Bad syntax:  '-' is not a digit.
+
+((p2.4.2.3))
+3;gah
+
+((p2.4.2.3.1)) Bad syntax:  ';' is neither a digit nor ':'.
+
+((p2.4.2.4))
+:
+
+((p2.4.2.4.1)) Bad syntax:  Empty count.
+
+((p2.4.2.5))
+ 2:Hi!
+
+((p2.4.2.5.1)) Bad semantics:  A '\n' must follow the two bytes ('H',
+'i') of the data, not a '!'.
+
+((p2.4.2.6))
+999999999:Big number...
+
+((p2.4.2.6.1)) Bad semantics:  count is too large.
+
+---------------------
+((p3)) Element Syntax
+
+((p3.1)) A single TUBE Frame describes a single TUBE Message, and
+consists of a series of one or more Elements.  Each Element is of a
+specific type, and each element type has a rigid format.
+
+((p3.1)) Element types.  The element types are Keyword, String, and
+Integer.  (Valuable higher level abstractions, such as a 2D
+Coordinate, can be represented as a sequence of two Integers and so
+are not presented here as separate element types, even though they
+might well be processed differently in program code.)
+
+((p3.1.1)) The Element types are described informally immediately
+below; they are described formally by the Element syntax description
+(p3.3) and the corresponding Element semantic constraints (p3.4).
+
+((p3.2.1)) Keyword.  Keywords are used in TUBE for two purposes: To
+identify a specific type of Message, and as arguments to various types
+of Messages (p4).  A Keyword consists of an alphabetic character
+followed by zero or more alphanumeric characters or underscores '_'.
+See (p3.3.2) for the syntax and (p3.4.1) for semantic constraints.
+
+((p3.2.2)) String.  Strings are used as arguments in some types of
+Messages (p4).  A string is a counted sequence of arbitrary bytes.
+See (p3.3.2) for the syntax and (p3.4.2) for semantic constraints.
+
+((p3.2.3)) Integer.  Integers are used as arguments in some types of
+Messages (p4).  An Integer is a sequence one or more decimal digits,
+possibly preceded by a '-' indicating a negative number.  See (p3.3.2)
+for the syntax and (p3.4.3) for semantic constraints.
+
+((p3.3)) Element syntax description
+
+((p3.3.1)) This syntax description follows the TUBE Frame syntax
+conventions (p2.2.1).  The rules for 'count', 'digit', 'data', and
+'byte' are those given in (p2.2.2).
+
+((p3.3.2)) Element syntax rules
+
+keyword	-> alpha+alnums
+
+alpha	-> "Any single character drawn from [A-Za-z]"
+
+alnums	->
+	-> alnumun+alnums
+
+alnumun	-> "Any single character drawn from [A-Za-z0-9_] -- i.e., the
+	    alphabetic characters, the digits, and the underscore '_'"
+
+string	-> count+':'+data
+
+integer -> count
+	-> '-'+count
+
+((p3.4)) Element semantic constraints
+
+((p3.4.1)) Keyword constraints.  There is no a priori limit to the
+length of a keyword (beyond the fact that they must fit inside the
+overall size limits for a TUBE Frame (p2.3.1)).  However, only a few
+of the syntactically well-formed keywords actually have any meaning;
+all others are errors.  See (p5) for a compilation of the known TUBE
+keywords.  Keywords are CASE-SENSITIVE -- two keywords that differ
+only in case are DIFFERENT.  For example, ARMY, Army, and army, are
+all distinct keywords.  This of course is a terrible design decision
+when defining protocols to be used by humans, but the TUBE protocol is
+for a program-to-program communication.
+
+((p3.4.2)) String constraints.  There is no a priori limit to the
+length of a string (beyond the fact that it must fit inside the
+overall size limits for a TUBE Frame (p2.3.1)).  Specific uses of
+strings as arguments in TUBE Messages may have additional constraints.
+
+((p3.4.3)) Integer constraints.  Integers are constrained to lie
+within the range of a 32 bit signed integer.  TUBE protocol parsers
+MAY check that a given sequence of digits corresponds to a number
+within that range, but they are NOT REQUIRED to do so.  Specific uses
+of integers as arguments in TUBE Messages may have additional
+constraints.
+
+((p3.5)) Sample legal and illegal elements
+
+((p3.5.1)) Here are some syntactically well-formed keywords:
+
+TELL
+COMMAND_FAILED
+Rather_long_but_still____synTACTic____keyword
+l33t
+Z
+
+((p3.5.2)) Here are some ill-formed keywords {with explanations}:
+
+2B1		{'2' is not an alpha}
+__GNUC__	{'_' is not an alpha}
+USER-ERROR	{'-' is not an alnumun}
+Input/Output	{'/' is not an alnumun}
+
+((p3.5.3)) Here are some syntactically well-formed strings:
+
+2:Hi
+12:Hello World!
+0:
+4:*
+
+*
+
+which, expressed as C++ strings, are "Hi", "Hello World!", "", and
+"*\n\n*", respectively.  NOTE WELL: Although these examples use only
+"normal" printable characters, the contents of TUBE Strings are NOT
+restricted in any way -- non-printable characters, null bytes,
+newlines, etc. are all fine as String data.
+
+((p3.5.3.1)) As a special boundary case, note that the correct
+interpretation of the following sequence
+
+2:Hit me
+
+is this: It consists of a syntactically well-formed String two bytes
+long containing "Hi", followed by four more bytes -- "t me" -- that
+are not part of the String.  A String ends with the end of the count
+bytes of data; whatever follows it is not the String's business, and
+whatever is or isn't there, it does not change the fact that the
+String itself is fine.
+
+((p3.5.4)) Here are some syntactically ill-formed strings {with
+explanations}:
+
+Hi		{'H' is not a digit}
+"foo bar"	{'"' is not a digit}
+0		{missing ':' after count}
+2 :hi		{' ' is not a digit}
+  1:b		{' ' is not a digit}
+-3:<<<		{'-' is not a digit}
+999999:foo	{assuming there are less than 999999 available to be the data}
+
+((p3.5.5)) Here are some syntactically well-formed integers:
+
+1
+42
+-87
+00000001
+-0
+
+((p3.5.6)) Here are some syntactically ill-formed integers {with
+explanations}:
+
++2		{'+' is neither '-' nor a digit}
+ 3              {' ' is neither '-' nor a digit}
+- 4		{' ' is not a digit}
+3.141592	{'.' is not a digit}
+Three		{'T' is neither '-' nor a digit}
+
+---------------------
+((p4)) Messages
+
+((p4.1)) Overview
+
+((p4.1.1)) All interactions between the client and server are
+performed by the exchange of Message's.
+
+((p4.1.2)) Note that in this document there is no distinction between
+a 'Command'-like thing -- something that travels from the client to
+the server -- and an 'Event'-like thing that travels from the server
+to a client.  As far as this specification, they are all just
+(subclasses of) Message objects, travelling in both directions between
+client and server, at one end packed into Frames for network transport
+and then unpacked back into Message objects at the other.
+
+((p4.1.3)) The prot1 protocol describes the formatting rules that MUST
+be used to represent Messages for transmission between TUBE clients
+and servers.  Each type of Message is composed of some specific
+combination of Elements (p3.1) under specified rules.  Different types
+of Messages typically require very different Elements in different
+orders; some Messages contain a variable number of Elements.
+
+((p4.1.3.1)) The only constancy is that the first Element of every formatted
+Message is a Keyword (p3.2.1) that uniquely identifies what type of
+Message is being transmitted.
+
+((p4.1.4)) Note that some Message's are only legal for transmission
+from client to server, some only from server to client, and some can
+move in either direction.  Note also that some Messages can only be
+sent during certain Periods (r3.1) and Phases (r3.4.1) of operations.
+
+((p4.1.5)) In the rest of this section, the required formats for all
+legal types of Messages are described.  The following information is
+provided:
+
+ ((p4.1.5.1)) - The keyword that identifies the Message type;
+
+ ((p4.1.5.2)) - An indication whether this Message type can be sent
+                (1) Only client to server, (2) Only server to client,
+                or (3) In both directions;
+
+ ((p4.1.5.3)) - A description of what Period(s) and/or Phase(s) this
+                Message can be sent;
+
+ ((p4.1.5.4)) - The required number and order of Element arguments
+                included in the message;
+
+ ((p4.1.5.5)) - A description of what the Message arguments mean;
+
+ ((p4.1.5.6)) - Possible additional description or usage notes, with
+                discussion what degree of support for this Message is
+                REQUIRED and/or OPTIONAL for implementors; and
+
+ ((p4.1.5.7)) - Example(s) of this type of Message
+
+((p4.1.6)) The Message types are presented essentially in the order
+that they will typically be first used during an TUBE run, grouped by
+Period and Phase.
+
+((p4.1.7)) There are also alphabetical crossreferences by Message type
+keyword (p5.1) and Message type name (p5.3).
+
+----
+((p4.2)) The Once-Only Initialization Period (r3.2)
+
+((p4.2.1)) Period overview:
+
+((p4.2.1)) During Once-Only Initialization, the TUBE server starts up
+and initializes itself.  During this period a number of basic game
+parameters are established, including:
+
+ ((p4.2.1.1)) MinPlayers: The minimum number of players needed to
+              start a game.  This number MUST be greater than or equal
+              to two.  If the Game Initialization Period (p4.3) ends
+              and there are not at least MinPlayers players, the
+              server MAY exit, or MAY take other
+              implementation-dependent action.
+
+ ((p4.2.1.2)) MaxPlayers: The maximum number of players to be allowed
+              into the game before declaring the game full and start a
+              game.  This number MUST be greater than or equal to
+              MinPlayers.  Implementations MUST support MaxPlayer
+              values at least as large as 6.  It is RECOMMENDED that
+              implementations support MaxPlayer values at least as
+              large as 10.  Implementations MAY support arbitrarily
+              large values of MaxPlayer.
+
+ ((p4.2.1.3)) MaxWait: The maximum amount of time to remain in the
+              Game Initialization Period, waiting for players to
+              connect to the server.  If after MaxWait time has
+              passed, there are still less than MaxPlayers players
+              connected, the Game Initialization Period will end
+              anyway.
+
+ ((p4.2.1.4)) GameSpeed: The base amount of time to spend per Command
+              Phase.
+
+ ((p4.2.1.5)) PortNumber: The port number the server should listen on
+              to receive client connections.  This number MUST be
+              greater that 1024 and less than 61000.
+
+((p4.2.1.6)) These game parameters are to be established by
+implementation-dependent mechanisms.  Implementation SHOULD provide
+sensible default values, but also SHOULD allow for these parameters to
+be altered without recompiling code.  Some possible mechanisms for
+setting these values could include:
+
+ ((p4.2.1.6.1)) Command-line arguments,
+
+ ((p4.2.1.6.2)) Reading a configuration file,
+
+ ((p4.2.1.6.3)) Interacting with a user via some custom interface,
+                such as perhaps a curses-based interface, or
+
+ ((p4.2.1.6.3)) Interacting via cin/cout.  (Note that once the
+                Once-Only Initialization Period ends, no further input
+                can be accepted via cin, because it will potentially
+                block.  But, during the Once-Only Initialization
+                Period, as a special exception, non-blocking I/O is
+                not required.)
+
+((p4.2.2)) Because no client/server connections exist during the
+Once-Only Initialization Period, no Messages can possibly be sent.
+
+----
+((p4.3)) The Game Initialization Period (r3.3)
+
+((p4.3.1)) Period overview:
+
+((p4.3.1.1)) During game initialization, the TUBE server attempts to
+bind port PortNumber (p4.2.1.5) and listen for connections on the
+network.  If the desired PortNumber is unavailable the server takes
+implementation-dependent actions.
+
+((p4.3.1.2)) Once the listening port is open the server waits up to
+MaxWait time, checking frequently to see if new client connections
+have arrived.
+
+((p4.3.1.3)) When a connection is made, first the client and then the
+server issues a Hello Message describing itself (p4.3.2).
+
+((p4.3.1.4)) After Hello Messages have been exchanged, the server
+sends a Mark Message (p4.3.3) to the client.
+
+((p4.3.1.5)) Also after Hello Messages have been exchanged, the client
+may send Chat Messages (p4.3.4) to the server, and the server may send
+Chat Messages back to the client.
+
+((p4.3.1.6)) If a protocol error occurs during the Game Initialization
+Period (or any period), the client or server that detects the error
+MAY send a Fail Message (p4.2.6) describing the problem.
+
+((p4.3.1.7)) Whether or not a Failure Message is sent the client or
+server that detected the error SHOULD then close the connection, and
+take whatever other actions follow from a connection closing.
+
+((p4.3.1.8)) The Game Initialization Period ends when either MaxWait
+time has elapsed, or MaxPlayers connections have completed the Hello
+Message exchange, whichever comes earlier.
+
+((p4.3.1.9)) At the end of the Game Initialization Period, when it is
+known how many initial players will be playing, the server either
+takes implementation-dependent action if fewer than MinPlayers are
+available.
+
+((p4.3.1.9.1)) Otherwise, the server somehow creates (or earlier
+created) the world map upon which the game will be played.
+
+ ((p4.3.1.9.1.1)) The world creation is done in an
+  implementation-dependent fashion subject to the requirements that
+  there MUST be a separate Empire for each of the initial players, and
+  there MUST be at least one City under the control of each Empire.
+
+ ((p4.3.1.9.1.2)) Also, there SHOULD be at least one port City (i.e.,
+  with at least one Water in the neighborhood) reachable by land from
+  a City controlled by each Empire.
+
+ ((p4.3.1.9.1.3)) Possible implementation-dependent methods for
+  creating worlds could include:
+
+ ((p4.3.1.9.1.3.1)) Having completely hand-built world(s) pre-created
+  by hand stored in disk file(s) and read in by the server.
+
+ ((p4.3.1.9.1.3.2)) Having pre-designed worlds that are randomly
+  customized at creation time (moving cities around and such).
+
+ ((p4.3.1.9.1.3.3)) Having some kind of simple procedure for
+  generating maps on the fly, such as making all square continents
+  located at random positions in a big ocean.
+
+ ((p4.3.1.9.1.3.4)) Having some kind of fancier procedure for
+  world-generation, that will make 'more realistic-looking' continents
+  (whatever that might mean).
+
+((p4.3.1.10)) Once the Game Initialization Period has ended, and the
+world has been created, a Parameters Message (p4.3.5) is sent to all
+the connected clients, describing the overall size of the map and so
+forth.
+
+((p4.3.1.11)) Aside from Hello, Mark, Chat, Parameters, Empire, (and
+optionally a Fail Message, in case of errors), no other types of
+Messages may be sent during the Game Initialization Period.
+
+=====================
+((p4.3.2)) Hello Message
+
+((p4.3.2.1)) Overview
+    Name:   Hello
+ Purpose:   Initial identification and sanity checking
+ Keyword:   HI
+    Sent:   Client<->Server
+    When:   Game Initialization Period only
+  Syntax:   HI <VERSION:INT> <TYPE:KEYWORD> <ID:STRING> <VALIDATOR:STRING>
+
+((p4.3.2.2)) Parameters
+
+((p4.3.2.1.1)) <VERSION:INT> is the protocol version in use.  The
+value of this parameter MUST be 2 for this document.
+
+((p4.3.2.1.2)) <TYPE:KEYWORD> is the category of program that is
+issuing the Hello Message.  It must be one of:
+
+ ((p4.3.2.1.2.1)) HM (short for 'HuMan') if the program is a TUBE
+  client that is being substantially run and controlled by an actual
+  living human being.  This is the normal case for a client program
+  Hello.
+
+ ((p4.3.2.1.2.2)) SV (short for 'SerVer') if the program is a TUBE
+  server.
+
+ ((p4.3.2.1.2.3)) RB (short for 'RoBot') if the program is a TUBE
+  client that is running entirely autonomously without any
+  interactions with any actual living human beings except (perhaps via
+  the TUBE server).  A server MAY choose to disallow robot clients, or
+  MAY treat RB as equivalent to HM, or MAY treat them somehow
+  differently.
+
+((p4.3.2.1.3)) <ID:STRING> is a string that identifies the human
+player (if sent Client->Server) or the server program (if sent
+Server->Client).
+
+ ((p4.3.2.1.3.1)) The contents of the ID string SHOULD be restricted to
+  printable characters and MAY be restricted to just alphanumerics,
+  and MAY be restricted in length as well.  If an ID string that is
+  too long or contains unacceptable characters is received, the
+  receiving program MAY truncate, filter, or otherwise mutilate the
+  string to make it acceptable, or MAY declare an error and close
+  the connection (and MAY issue a Fail Message just before that).
+
+ ((p4.3.2.1.3.2)) The ID string MAY be ignored entirely by clients.
+
+ ((p4.3.2.1.3.3)) Servers MUST insist that ID's of all connected
+  players are non-empty (after any alterations), and SHOULD insist
+  that ID's of all connected players be unique, and SHOULD disconnect
+  any client that sends a Hello Message using an ID that is already in
+  use.  In such a case, the server MAY issue an appropriate Fail
+  Message before disconnecting the client.
+
+((p4.3.2.1.4)) <VALIDATOR:STRING> is a string that MAY be entirely
+ignored by clients and servers.  Or, it MAY be used as a password if a
+server chooses to do so, somehow retaining information about
+ID/VALIDATOR associations across multiple server runs.
+
+((p4.3.2.3)) Notes
+
+((p4.3.2.3.1)) The client MUST 'speak first' in the client-server
+interaction.  As soon as a connection is established, the client MUST
+send a Hello Message.
+
+((p4.3.2.3.1.1)) The server MUST NOT send any information over the
+connection until it has processed the client's Hello Message.  The
+client MUST NOT send anything after it sends the Hello Message until
+it has processed the server's Hello Message.
+
+((p4.3.2.3.2)) A client connection does not 'count' as a player, for
+purposes of determining whether MaxPlayers (p4.2.1.2) has been
+reached, until the server has sent its Hello Message.
+
+((p4.3.2.4)) Examples
+
+((p4.3.2.4.1)) HI 2 HM 4:Dave 5:bogon
+
+ ((p4.3.2.4.1.1)) This is a Hello Message that could legally be sent
+                  from a client to a server.  It specifies TUBE
+                  protocol version 2, that it is a human-controlled
+                  client, with an id of 'Dave' and a validator of
+                  'bogon'.
+
+((p4.3.2.4.2)) HI 2 SV 24:dha TUBE (Server) 0.9.1. 0:
+
+ ((p4.3.2.4.1.1)) This is a Hello Message that could legally be sent
+                  from a server to a client.  It specifies TUBE
+                  protocol version 2, and that it is a server with
+                  an id of 'dha TUBE (Server) 0.9.1.', and an empty
+                  validator string
+
+((p4.3.2.4.3)) HI 2 RB 16:TUBE Bender v1.0 4:Chow
+
+ ((p4.3.2.4.1.1)) This is a Hello Message that could legally be sent
+                  protocol version 2, that it is a autonomous robot
+                  client, with an id of 'TUBE Bender v1.0' and a
+                  validator of 'Chow'.
+
+=====================
+((p4.3.3)) Mark Message
+
+((p4.3.3.1)) Overview
+    Name:   Mark
+ Purpose:   Marking the beginning of various units of time
+ Keyword:   MK
+    Sent:   Server->Client usually, Client->Server in one case
+    When:   All Periods
+  Syntax:   MK <UNITTYPE:KEYWORD> <CODE:INT> <TEXT:STRING>
+
+((p4.3.3.2)) Parameters
+
+((p4.3.3.2.1)) <UNITTYPE:KEYWORD> indicates what kind of time period
+is beginning, either a Period (keyword PD), a Turn (keyword TN), or a
+Phase (keyword PH).
+
+((p4.3.3.2.2)) <CODE:INT> indicates which particular one of the given
+units of time is being announced, with specific meanings that vary
+depend on the UNITTYPE.
+
+ ((p4.3.3.2.2.1)) For a 'MK PD' Message, the CODE specifies which
+  Period is beginning, using the following associations:
+
+   ((p4.3.3.2.2.1.1)) Game Initialization Period: CODE == 0.
+   ((p4.3.3.2.2.1.2)) Game Play Period:           CODE == 1.
+   ((p4.3.3.2.2.1.3)) Game Finalization Period:   CODE == 2.
+
+ ((p4.3.3.2.2.2)) For a 'MK TN' Message, the CODE specifies which
+  Turn is beginning, counting upwards from 1 being the first Turn of
+  the game.
+
+ ((p4.3.3.2.2.3)) For a 'MK PH' Message, the CODE specifies which
+  Phase is beginning, using the following associations:
+
+   ((p4.3.3.2.2.3.1)) Command Phase:              CODE == 0.
+   ((p4.3.3.2.2.3.2)) Diplomacy Phase:            CODE == 1.
+   ((p4.3.3.2.2.3.3)) Update Phase:               CODE == 2.
+   ((p4.3.3.2.2.3.4)) Outcome Phase:              CODE == 3.
+
+((p4.3.3.2.3)) <TEXT:STRING> MAY be used to provide some additional
+(perhaps) time-related information, or MAY be left empty/ignored.
+
+((p4.3.3.3)) Notes
+
+((p4.3.3.3.1)) In general, Mark Messages are only sent from the server
+to the clients, to inform them about what is happening.  The 'MK TN'
+Message, however, has special case rules for both client and server:
+
+((p4.3.3.3.1.1)) Whenever a client program receives a 'MK TN' Message,
+as part of processing that must the client MUST send a 'MK TN' Message
+back to the server, and the <CODE:INT> sent in the client's MK TN
+Message must be copied from the 'MK TN' Message sent by the server.
+
+((p4.3.3.3.1.2)) A server MUST NOT proceed from a Command Phase to the
+subsequent Diplomacy Phase until 'MK TN's have been received from ALL
+connected clients, or an implementation-dependent timeout has
+occurred.  This implementation-dependent timeout SHOULD be at least
+ten seconds or the value of GameSpeed, whichever is larger, and MAY be
+larger than that.
+
+ ((p4.3.3.3.1.2.1)) If this 'turn timeout' expires and not all clients
+  have returned their 'MK TN's for this turn, the clients that have
+  not responded SHOULD be disconnected and the associated
+  player/commanders dropped from the game.
+
+ ((p4.3.3.3.1.2.1.1)) Note that this may leave an non-dead Empire with
+  zero Commanders.  The server should allow such a 'leaderless Empire'
+  to continue playing, unless and until it is killed by the normal
+  rules of play.
+
+ ((p4.3.3.3.1.2.1.2)) Players choosing to drop out of a game in
+  progress can have this same effect (and should be treated the same
+  way).
+
+ ((p4.3.3.3.1.2.1.3)) Note that is even possible -- if pretty
+  embarrassing -- for a 'leaderless Empire' to win the game.  Such a
+  situation is not a tie, because strictly speaking it is an Empire
+  that wins a TUBE game, rather than a Commander.  Perhaps in such a
+  case the 'bragging rights' should go to the player that dropped out
+  last from the leaderless winning Empire.
+
+((p4.3.3.4)) Examples
+
+((p4.3.3.4.1)) MK PD 0 54:Starting in 4m37.908s at Tue Apr 22 2003 21:03:46.400
+
+ ((p4.3.3.4.1.1)) This is a Mark Message announcing the beginning of
+  Period 0, which is the Game Initialization Period (p4.3.3.2.2.1.1).
+  In this case it also provides some TEXT indicating how long until
+  MaxWait expires
+
+ ((p4.3.3.4.1.2)) A 'MK PD 0' is sent to each client by the server
+  immediately behind the server's Hello Message (p4.3.1.4).
+  Therefore, strictly speaking, it may not really announce the
+  BEGINNING of the Game Initialization Period; other clients may have
+  already connected earlier.
+
+((p4.3.3.4.2)) MK PD 1 20:Torus! Torus! Torus!
+
+ ((p4.3.3.4.2.1)) This is a Mark Message announcing the beginning of
+  the Game Play Period, and including a text message.
+
+((p4.3.3.4.3)) MK TN 6 8:16.692s
+
+ ((p4.3.3.4.3.1)) This is a Mark Message announcing the beginning of
+  the 6th Turn of the game, with a text message.
+
+((p4.3.3.4.4)) MK PH 2 0:
+
+ ((p4.3.3.4.4.1)) This is a Mark Message announcing the beginning of
+  an Update Phase (using the coding in (p4.3.3.2.2.3)), with an empty
+  text message.
+
+=====================
+((p4.3.4)) Chat Message
+
+((p4.3.4.1)) Overview
+    Name:   Chat
+ Purpose:   Text exchange among initial players or Commanders of an Empire
+ Keyword:   CH
+    Sent:   Client<->Server
+    When:   Game Initialization Period (chatting among initial players)
+            Game Play Period / Command Phase (chatting within an Empire)
+  Syntax:   CH <TOFROM:STRING> <TEXT:STRING>
+
+((p4.3.4.2)) Parameters
+
+((p4.3.4.2.1)) <TOFROM:STRING> has a dual meaning, depending on which
+direction a Chat Message is being sent.
+
+ ((p4.3.4.2.1.1)) If a Chat Message is being sent client->server, then
+  TOFROM indicates the player ID (p4.3.2.1.3) who is to receive the
+  Chat.  As a special case, if the TOFROM is an empty string, the Chat
+  is to be sent to 'everybody'.
+
+ ((p4.3.4.2.1.2)) The definition of 'everybody' depends on what period
+  the Message is received in.
+
+  ((p4.3.4.2.1.2.1)) During the Game Initialization Period,
+   'everybody' refers to all connections that have completed their
+   Hello Message exchange (p4.3.1.3).
+
+  ((p4.3.4.2.1.2.2)) During the Game Play Period, 'everybody' refers
+   to all Commanders in the same Empire as the client sending the
+   Chat.
+
+ ((p4.3.4.2.1.3)) If a Chat Message is being sent server->client, then
+  TOFROM indicates the player ID (p4.3.2.1.3) who originally sent this
+  chat to the server.
+
+ ((p4.3.4.2.1.3.1)) This means the servers, while processing an
+  incoming Chat Message, will (in effect) rewrite the TOFROM portion
+  of it, before sending it out to its recipient(s).
+
+ ((p4.3.4.2.1.3.2)) If there is no player ID matching the TOFROM of a
+  Chat Message arriving at the server, the Chat Message is simply
+  ignored.
+
+ ((p4.3.4.2.1.3.3)) As a special case, when a server wishes to send a
+  message 'from god' or 'from the game itself', it uses an empty
+  TOFROM string on an server->client Chat Message.
+
+((p4.3.4.2.2)) <TEXT:STRING> is the message being sent.
+
+((p4.3.4.3)) Notes
+
+((p4.3.4.4)) Examples
+
+((p4.3.4.4.1)) CH 0: 31:I only have a half hour, here..
+
+ ((p4.3.4.4.1.1)) If sent client->server, this is a Chat Message
+  addressed to 'everybody' (p4.3.4.2.1.2) saying 'I only have a half
+  hour, here..'
+
+ ((p4.3.4.4.1.2)) If sent server->client, this is a 'message from the
+  game itself'.  It cannot be determined by the client whether this
+  was a 'to everybody' Message or one targetted solely to that client.
+
+((p4.3.4.4.2)) CH 4:B1FF 31:its time to screw him alreayd!!
+
+ ((p4.3.4.4.2.1)) If sent client->server, this is a Chat Message to
+  the player whose ID is 'B1FF', saying 'its time to screw him
+  alreayd!!'
+
+ ((p4.3.4.4.2.2)) If sent server->client, this is a Chat Message from
+  the player whose ID is 'B1FF', saying 'its time to screw him
+  alreayd!!'
+
+=====================
+((p4.3.5)) Parameters Message
+
+((p4.3.5.1)) Overview
+    Name:   Parameters
+ Purpose:   Announcing the parameters of the world/game
+ Keyword:   PM
+    Sent:   Server->Client
+    When:   Game Initialization Period only
+  Syntax:   PM <WIDTH:INT> <HEIGHT:INT> <EMPIRES:INT> <SPEED:INT>
+
+((p4.3.5.2)) Parameters
+
+((p4.3.5.2.1)) <WIDTH:INT> is the overall width of the world map, so
+possible 'x' or 'column' indices will range from 0..WIDTH-1.  This is
+a number greater than zero.
+
+((p4.3.5.2.2)) <HEIGHT:INT> is the overall height of the world map, so
+possible 'y' or 'row' indices will range from 0..HEIGHT-1.  This is a
+number greater than zero.  Note that increasing y values MUST be
+rendered as moving downward on the client display.
+
+((p4.3.5.2.3)) <EMPIRES:INT> is the number of empires that will start
+the game, each with one Commander.  This is a number greater than one.
+
+((p4.3.5.2.4)) <SPEED:INT> is the number of seconds per Command Phase
+that the game will be run at.  This is a number greater than zero.
+
+ ((p4.3.5.2.4.1)) If the game will be run at a non-integral number of
+  seconds per Command Phase, the <SPEED:INT> should report the next
+  higher second.
+
+((p4.3.5.3)) Notes
+
+((p4.3.5.4)) Examples
+
+((p4.3.5.4.1)) PM 50 25 2 3
+
+ ((p4.3.5.4.1.1)) This is a Parameters Message indicating that the
+  game will be played on a world 50 columns wide by 25 rows high, with
+  two initial Empires and three seconds per Command Phase.
+
+((p4.3.5.4.2)) PM 150 150 8 13
+
+ ((p4.3.5.4.2.1)) This is a Parameters Message indicating that the
+  game will be played on a world 150 columns wide by 150 rows high,
+  with eight initial Empires and thirteen seconds per Command Phase.
+
+=====================
+((p4.2.6)) Fail Message (OPTIONAL)
+
+((p4.2.6.1)) Overview
+    Name:   Fail
+ Purpose:   Tell other program what went wrong
+ Keyword:   FL
+    Sent:   Client<->Server
+    When:   Any Period, but only one time per client/server pair, just
+            before the connection is closed
+  Syntax:   FL <MESSAGE:STRING>
+
+((p4.2.6.2)) Parameters
+
+((p4.2.6.2.1)) <MESSAGE:STRING> is some text describing the error that
+is causing the sender to close the connection.
+
+((p4.2.6.3)) Notes
+
+((p4.2.6.3.1)) Sending Fail Messages is completely OPTIONAL.  Although
+Fail Messages can be very useful for debugging, they can also be
+somewhat of a pain to implement, because one has to keep open the
+connection structure long enough to push out the last message.
+
+((p4.2.6.4)) Examples
+
+((p4.2.6.4.1)) FL 22:Wrong protocol version
+
+((p4.2.6.4.2)) FL 25:Messages.C:109:type read
+
+=====================
+((p4.3.7)) Empire Message
+
+((p4.3.7.1)) Overview
+    Name:   Empire
+ Purpose:   Tell a client what Empire it is part of
+ Keyword:   EM
+    Sent:   Server->Client
+    When:   Game Initialization Period, and Game Play Period / Outcome Phase
+  Syntax:   EM <EMPIRENUM:INT>
+
+((p4.3.7.2)) Parameters
+
+((p4.3.7.2.1)) <EMPIRENUM:INT> is the empire number that this client
+is (now) associated with.  This is a number greater than or equal to 0
+and less than or equal to the number of empires present at the start
+of the game.
+
+((p4.3.7.3)) Notes
+
+((p4.3.7.3.1)) The Empire Message is sent from server to client under
+under two circumstances.  The first circumstance is at the beginning
+of a game, right after the Parameters message has been sent.
+
+((p4.3.7.3.1.1)) In that case, the value of EMPIRENUM is always
+greater than or equal to 1 and less than or equal to the total number
+of Empires (that is the range of the possible Empire numbers).
+
+((p4.3.7.3.2)) In the second circumstance, an Empire Message is also
+sent server to client during an Outcome Phase, if the Empire
+associated with that client has died during the just-concluded Update
+Phase.
+
+((p4.3.7.3.2.1)) In that case, the value of EMPIRENUM will be 0, or
+will be in the range from 1 to the total number of original empires.
+
+((p4.3.7.3.2.1.1)) If it is 0, that means the Empire associated with
+the client has died without any Alliances, so the Commander has died
+too, and the client is about to be disconnected from the game.
+
+((p4.3.7.3.2.1.2)) If it is greater than 0, that means the Empire
+associated with the client has died while it had one or more
+Alliances, and the Commander has moved on to and is now associated
+with Empire number EMPIRENUM.
+
+((p4.3.7.3.3)) No Empire Message is never sent from client to server. 
+
+((p4.3.7.4)) Examples
+
+((p4.3.7.4.1)) EM 3
+
+ ((p4.3.7.4.1.1)) This is an Empire Message indicating that the
+  client receiving this message is part of Empire number 3.  If
+  received during the Game Initialization Period, it indicates that
+  client is in fact the sole initial Commander of Empire number 3; if
+  received during an Outcome Phase of a Game Play Period, it indicates
+  that whatever Empire the client used to be associated with has died,
+  and the client is now associated with Empire number 3.
+
+((p4.3.7.4.2)) EM 0
+
+ ((p4.3.7.4.2.1)) This is an Empire Message that can only be received
+  during an Outcome Phase of a Game Play Period.  It indicates that
+  the Empire the client had previously been associated with has died,
+  and that Empire had no Alliances with other Empires at that time,
+  and as a consequence the Commander has died and the client is about
+  to be disconnected from the game.
+
+----
+((p4.4)) The Game Play Period (r3.4)
+
+((p4.4.1)) Period overview:
+
+((p4.4.1.1)) At the beginning of the Game Play Period, the server
+sends a 'MK PD 1' Message (p4.3.3.2.2.1.2) to all clients.
+
+((p4.4.1.2)) During game play, the TUBE server runs an open-ended
+sequence of Turns, until only one Empire remains, or some OPTIONAL
+implementation-dependent mechanism to force a server shutdown occurs,
+whichever comes first.
+
+((p4.4.1.3)) The Server begins a Turn by sending a 'MK TN' Message
+(p4.3.3.2.2.2) containing the Turn number as the CODE, to all clients.
+
+((p4.4.1.4)) Each Turn consists of a series of Phases, and the server
+sends an appropriate 'MK PH' Message (p4.3.3.2.2.3) to all clients at
+the beginning of each Phase.
+
+((p4.4.1.5)) The first Phase of a Turn is the Command Phase.  During a
+Command Phase, the following Messages can be sent:
+
+ ((p4.4.1.5.1)) Messages from client to server: Mark, Do, Tell, Chat, Communique
+ ((p4.4.1.5.2)) Messages from server to client: Mark, Chat
+
+((p4.4.1.6)) The second Phase of a Turn is the Diplomacy Phase.  During a
+Diplomacy Phase, the following Messages can be sent:
+
+ ((p4.4.1.6.1)) Messages from client to server: None
+ ((p4.4.1.6.2)) Messages from server to client: Mark, Communique, Allies
+
+((p4.4.1.7)) The third Phase of a Turn is the Update Phase.  During an
+Update Phase, the following Messages can be sent:
+
+ ((p4.4.1.7.1)) Messages from client to server: None
+ ((p4.4.1.7.2)) Messages from server to client: Mark, Contacts
+
+((p4.4.1.8)) The fourth Phase of a Turn is the Outcome Phase.  During an
+Update Phase, the following Messages can be sent:
+
+ ((p4.4.1.7.1)) Messages from client to server: None
+ ((p4.4.1.7.2)) Messages from server to client: Mark, Chat, Empire
+ ((p4.4.1.7.3)) Also, during the outcome phase, client connections may
+  be closed, if their Empire dies with no Allies.
+
+=====================
+((p4.4.2)) Do Message
+
+((p4.4.2.1)) Overview
+    Name:   Do
+ Purpose:   Give an order to an active unit
+ Keyword:   DO
+    Sent:   Client->Server
+    When:   Game Play Period / Command Phase only
+  Syntax:   DO <ACTIVEID:INT> <WHAT:ORDER>
+
+((p4.4.2.2)) Parameters
+
+((p4.4.2.2.1)) <ACTIVEID:INT> is the SerialNumber of the Active unit
+the order is being sent to.
+
+((p4.4.2.2.2)) <WHAT:ORDER> is an Order Description, indicating what
+the ACTIVEID active unit must now attempt to do.  See (p6.2) for the
+syntax of an Order Description.
+
+((p4.4.2.3)) Notes
+
+((p4.4.2.3.1)) If ACTIVEID does not correspond to the SerialNumber of
+an Active unit, the Do Message is ignored.
+
+((p4.4.2.3.2)) If ACTIVEID corresponds to the SerialNumber of an
+Active unit that is loyal to a different Empire than the one issuing
+the Do Message, the Do Message is ignored.
+
+((p4.4.2.3.3)) If WHAT makes no sense given the type of the ACTIVEID
+active unit, the Do Message is ignored.
+
+((p4.4.2.3.4)) Otherwise the given Order is accepted by the indicated unit.
+
+((p4.4.2.4)) Examples
+
+((p4.4.2.4.1)) DO 121 CT BD 0 0 0
+
+ ((p4.4.2.4.1.1)) This Do Message is telling Imperial City#121 to
+  build a destroyer.  If unit 121 doesn't exist, or is not a City, or
+  that City isn't loyal to this Empire, the Do Message is ignored
+
+((p4.4.2.4.2)) DO 8923 AR MA 12 13 0
+
+ ((p4.4.2.4.2.1)) This Do Message is telling Imperial Army#8923 to
+  March toward location (12,13) as directly as possible, avoiding
+  trouble as much as possible (since that is what the March behavioral
+  rules (r8.4.3.3) attempt to specify).
+
+((p4.4.2.4.3)) DO 371 DE DF 34 93 13
+
+ ((p4.4.2.4.3.1)) This Do Message is telling Imperial Destroyer#371 to
+  wait for 13 (more) turns, and then head toward location (34,93),
+  engaging an enemy units encountered along the way.
+
+=====================
+((p4.4.3)) Tell Message
+
+((p4.4.3.1)) Overview
+    Name:   Tell
+ Purpose:   Leave Order(s) at a location for various unit types
+ Keyword:   TL
+    Sent:   Client->Server
+    When:   Game Play Period / Command Phase only
+  Syntax:   TL <X:INT> <Y:INT> <COUNT:INT> <ORDER0:ORDER> .. <ORDERCOUNT-1:ORDER>
+
+((p4.4.3.2)) Parameters
+
+((p4.4.3.2.1)) <X:INT> and <Y:INT> together describe a 2D coordinate
+location on the torus where the given orders are to be stored.
+
+((p4.4.3.2.2)) <COUNT:INT> specifies how many ORDERS follow in the
+rest of the Tell Message.  If COUNT is zero than the Tell Message ends there
+
+((p4.4.3.2.3)) <ORDER0:ORDER> through <ORDERCOUNT-1:ORDER> are the
+COUNT orders to be stored at location (X,Y).
+
+((p4.4.3.3)) Notes
+
+((p4.4.3.3.1)) The Orders of a Tell Message are stored on a per-Empire
+basis and are completely separate from other Empire's Tell Message
+Orders:
+
+ ((p4.4.3.3.1.1)) Each Empire can only have one set of orders
+  associated with any given location.
+
+ ((p4.4.3.3.1.2)) Different Empires can associate sets of orders at the
+  same location without interference.
+
+ ((p4.4.3.3.1.3)) There is no way for one Empire to tell whether,
+  where, or what orders any other Empire may have left at a location.
+
+((p4.4.3.3.2)) Any one Empire can leave only one set of Orders at any
+given location; a subsequent Tell Message referring to the same
+location completely replaces the previously associated set of orders.
+
+((p4.4.3.3.3)) Sending a Tell Message with a COUNT equal to zero
+clears any standing Orders from the referenced location.
+
+((p4.4.3.3.4)) When an active unit looks through the standing Orders
+at a location, it ignores any Orders that don't match the unit's own
+type.
+
+((p4.4.3.3.5)) If there is more than one Order left via a Tell Message
+that matches an active unit type, then the LAST matching Order (in the
+sequence they appeared left to right in the Tell Message) is the Order
+the active unit accepts.
+
+((p4.4.3.3.6)) Standing orders left by a Tell Message get accessed at
+a number of different times, depending on circumstances:
+
+ ((p4.4.3.3.6.1)) Whenever a City completes an Order (but not
+  necessarily every Update Phase), it checks for standing orders at
+  its own coordinate.
+
+ ((p4.4.3.3.6.2)) When an Army finishes an update (whether the Army
+  moved or not), it checks for standing orders at its (new)
+  coordinate.
+
+ ((p4.4.3.3.6.3)) When a Boat finishes an update (whether the Boat
+  moved or not), it checks for standing orders at its (new)
+  coordinate.  In addition, any Armys aboard the Boat ALSO CHECK for
+  standing orders at that same location.  Note this means that some
+  Armys might check for standing orders up to twice in one Update
+  Phase -- once on their own update, and again if they are aboard a
+  Boat.
+
+((p4.4.3.4)) Examples
+
+((p4.4.3.4.1)) TL 12 13 1 CT BD 0 0 0
+
+ ((p4.4.3.4.1.1)) This Tell Message is aimed at coordinate (12,13).
+  It contains only one Order.  That order is directing (the) City
+  (hopefull) located there to build a destroyer, after the City
+  finishes whatever it is working on now.
+
+ ((p4.4.3.4.1.1.1)) By contrast, assuming the City at location (12,13)
+  had SerialNumber 123, the Do Message 'DO 123 CT BD 0 0 0' would
+  instruct that same City to drop whatever it is doing and begin work
+  on building a destroyer right away, in the next Update Phase.
+
+((p4.4.3.4.2)) TL 24 13 3 AR XP 0 0 0 DE SL 10 13 2 CR DF 10 13 5
+
+ ((p4.4.3.4.2.1)) This complex Tell Message is aimed at coordinate
+  (24,13) (which is hopefully a Water location, or else the Boat
+  Orders contained here are pointless).
+
+ ((p4.4.3.4.2.1.1)) This Tell Message contains 3 Orders.  The first
+  Order says that Army's arriving in this location should begin
+  eXPloring at their next opportunity (which might be in the current
+  Update Phase and might be in the next Update Phase, depending on the
+  sequencing of Updates).
+
+ ((p4.4.3.4.2.1.2)) The second Order says that any DEstroyers arriving
+  here should wait 2 Turns and then sail directly for (10,13),
+  avoiding conflicts.
+
+ ((p4.4.3.4.2.1.3)) The third Order says that any CRuisers arriving
+  here should wait 5 Turns and then DeFend toward (10,13), engaging
+  any encountered enemy units along the way.
+
+((p4.4.3.4.3)) TL 19 5 0
+
+ ((p4.4.3.4.2.3.1)) This Tell Message clears any standing orders for
+ this Empire at location (19,5).
+
+=====================
+((p4.4.4)) Communique Message
+
+((p4.4.4.1)) Overview
+    Name:   Communique
+ Purpose:   Declare intentions and speak to other empires
+ Keyword:   CQ
+    Sent:   Client->Server during Command Phase
+            Server->Client during Diplomacy Phase
+    When:   Game Play Period, Command and Diplomacy Phases only
+  Syntax:   CQ <TOFROMEMPIRE:INT> <PEACEFUL:INT> <MESSAGE:STRING>
+
+((p4.4.4.2)) Parameters
+
+((p4.4.4.2.1)) <TOFROMEMPIRE:INT> is dual-role.  It is the destination
+Empire Number when the Communique Message is sent from client->server,
+and it is the source Empire Number when the Communique Message is sent
+from server->client.
+
+((p4.4.4.2.2)) <PEACEFUL:INT> is value 1 if the source Empire is
+declaring peaceful intentions toward the destination Empire.
+<PEACEFUL:INT> is value 0 if the source Empire is not declaring
+peaceful intentions toward the destination Empire.
+
+((p4.4.4.2.3)) <MESSAGE:STRING> is a message for the destination
+Empire, from the source Empire.
+
+((p4.4.4.3)) Notes
+
+((p4.4.4.3.1)) During the Command Phase, Communiques can only be sent
+from client to server.
+
+((p4.4.4.3.2)) The communiques received by the server must be stored
+until the Diplomacy Phase, when they are delivered to the destination
+Empires.
+
+((p4.4.4.3.3)) There can be at most one communique sent from one
+particular Empire to another particular Empire on one Turn.  If more
+than one communique is received from Empire 1, say, for Empire 2, in a
+single Command Phase, then ONLY THE LAST such Communique is delivered
+to Empire 2 during the diplomacy phase.
+
+((p4.4.4.3.4)) A declaration of peace or no-peace contained in a
+Communique applies to all subsequent Turns until explicitly changed by
+a later Communique.
+
+((p4.4.4.3.5)) An Alliance exists between two Empires only if they
+have currently declared peace in both directions.
+
+((p4.4.4.4)) Examples
+
+((p4.4.4.4.1)) CQ 2 1 42:Let's screw Joe now and sort us out later!
+
+ ((p4.4.4.4.1.1)) This Communique, if travelling from client to
+  server, is offering peace to Empire 2, and suggesting a strategic
+  plan.
+
+ ((p4.4.4.4.1.2)) This Communique, if travelling from server to
+  client, is an offer of peace from Empire 2, suggesting a strategic
+  plan.
+
+((p4.4.4.4.2)) CQ 1 0 13:You're great!
+
+ ((p4.4.4.4.2.2)) Depending on which direction this Communique is
+  going, it is sending positive words either to or from Empire 1,
+  while simultaneously not offering peaceful intentions.
+
+=====================
+((p4.4.5)) Allies Message
+
+((p4.4.5.1)) Overview
+    Name:   Allies
+ Purpose:   Reporting the Alliances you are currently engaged in
+ Keyword:   AL
+    Sent:   Server->Client
+    When:   Game Play Period / Diplomacy Phase only
+  Syntax:   AL <COUNT:INT> <EMPIRENO0:INT> .. <EMPIRENOCOUNT-1:INT>
+
+((p4.4.5.2)) Parameters
+
+((p4.4.5.2.1)) <COUNT:INT> specifies how many Empire Numbers follow in
+the rest of the Allies Message.  If COUNT is zero than the Allies
+Message ends there.
+
+((p4.4.5.2.2)) <EMPIRENO0:INT> through <EMPIRENOCOUNT-1:INT> are
+Empire Numbers that you currently have bilateral peaceful declarations
+with.
+
+((p4.4.5.3)) Notes
+
+((p4.4.5.4)) Examples
+
+((p4.4.5.4.1)) AL 0
+
+ ((p4.4.5.4.1.1)) This Allies Message is informing you that you
+  currently have no Alliances
+
+((p4.4.5.4.2)) AL 3 4 1 2
+
+ ((p4.4.5.4.2.1)) This Allies Message is informing you that you
+  currently have three Alliances, with Empire Number 4, Number 1, and
+  Number 2.
+
+=====================
+((p4.4.6)) Contacts Message
+
+((p4.4.6.1)) Overview
+    Name:   Contacts
+ Purpose:   Report active unit status, new terrain, and enemy contacts
+ Keyword:   CO
+    Sent:   Server->Client
+    When:   Game Play Period / Outcome Phase only
+  Syntax:   CO <CCOUNT:INT> <C0:CONTACT> .. <EECOUNT-1:CONTACT>
+(all on        <TCOUNT:INT> <T0:TERRAIN> .. <TTCOUNT-1:TERRAIN>
+one line)      <ACOUNT:INT> <A0:ACTIVE> .. <AACOUNT-1:ACTIVE>
+
+((p4.4.6.2)) Parameters
+
+((p4.4.6.2.1)) <CCOUNT:INT> specifies how many 'CONTACTS' follow.  A
+CONTACT is a sighting of any active unit --- Allied, Independent, or
+Enemy -- that is not part of your Empire.
+
+((p4.4.6.2.2)) <C0:CONTACT>, etc, contains a description of a contact.
+The syntax of each CONTACT is:
+  <X:INT> <Y:INT> <UNITTYPE:KEYWORD> <EMPIRENO:INT>
+
+((p4.4.6.2.2.1)) where (X,Y) is the location of the sighting, UNITTYPE
+is the type of the unit, and EMPIRENO is the Empire number the unit it
+belongs to.  (Empire Number 0 is reserved to mean 'Independent', and
+only applies to unconquered Citys.)
+
+((p4.4.6.2.3)) <TCOUNT:INT> describes how many 'TERRAIN' descriptions
+follow.
+
+((p4.4.6.2.4)) <T0:TERRAIN>, etc, contains a description of a
+newly-encountered terrain location.  The syntax of each TERRAIN is:
+  <X:INT> <Y:INT> <UNITTYPE:KEYWORD>
+
+((p4.4.6.2.4.1)) where (X,Y) is the location of the sighting and
+UNITTYPE is the type of the terrain (LD, MT, WA).
+
+((p4.4.6.2.5)) <ACOUNT:INT> describes how many 'ACTIVE' descriptions
+follow -- descriptions of all the units in your Empire.
+
+((p4.4.6.2.6)) <A0:ACTIVE>, etc, contains a description of an active
+unit.  The syntax of each ACTIVE is:
+  <X:INT> <Y:INT> <ID:INT> <HITS:INT> <CURRENTORDER:ORDER>
+
+ ((p4.4.6.2.6.1)) where (X,Y) is the location of the unit;
+ ((p4.4.6.2.6.2)) <ID:INT> is the serial number of the unit.
+ ((p4.4.6.2.6.3)) <HITS:INT> is a description of the 'power' or
+  strength of the unit, representing how much damage the unit could
+  take.
+   ((p4.4.6.2.6.3.1)) For an ARMY, <HITS:INT> is always 1
+   ((p4.4.6.2.6.3.2)) For a CITY,  <HITS:INT> is the Size of the City
+   ((p4.4.6.2.6.3.3)) For a Boat,  <HITS:INT> is the CurrentCapacity of the Boat
+
+ ((p4.4.6.2.6.4)) <CURRENTORDER:ORDER> is the current status of the
+  Order the unit is following, expressed as with Order Description
+  syntax (p6.2).
+
+((p4.4.6.3)) Notes
+
+((p4.4.6.3.1)) Yes, indeed, my goodness this can be a BIG and complex
+Message.  Yes, it could have been broken up into multiple messages,
+but all the information in it needs to ship at the same time, so why
+bother?  Fortunately it is also the LAST Message we have to document.
+
+((p4.4.6.3.2)) CONTACTs in the first section of a Contacts Message
+SHOULD NOT mention the same coordinate location more than once in one
+Contacts Message.  Even if an enemy army, say, is simultaneously in
+the neighborhoods of three of your imperial units, that enemy army
+will only generate one CONTACT in this Turns Contacts Message to you.
+
+((p4.4.6.3.3)) Since terrain types never change, it is only necessary
+to report TERRAIN contacts once per Empire per coordinate location,
+over the course of the whole game.  Doing this would imply the server
+must remember which TERRAIN locations have been sent in previous
+Contacts Messages, and avoid repeating those locations later.
+
+ ((p4.4.6.3.3.1)) That can be a bit of a pain to do (and there are
+  issues when a new Commander joins mid-game due to an Empire dying),
+  so the actual protocol guidelines are these:
+
+ ((p4.4.6.3.3.2)) A server MUST NOT report any terrain location that
+  an Empire is not yet 'entitled' to see by virtue of having an active
+  unit in the neighborhood of the location.  This means, for one
+  thing, that a server MUST NOT simply download the whole map into the
+  client at the beginning of a game.
+
+ ((p4.4.6.3.3.3)) A server SHOULD report the terrain description for a
+  given location only once to a given Commander within a given Empire.
+
+ ((p4.4.6.3.3.4)) A server MAY report terrain descriptions more than
+  once.
+
+((p4.4.6.3.4)) The Orders that appear in the Active unit descriptions
+may have been modified from the original Order that the units
+accepted.  For example, the holdtime in a Boat Order may be smaller
+than it originally was, if the Boat has already waited a while.
+Similarly the COUNT in, say, a Build Destroy order of a City will not
+always or typically be 12 in an ACTIVE contacts report; it will
+typically be smaller, indicating the RemainingWork necessary to
+complete the Destroyer.
+
+((p4.4.6.3.5)) Cities MAY or MAY NOT appear in TERRAIN listings in
+Contacts Messages, depending on implementation details.  Either way,
+they MUST appear in the ACTIVE and/or CONTACT listings in Contacts
+Messages, as appropriate.
+
+((p4.4.6.4)) Examples
+
+((p4.4.6.4.1)) CO 0 3 18 14 LD 19 14 MT 20 14 WA 1 19 15 11 1 CT BA 0 0 3
+
+ ((p4.4.6.4.1.1)) The Contacts Message begins with zero CONTACTs.
+  Then come three new TERRAIN descriptions: a land at (18,14), a
+  mountain at (19,14), and a water at (20,14).
+
+ ((p4.4.6.4.1.2)) Following that comes one ACTIVE description: At
+  location (19,15), with SerialNumber 11, and a size of 1, a City is
+  building an Army.  The Order coordinate (0,0) is irrelevant in that
+  case.  The RemainingWork to raise the army is 3.
+
+---------------------
+((p5)) Keyword summary and cross-references
+
+((p5.1)) Here is a list of all keywords that can appear in TUBE
+protocol version 2 communications, ordered by category:
+
+ Message Keywords:
+    AL     Allies     (p4.4.5)
+    CH     Chat       (p4.3.4)
+    CO     Contacts   (p4.4.6)
+    CQ     Communique (p4.4.4)
+    DO     Do         (p4.4.2)
+    EM     Empire     (p4.3.7)
+    FL     Fail       (p4.2.6)     (OPTIONAL)
+    HI     Hello      (p4.3.2)
+    MK     Mark       (p4.3.3)
+    PM     Parameters (p4.3.5)
+    TL     Tell       (p4.4.3)
+
+ Hello Message keywords
+    HM     Human
+    RB     Robot
+    SV     Server
+
+ Mark Message keywords
+    PD     Period
+    PH     Phase
+    TN     Turn
+
+ Types of active units
+    AR     Army
+    CR     Cruiser
+    CT     City
+    DE     Destroyer
+    EM     Emperor
+
+ Types of passive untis
+    LD     Land
+    MT     Mountain
+    WA     Water
+
+ Order codes
+    XP     Explore
+    MA     March
+    DF     DeFend
+    WT     Wait
+    SL     Sail
+    BA     Build Army
+    BD     Build Destroyer
+    BC     Build Cruiser
+    BE     Build Emperor
+    GR     Grow
+
+((p5.2)) Here are a list of all keywords in a single alphabetical list:
+
+    AL     Allies     (p4.4.5)    Message Keywords
+    AR     Army                   Types of active units
+    BA     Build Army             Order codes
+    BC     Build Cruiser          Order codes
+    BD     Build Destroyer        Order codes
+    BE     Build Emperor          Order codes
+    CH     Chat       (p4.3.4)    Message Keywords
+    CO     Contacts   (p4.4.6)    Message Keywords
+    CQ     Communique (p4.4.4)    Message Keywords
+    CR     Cruiser                Types of active units
+    CT     City                   Types of active units
+    DE     Destroyer              Types of active units
+    DF     DeFend                 Order codes
+    DO     Do         (p4.4.2)    Message Keywords
+    EM     Emperor                Types of active units
+    FL     Fail       (p4.2.6)    Message Keywords     (OPTIONAL)
+    GR     Grow                   Order codes
+    HI     Hello      (p4.3.2)    Message Keywords
+    HM     Human                  Hello Message keywords
+    LD     Land                   Types of passive untis
+    MA     March                  Order codes
+    MK     Mark       (p4.3.3)    Message Keywords
+    MT     Mountain               Types of passive untis
+    PD     Period                 Mark Message keywords
+    PH     Phase                  Mark Message keywords
+    PM     Parameters (p4.3.5)    Message Keywords
+    RB     Robot                  Hello Message keywords
+    SL     Sail                   Order codes
+    SV     Server                 Hello Message keywords
+    TL     Tell       (p4.4.3)    Message Keywords
+    TN     Turn                   Mark Message keywords
+    WA     Water                  Types of passive untis
+    WT     Wait                   Order codes
+    XP     Explore                Order codes
+
+((p5.3)) Here are a list of all Messages in a single alphabetical list:
+
+Allies      AL      (p4.4.5)
+Chat        CH      (p4.3.4)
+Communique  CQ      (p4.4.4)
+Contacts    CO      (p4.4.6)
+Do          DO      (p4.4.2)
+Fail        FL      (p4.2.6)  (OPTIONAL)
+Hello       HI      (p4.3.2)
+Mark        MK      (p4.3.3)
+Parameters  PM      (p4.3.5)
+Tell        TL      (p4.4.3)
+
+---------------------
+((p6)) Other information
+
+((p6.1)) This section is for information that didn't fit in anywhere
+else.
+
+((p6.2)) Order Description syntax
+
+((p6.2.1)) Several message types (including Do, Tell, and Contacts)
+include Order Descriptions within them.
+
+((p6.2.2)) The syntax for an Order Description, in terms of the basic
+Message elements, is:
+
+((p6.2.2.1)) <UNIT:KEYWORD> <ORDER:KEYWORD> <X:INT> <Y:INT> <COUNT:INT>
+
+((p6.2.3)) Parameters
+
+((p6.2.3.1)) <UNIT:KEYWORD> is a keyword describing which type of
+Active unit this Order is meant for.  The keywords for representing
+active units are:
+  ((p6.2.3.1.1)) Active unit type: Army.        Keyword: AR
+  ((p6.2.3.1.2)) Active unit type: Destroyer.   Keyword: DE
+  ((p6.2.3.1.3)) Active unit type: Cruiser.     Keyword: CR
+  ((p6.2.3.1.4)) Active unit type: Emperor.     Keyword: EM
+  ((p6.2.3.1.5)) Active unit type: City.        Keyword: CT
+
+((p6.2.3.1.6)) Where it matters (in standing orders, particularly), if
+an active unit somehow encounters an Order meant for a different
+active unit type, the Order is simply ignored.
+
+((p6.2.3.2)) <ORDER:KEYWORD> is a keyword describing the specific
+order that is being described.  The keywords for representing
+possible Orders (and the active types that obey them) are:
+  ((p6.2.3.2.1)) Order: Explore (Army, Boat)    Keyword: XP
+  ((p6.2.3.2.2)) Order: March (Army)            Keyword: MA
+  ((p6.2.3.2.3)) Order: Defend (Army, Boat)     Keyword: DF
+  ((p6.2.3.2.4)) Order: Sail (Boat)             Keyword: SL
+  ((p6.2.3.2.5)) Order: Build Army (City)       Keyword: BA
+  ((p6.2.3.2.6)) Order: Build Destroyer (City)  Keyword: BD
+  ((p6.2.3.2.7)) Order: Build Cruiser (City)    Keyword: BC
+  ((p6.2.3.2.8)) Order: Build Emperor (City)    Keyword: BE
+  ((p6.2.3.2.9)) Order: Grow (City)             Keyword: GR
+
+((p6.2.3.3)) <X:INT> and <Y:INT> together describe a 2D coordinate
+location on the torus.  Only certain Orders (MA, DF, and SL) actually
+make use of this information; it SHOULD be set to zero (on output) and
+ignored (on input) for all other Orders.
+
+((p6.2.3.4)) <COUNT:INT> represents a count.  Only certain Orders (SL,
+BA, BD, BC, BE, and GR) use the count information (and they use it in
+somewhat different ways); the count SHOULD be set to zero (on output)
+and ignored (on input) for all other Orders.
+
+((p6.2.3.5)) Any Order Description that contains an impossible
+combination of UNIT and ORDER -- a combination as 'AR BE' or 'CT SL'
+should be ignored.
+
+---------------------
+((p7)) Document revision history
+
+((p7.1)) Version 0.9.0.  Wed Apr 16 03:24:10 2003 Initial released
+version.
+
+((p7.2)) Version 0.9.1   Wed Apr 23 03:33:33 2003 Revision, actually
+containing the protocol messages as well as the frame syntax.
+
+((p7.3)) Version 0.9.2   Mon May  5 16:30:10 2003 Going to protocol
+version 2 to add the Empire message (p4.3.7) to tell a client its
+empire number. 
+
+((p7.3.1)) Get rid of all the '`' (backquotes) in the counted string
+definition sections: (p3.3.2), (p3.5.3), (p3.5.4).
+
+((p7.3.2)) Fix typoes as encountered.

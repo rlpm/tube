@@ -1,0 +1,204 @@
+             CS351 Project 3 - TUBE - Torus Ultra Blitz Empire
+
+CONTACT INFORMATION
+ Group:   Stonecutters
+ Members: MD, JK, SM, RM, RR
+ Date:    Wed, 14 May 2003 17:30 (MDT)
+
+PROJECT DESCRIPTION
+
+ TUBE is a relatively simple multiplayer game in the 'Empire' class of
+ games, which stretches back at least to Peter Langston's original
+ single-player Empire game written in the 1980's.  In general, the
+ basic goal of Empire games is to take over the world by various
+ combinations of economic development, military might, and diplomacy.
+
+ Our group fully implemented both client and server programs for TUBE.
+ See http://www.cs.unm.edu/~ackley/cs351/projects/3/ for more
+ information.
+
+ Shipping manifest: 
+  Contained in the distribution you will find the following directories:
+   Common - .C and .h files used by both Server and Client programs
+   Server - .C and .h files used by Server program
+   Client - .C and .h files used by Client program
+   Doc    - Documentation including this README file
+
+ How to build:
+  (1) Unpack the tar file into an empty directory.
+      (If you are reading this file, you can probably skip this step.)
+  (2) cd to that directory, which now contains the source distribution.
+  (3) Type 'make' to build tubes and tubec.
+      Please note: This will complain about non-existant files named
+      make.depend, which are dependency lists.  Those files will be
+      automatically generated, and make will continue properly.  See
+      Server/Makefile, Common/Makefile and Client/Makefile for more
+      information.
+
+ How to run:
+  The server program (tubes) takes optional command line arguments:
+   Usage: tubes [options]
+   Options:
+    -p <port>      Port number on which to accept connections.
+                   If that port is not available, it will try to bind to 
+                   the next 9 numbers
+                   default: 8000  min:1025  max:60999
+    -s <gamespeed> Number of seconds for each COMMAND phase
+                   default:1
+    -m <maxcmdrs>  Maximum number of Commanders
+                   default:10  max:25
+    -w <waittime>  Number of seconds to wait for Commanders before
+                   starting the game
+                   default:30
+    -t <maxturns>  Maximum number of turns before forced game end
+                   default:5000
+    -x <cols>      Number of columns in torus
+                   default:100
+    -y <rows>      Number of rows in torus
+                   default:50
+    -g             Print Map and turn number at end of each turn
+
+   If the parameters are valid, it will print out the hostname and
+   port number on which it is accepting connections.  The server
+   program will wait for a maximum of <waittime> seconds for at least
+   2 connections, or at most a <maxcmdrs> connections.  When enough
+   connections have been properly established and handshaked, the
+   server will generate a random map of the size specified on the
+   command line
+
+ The client program (tubec) takes 2 mandatory command line arguments:
+  Usage: tubec hostname port
+  Options:
+   hostname  the host on which the server program is running
+   port      the port on which the server program is running
+
+ After connecting to the server, the client program will ask you to
+ input your username, which is the string that will identify you for
+ chat purposes.
+
+ Game Initialization Period:
+
+  The time before either <waittime> seconds have elapsed, or
+  <maxcmdrs> have connected and handshaked is the Game Initialization
+  Period.  The entire terminal except for the last line is used for
+  messages from the server, the client program, and chat messages.
+  The last line is always reserved for input.
+
+  During this period, chat messages may be sent to other commanders
+  who have connected and handshaked.  Press the <enter> key for the
+  "To:" chat prompt.  If no name is specified at the "To:" prompt,
+  then the message will be sent to all properly handshaked commanders.
+  
+  Once either <waittime> seconds have expired, or <maxcmdrs>
+  connections have been established and handshaked, the server will
+  proceed to the game play period.  If <waittime> seconds have
+  expired, and only 1 commander has connected and handshaked, the game
+  will end, and the server will issue an appropriate error message.
+
+ Game play period:
+
+  During game play period, the map is displayed in the upper left
+  corner of the terminal. Information about the selected unit(s) (the
+  unit(s) at the center of the map) is displayed along the right side
+  of the map.  Messages from the server, client program, and other
+  users are displayed beneath the map and information section.
+
+  The server sends the terrain, contacts, and active information to
+  each client as specified in the spec.  Land terrain is displayed in
+  green, mountains in magenta (purple/pink), and water in blue.  If
+  your terminal does not support color, then water is displayed as
+  '~', land as '+' and mountains as '%'.  Cities are displayed as 'C',
+  Armies as 'A', Destroyers as 'D', Cruisers as 'R', and Emperors as
+  'E'.  Your own units are displayed in uppercase, and other units are
+  displayed in lowercase.  If your terminal supports color, your own
+  Empire's units are displayed in black, your allies' units are
+  displayed in white, and your enemies' units are displayed in red.
+   
+  Unless providing input, the cursor will remain at the center of the
+  map.  Use the Arrow keys to move around the map.  Since the map is a
+  torus, the map will wrap-around any direction.  To issue orders to
+  the selected unit (the unit at the cursor), press one of the
+  following Hotkeys: <Enter>Chat [H]elp communi[Q]ue [J]ump e[X]plore
+  [M]arch de[F]end [W]ait [S]ail bld[A]rmy bld[D]estroyer bldc[R]uiser
+  bld[E]mperor [G]row s[T]andingorder.  The client program will
+  display an error message if the order is not valid for any units at
+  that location.  The jump command is used to re-center the map on the
+  first active unit sent by the server in the most recent Contacts
+  message.  This can be useful if the size of the map is much larger
+  than the available display space in the terminal.
+
+  If the selected order requires a destination, the input prompt at the
+  bottom of the screen will ask you to use the arrow keys to move to that
+  location and then press the space bar.
+
+  If the selected order requires a wait time (e.g. for a boat), you
+  will be prompted to type an integer for the wait time.  Press enter
+  for the default value of 0.
+
+  Press the escape key to cancel the last command.
+
+  For standing orders, press the 'T' key, followed by the unit type
+  for that order.  Then, press the hotkey for the order.  You may be
+  asked to provide a destination and wait time, similar to normal
+  orders.  When that order is complete, it will be stored, and you may
+  enter another standing order at the same location.  When you are
+  finished specifying orders for that location, you must press the
+  enter key at the beginning of an order sequence to send the
+  standing order to the server.  If you are at the beginning of an
+  order sequence, the escape key will cancel the entire standing
+  order.
+
+  For Communique messages, you will be prompted to enter an Empire
+  number, a Peace number (0=no peace, 1=peace), and an optional
+  message.  If another Empire issues a Communique to your Empire, a
+  message will be displayed in the messages section of the terminal,
+  below the map.  In order to form an alliance, your empire AND the
+  other empire must both issue peaceful communiques to each other.  If
+  your empire dies and you are allied with another empire, you will be
+  placed into a random allied empire to command its units.
+
+ Game End Period:
+
+  The game ends when <maxturns> turns have completed, or a single
+  empire remains.  An empire is deemed dead if they control no cities
+  and no armies.  Boats do not keep an empire alive, and will be
+  destroyed when an empire dies.
+
+  The server will issue a message when an empire dies, when a
+  commander is reassigned to an allied empire, and when the game has
+  been won.
+
+ACKNOWLEDGMENTS
+               
+ Professor Ackley designed the spec as well as providing a sample
+ server implementation.  He also provided basic makefiles, socket code
+ (and interfaces), and interfaces for curses.
+
+ Thanks to Bjarne Stroustrup for C++; the Free Software Foundation for
+ the GNU Project, in particular g++, GNU make, GNU emacs, and Debian
+ GNU/Linux; The XEmacs group; AT&T, Bell Labs, and others for Unix;
+ RedHat/Cygnus for cygwin; Linus Torvalds for Linux; Julian Seward for
+ valgrind.
+               
+KNOWN BUGS & UNDOCUMENTED FEATURES
+
+ - Nothing major.
+ - After a successful completion, both the server and client programs
+   have still reachable memory allocated by stl_alloc.h, ncurses,
+   and/or socket++
+ - If a client disconnects immediately after sending a message, the
+   memory for that message may be leaked.
+ - Some terminal programs, such as KDE Konsole, may have serious issues
+   with key bindings and curses.  This may result in display
+   'flickering' and inability to use the backspace key.
+ - You may find god mode.  Don't use it on super large maps, as it will
+   take a long long time.
+ - Use valgrind and gdb at your own risk when thousands of units are
+   in play.
+ - The random map generator is simple yet very powerful, and can be
+   used on maps of any size.  When used on large maps, status
+   information will be printed to the server's stdout, and issued as
+   'from the server' chat messages to each client.
+ - Alliances and diplomacy are fully implemented, including
+   reassignment of commanders of dying empires.
+

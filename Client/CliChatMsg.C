@@ -1,0 +1,15 @@
+// Stonecutters CS351 S03 -*- C++ -*-
+// $Id: CliChatMsg.C,v 1.4 2003/05/10 18:54:59 snowtrp Exp $
+
+#include "CliChatMsg.h"
+#include "Control.h"
+#include "Exception.h"
+
+static bool reg = Message::Register(ChatMsg::Keyword(),CliChatMsg::GenMsg);
+
+void CliChatMsg::Execute(Model *m) {
+   Control *c = dynamic_cast<Control *>(m);
+  assert(c);
+
+  c->ChatIn(GetToFrom(),GetText());
+}

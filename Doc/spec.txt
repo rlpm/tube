@@ -1,0 +1,237 @@
+                 T U B E :  Torus Ultra-Blitz Empire
+                   CS 351 S'03 Final Group Project
+
+                     Main specification document
+
+                                               Spec version: 0.9.2
+                                       TUBE protocol referenced: 2
+ 		                   Due: THU 5/15/2003 AT HIGH NOON
+                                         NO LATE TURN-INS ACCEPTED
+                                        See (s3) for deadlines and
+                                             (s4) for deliverables
+---------------------
+((s0)) Table of Contents
+ (s1) Overview
+ (s2) Background
+ (s3) Project time line
+ (s4) Deliverables
+ (s5) Resources
+ (s6) Use cases
+ (s7) Document revision history
+
+---------------------
+((s1)) Overview
+
+((s1.1)) Document conventions
+
+((s1.1.1)) The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+"OPTIONAL" in this document are to be interpreted as described in RFC
+2119.
+
+((s1.1.2)) Note that this document is divided up into a few separate
+files, dealing with different aspects of the project.  Each such file
+uses a different 'prefix letter' in its section numbering.  (For
+example, the 'prefix letter' for this file is 's').
+
+((s1.1.3)) See (s5) for details of the files that are included in
+this specification.
+
+((s1.1.4)) The phrase 'this document' refers to all such files.
+Unless otherwise indicated by context, the term 'specification' also
+refer to all such files.  The phrase 'this spec file' refers
+specifically to just this file.
+
+---------------------
+((s2)) Background
+
+((s2.1)) The goal of the final group project is to implement both a
+server program and a client program for a game called Torus
+Ultra-Blitz Empire, or TUBE for short.
+
+((s2.2)) (The length of this specification notwithstanding,) TUBE is a
+relatively simple multiplayer game in the 'Empire' class of games,
+which stretches back at least to Peter Langston's original
+single-player Empire game written in the 1980's.  In general, the
+basic goal of Empire games is to take over the world by various
+combinations of economic development, military might, and diplomacy.
+
+((s2.3)) Although many Empire-class games of increasing (and by now
+pretty staggering) complexity have been and are still being developed
+since Langston's original games, the TUBE design is a fresh start and
+is not directly derived from any of them.
+
+((s2.4)) Some Empire games have become so complicated that a single
+game can last for months, with players checking in for updates and to
+leave commands on a daily basis (or (much) more often).  In those
+sorts of Empire games, a very-rapidly-paced 'blitz' game might last a
+mere 24 hours.
+
+((s2.5)) As its 'Ultra-Blitz' name suggests, the goal in TUBE is on
+much more rapid play, so that an entire game can be completed in less
+than a few hours at most.  To do this, the overall complexity of the
+game is massively reduced, the amount of time allotted per update is
+likewise reduced, and attention must be paid to client-side HCI
+(Human-Computer Interaction) issues to assist in issuing commands
+effectively.
+
+---------------------
+((s3)) Project time line
+
+((s3.1)) There is one month to complete this project.  See (s4) for
+specifics on the project deliverables.
+
+((s3.2)) WED 4/16:          Initial spec available
+((s3.3)) FRI 4/25:          Deadline for completion of 1st status meeting
+((s3.4)) FRI 5/2:           Deadline for completion of 2nd status meeting
+((s3.5)) FRI 5/9:           Deadline for completion of 3rd and final status meeting
+((s3.6)) THU 5/15 12NOON:   All final project deliverables due
+                            NO LATE TURN-INS ACCEPTED
+((s3.7)) THU 5/15 12:01PM:  Final project 100% time penalty
+
+---------------------
+((s4)) Deliverables
+
+((s4.1)) There are three major deliverables required for the final
+project:
+
+((s4.1.1)) The project code and documentation.  See (s4.3) for details
+((s4.1.2)) Three weekly group status meetings.  See (s4.4) for details
+((s4.1.3)) Group member evaluations.            See (s4.5) for details
+
+((s4.2)) Turning in the code and documentation (s4.1.1) SHOULD be
+performed by a single person.  The status group meetings SHOULD have
+the entire group present.  The group member evaluations MUST be
+completed by each group member individually.
+
+((s4.3)) Project code and documentation
+
+((s4.3.1)) See announcements to the class email list for any
+final details on turn in requirements.  
+
+((s4.3.2)) Turned-in online: A TUBE.tar.gz containing all your code,
+Makefiles, documentation, any world data files if your project uses
+them, and so forth, wrapped up and ready to travel, delivered via the
+TurnInTUBE script.  This script will deliver the project to the
+lecturer; your deliverables are not complete until you have received
+email confirmation of receipt.
+
+((s4.3.3)) Turned-in on paper: A single printed copy of all your
+documentation and design, with a design document presenting your
+overall design and class diagrams, your means of achieving spec
+behavior, to whatever level you managed to, and any other noteworty
+points about your design or implementation, hand-delivered to the
+lecturer or the Computer Science department office (be sure you get it
+time-stamped if you take the latter route!)
+
+((s4.4)) Three weekly group status meetings
+
+((s4.4.1)) As part of the deliverables for the project, group status
+meetings are required.  These meetings are 20-30 minutes in duration
+and MUST be arranged in advance during scheduled office hours of
+either the lecturer or one of the TAs.  Meeting appointment times will
+be available on a first-requested-first-booked basis and SHOULD be
+arranged as early as possible for most flexibility.
+
+((s4.5)) Group member evaluations
+
+((s4.5.1)) One brief email to --@cs.unm.edu FROM *EACH* AND EVERY
+GROUP MEMBER, *INDIVIDUALLY*, with the subject line "FINAL PROJECT
+EMAIL DELIVERABLE", and containing in the message body:
+
+ ((s4.5.1.1)) The name of the group.
+ ((s4.5.1.2)) The names of all the members.
+ ((s4.5.1.3)) A description of the email sender's responsibilities
+   within the group and principal contributions to the project.
+ ((s4.5.1.4)) The email sender's estimates, in terms of percent of
+   the group overall, of the contributions by *every* member of the
+   group.  The sum of these estimates MUST total 100%.  If the
+   estimates sum to more than 100% the excess will be deducted from
+   the email sender's contribution.
+
+((s4.6)) Group projects missing ANY of the deliverables (s4.3)-(s4.5)
+are incomplete and will be graded accordingly.
+
+---------------------
+((s5)) Resources
+
+((s5.1)) Specification files
+
+((s5.1.1)) The TUBE specification document consists of three files,
+'spec', 'rules', and 'prot1'.  Each file has its version number
+included as part of the name, in the form '-X.Y.Z', where X is the
+major version, Y is the minor version, and Z is the revision.
+
+((s5.1.2))The current specification files are:
+
+ ((s5.1.1.1)) spec-X.Y.Z.txt:  The overall project specification file
+              (*THIS* file), containing background, deadlines,
+              deliverables, and so forth.
+
+              ((s5.1.1.1.1)) Sections in this spec file use a 'prefix
+               letter' of 's'; for example, in (s5) you can find a
+               description of the resources available for the project.
+
+ ((s5.1.1.2)) rules-X.Y.Z.txt: The rules for the TUBE game, focusing
+              on the spatial layout, the game pieces, the concept of
+              empires, and so forth.
+
+              ((s5.1.1.2.1)) Sections in the rules file use a 'prefix
+               letter' of 'r'; for example, in (rXX) you can find the
+               rules governing the behavior of an ARMY.
+
+ ((s5.1.1.3)) prot2-X.Y.Z.txt: The communications protocol governing
+              the interactions between a TUBE client and TUBE server,
+              describing the general rules governing protocol
+              transactions, message framing, and so forth.
+
+              ((s5.1.1.3.1)) Sections in the protocol file use a
+               'prefix letter' of 'p'; for example, in (pXX) you can
+               find a description of the VERSION protocol message.
+
+              ((s5.1.1.3.2)) To avoid confusion, note that the TUBE
+               communications protocol has its OWN VERSION NUMBER,
+               which is SEPARATE from the X.Y.Z version numbers
+               associated with this document.
+
+              ((s5.1.1.3.3)) The current version of the TUBE
+               communication protocol is version 2, and that is why
+               the protocol file name begins with 'prot2', regardless
+               of what the specification version happens to be.
+
+              ((s5.1.1.3.4)) It is unlikely that a third version of
+               the TUBE communications protocol will be released
+               during the project development!  If that unlikely event
+               did occur, that version 3 protocol file will be named
+               beginning with 'prot3'.
+
+((s5.2)) Code resources
+
+((s5.2.1)) In addition to the specification files discussed in (s5.1),
+there may be available other code and documentation files, to provide
+sample code to work from, and provide project design suggestions,
+makefiles, and so forth.
+
+((s5.2.2)) Such code and files as become available will be provided
+via the class email list and/or the lecturer's public file area.
+
+---------------------
+((s6)) Use cases
+
+((s6.1)) As discussed in class.
+
+---------------------
+((s7)) Document revision history
+
+((s7.1)) Wed Apr 16 03:22:48 2003 Spec version 0.9.0 released,
+including fair hunks of the spec file and most of the rules file;
+prot1 covers Frames and Elements but is entirely a stub as far as
+Messages.
+
+((s7.2)) Wed Apr 23 06:26:19 2003 Spec version 0.9.1 released.  Still
+missing a few less-essential bits in this file, prot1 way fleshed-out
+with protocol details.
+
+((s7.3)) Tue May  6 03:01:33 2003 Spec version 0.9.2 created to
+correspond with prot2.  Flesh out the deliverables section, etc, clear
+the other to-come flags. 

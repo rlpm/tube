@@ -1,0 +1,169 @@
+             CS351 Project 3 - TUBE - Torus Ultra Blitz Empire
+
+CONTACT INFORMATION
+ Group:   Stonecutters
+ Members: MD, JK, SM, RM, RR
+ Date:    Wed, 14 May 2003 17:30 (MDT)
+
+IMPLEMENTATION DETAILS:
+
+ We decided to use the Model - View/Controller design pattern for the
+ overall structures of both server and client programs.  The messages
+ sent are used as both commands and events.
+
+ The message class has a factory method to instantiate a subclass of
+ the message object from an istream&.  The keywords used to
+ differentiate the messages are loaded globally at run time, before
+ calling main.  Unfortunately, this means that the memory manager
+ has to be running correctly, and luckily, with g++ v2.95.4 on
+ the CS boxes, we had no trouble.
+
+ There are three levels in the Message heirarchy.
+
+ The base Message class contains a private data member for the
+ keyword, a static method for registering classes and mapping keywords
+ to those classes, a static map for the mappings, a factory method to
+ build the appropriate class from an istream&, and a ToFrame method
+ for building a frame from that message.
+
+ The middle level in the message heirarchy contains the basic
+ knowledge for each of the 11 types of messages, as well as how to
+ generate that message from an istream and dump the information from
+ the message to a string for later concatenation into a frame.
+
+ The lowest level in the message heirarchy contains the Execute
+ method, which allows the message to do its work.  There are separate
+ implementations for each message type for the client and server,
+ since the client and server handle messages differently.
+
+ The FrameParser class is a helper class that contains a state machine
+ to parse frames, and static helper methods to read and write strings,
+ integers, and keywords to and from streams.  It keeps state so that
+ the client can read frames in a non-blocking fashion.  It has an
+ accessor method that allocates the space for a message and returns a
+ pointer to that message.
+
+ Model:
+   Process(Message*)
+
+ Commander, CliConn:
+   Notify(Message&)
+
+ The model on the client side is the Control class, which owns the
+ client grid (map) and various game state data.  The client-side
+ view/controller is the CliConn class, which reads messages from and
+ writes messages to a socket.  The actual client view (curses), is not
+ technically a view controller, as it was easier and faster to
+ implement it as more monolithic code, being called from Control when
+ a message is received, and calling back to Control when a message
+ needs to be sent.  The client is essentially a view/controller for
+ the server, separated by a socket.
+
+ The model and view/controller on the server side is the Commander
+ class.  Although main state and game information is in the World
+ class, it was easier to make calls back to the World and Empire
+ classes from Commander.
+
+ The World class also has an instance of the Network class, which was
+ based on ChatO's Network class.  However, since the Network class
+ must instantiate Connections classes when a new connection is
+ established, we added a Register method to Network, which allows it
+ to instantiate classes derived from Connection, rather than just
+ instances of the Connection class.
+
+ Two of the small classes that helped us out the most are the Coord
+ class and Order class, which are used pervasively.
+
+ The ContactsMsg class contains several nested classes that ended up
+ being used directly by the client.  We wished we had more time to
+ have separated these classes.  Also, it would have been nice to
+ create a Keyword class to house all the two-character keywords used
+ in the messages.
+
+ The Grid class was a general class used in rlpm's FrobWorld2K, which
+ is an intrusive container that contains pointers to (derivatives of)
+ the GridAble class.  We added some code to make it a torus and
+ determine least distance between two points on the torus.  We derived
+ the Static and Terrain classes for Server and Client, respectively,
+ from GridAble.
+
+ We had a top level Unit class that created an inheritance 'diamond',
+ and subsequently heeded Ackley wisdom and removed this nastiness.  We
+ still had the City class multiply inherit from Static and Active, and
+ had some problems with this, especially in gdb.  We switched the
+ order of inheritance, which surprisingly fixed the problem.  We're
+ still wondering why...
+
+ Ownership:
+
+ It would have helped to have thought more about ownership during the
+ design phase, and would have saved us debugging time.
+
+ The Grid class owns the instances of the GridAble class.  On the
+ server side, this means that all terrain will be deleted by the Grid
+ destructor.
+
+ The Network class owns Connections and therefore Commanders.  Since
+ socket errors make Commanders delete themselves, we had call back
+ functions in the World and Empire classes so that the Commander
+ destructor can't cause memory faults in World or Empire.
+
+ The Empire class owns Actives, but since Updating the Actives must
+ happen randomly, the World also has a list of Actives.  During each
+ update phase, this list is shuffled into a vector, and each Active
+ has a index number in this vector.  This way, if an Active deletes
+ itself or the Active just ahead of it in the vector, it can set that
+ vector location to NULL, and the World can skip them accordingly.  We
+ had issues with newly created Actives, so we reserved index 0 in the
+ vector for these, which are not referenced during the update in which
+ they are born.
+
+ Since City inherits from Static and Active, we had to make sure to
+ delete it from the Empire's active list, as well as removing it from
+ the grid, and make sure the Grid destructor didn't try to delete it
+ again.
+
+ We also had issues with Armies being dropped into the drink.  When
+ boats moved, they had to update all the Armies contained within, so
+ that the Army would reference its correct neighborhood.  We also had
+ to remove the Army from its holder before destructing it, rather than
+ in the Mobile destructor, because the RemoveMobile method needed to
+ cast down to an Army in order to determine if the Mobile being
+ removed needed to be removed from the holder directly, or from the
+ boat in the holder.  The last big issue that we had was with boats
+ that remained in an Empire that contained no other Actives.  We ended
+ up segfaulting gdb and valgrind told us we had too many errors to
+ continue.  This was quite disheartening, but we pushed through.  We
+ decided to delete all the "Keepalive" actives (City and Army), then
+ go back through the list and delete the boats, ensuring that the
+ Armies would not try to dereference the boat that they were in, which
+ may have already been deleted.
+
+Map generation algorithm
+
+ Dreamed up (quite literally) after a horribly long programming
+ session.  Basically:
+
+ Predetermine a percentage of the map to be filled with land or
+ mountain (dryland).
+
+ - Pick a random number of steps from a minimum continent landmass
+   (based on area of the map) to the remaining amount of the map to be
+   filled with dry land.
+   - Pick a location at random
+   - Put a mountain there
+   - Move in one of the cardinal directions, put a land there
+     - From that location, randomly select a direction out of 8
+     - If that location is empty, and there are at least 2 lands or
+       mountains in the neighborhood
+       -  Make that a land
+     - Else If that location is a mountain
+       -  Make the original location a mountain
+     - Else if that location is a land, continue.
+
+ Check the World.C file full implementation.
+
+ We tested this map generator on different sized maps, and it seems to
+ work great.
+
+

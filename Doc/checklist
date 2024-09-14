@@ -1,0 +1,64 @@
+
+TO DO LIST
+
+GUI CRAP
+-- some key to scroll/update map to find a unit (back and forth)?
+
+-- some kind of way to move cursor around and show stats, perhaps hit some
+   key and then bring up possible commands (a help key?) and issue command to
+   that particular unit
+
+-- drawing coordinates (with wrapping) at all times
+
+-- for a command requiring coord, issue command, regain control of cursor and
+   set target coord for command manually
+
+DONE-- resizing of grids/colors /* sean */
+
+DONE-- non-blocking client side stuff /* sean */
+
+-- states the client can be in (alive, dead, accepting updates).. with some knowledge
+   being done by the server (some sort of server timeout and kill) /* we need to check
+   the spec */
+
+-- '+' for land 	(green background)
+   '.' for water	(blue background)
+   '^' for mountain	(black background?)
+   'c' for your city	(yellow background)
+   'C' for enemy city
+
+-- later on, some sort of help key (pops up a legend and possible commands per unit, to 
+   start out the game, 'debrief' them, then it's a sort of hotkey)
+
+Everybody else:
+
+DONE-- place a vector of vectors of orders within the actual spot; also a vector of bools for 
+   whether or not the empire has seen that spot. (So, we have to be sure to flip that switch
+   whenever we actually get a particular spot)... some sort of SeenBy   CheckSeen(Empire*) 
+   in Static. if false, sends information and sets the bool to true.
+
+DONE --collectively do an order heirarchy on thurs/fri.
+
+DONE-- heirarchy, need to register different types of messages and generate 
+   them after parsing (hardcoded)
+
+DONE-- keeping the 'visited' spots, "have I seen this spot before?"
+
+IP-- we need to instantiate some objects... partly to test wether or not the damned 
+   things actually do what we think they are doing
+
+DONE(hopefully)-- we need to clean up the ownership so we don't actually try to kill something
+   twice THIS IS A MUST..... THINGS MUST DIE ONLY ONCE!!!! dammit
+
+DONE-- manually create a map (do it in grid constructor) sean was gonna work on script
+
+DONE-- at the end of a boat update, update contained armies
+
+GOALS:
+
+NEARDONE-- have color, non-blocking, rescalable GUI on client side.
+
+-- have client communicate with server and make stuff (army to move around or something to show
+   actual contact between the two in a game fashion)
+
+IP-- hopefully have the entire message BS done.

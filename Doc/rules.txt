@@ -1,0 +1,1200 @@
+                 T U B E :  Torus Ultra Blitz Empire
+                   CS 351 S'03 Final Group Project
+
+                         Game rules document
+
+                                                Spec version: 0.9.2
+                                        TUBE protocol referenced: 2
+---------------------
+((r0)) Table of Contents
+ (r1) TUBE overview
+ (r2) Space: The torus
+ (r3) Time: Periods, turns, phases
+ (r4) Units and attributes
+ (r5) Land
+ (r6) Mountain
+ (r7) Water
+ (r8) Army
+ (r9) Boat	
+ (r10) City
+ (r11) Combat and conquest
+ (r12) Diplomacy
+ (r13) Error conditions
+ (r14) Simplified No Diplomacy Game
+
+---------------------
+((r1)) TUBE Overview
+
+((r1.1)) Torus Ultra Blitz Empire -- TUBE -- is a fast-paced
+internet-based game of world domination for two or more players.
+(Some TUBE implementations may provide 'robot players' in which case a
+game may be playable with only a single human).  Here we present an
+informal overview of some of the aspects of the game.  Note that if
+anything in the later, more specific rules sections contradict
+anything here in this section (r1), those later sections take
+precedence over this overview.
+
+((r1.1.1)) At the beginning of a game, each player (from two up to an
+implementation-determined maximum limit) is the sole Commander of an
+Empire consisting of one City.  The Commander can instruct the City to
+build an Army, which can then march overland and attempt to take over
+other cities and destroy other Armys.  A City can also build various
+kinds of Boat, that can carry Armys over Water to other lands.
+
+((r1.1.2)) If a City is successfully taken over, it will then take
+instructions from the Empire that conquered it, and any Armys or Boats
+it then builds will be loyal to the new Empire.
+
+((r1.1.3)) An Empire dies when it controls no Citys and no Armys.  The
+Commander(s) of a dying Empire may be able to join another
+still-living Empire, if proper Alliances between Empires have been
+made ahead of time.
+
+((r1.1.4)) An Empire wins the game by being the last living Empire.
+
+((r1.1.5)) The play of the game is divided into a series of Turns.
+Within each turn occur four Phases in sequence, called 'command',
+'diplomacy', 'update', and 'outcome'.  
+
+((r1.1.5.1 )) Each command phase lasts a fixed amount of time,
+typically between 1 and 30 seconds depending on how fast-paced a game
+has been chosen.  Diplomacy, update, and outcome phases last only as
+long as necessary for the required game processing to occur.
+
+((r1.1.6)) During a command phase, all Commanders may issue orders to
+their Empire, specifying what the imperial Armys, Boats, and Citys
+should do next.  Note that the Armys etc do not actually *perform*
+their commands during a command phase, they simply store them away for
+later.  
+
+((r1.1.6.1)) Commanders can also chat amongst themselves and possibly
+issue communiques to other Empires.  
+
+((r1.1.6.2)) Commanders may possibly declare peaceful intentions on
+behalf of their Empire to another Empire, or withdraw such
+declarations if previously made.
+
+((r1.1.7)) After the time limit for a command phase has elapsed, a
+'diplomacy' phase occurs.  During the diplomacy phase, all pairs of
+Empires are checked to see if there are currently declarations of
+Peace outstanding in both directions.  If so, an Alliance is deemed to
+exist between those two Empires for the duration of the turn.
+
+((r1.1.8)) After the diplomacy phase, an 'update' occurs.  During an
+update, all active units (i.e., Armys, Boats, and Cities) attempt to
+execute their orders, in a randomized order that changes from one
+update to the next.
+
+((r1.1.8.1)) As they execute, they transmit status and results back to
+their Empire, which forwards it to all the Empire's Commanders.  As a
+result of executing during an update, a City may grow or create an
+Army or a Boat; an Army may move and/or attack another Army or Boat or
+City; a Boat may move or attack another Army or Boat.
+
+((r1.1.8.1.1)) Armys and Boats attack things by attempting to move
+into the location containing it.  An Army can attack a Boat, or vice
+versa, even though an Army could not actually move into Water (if the
+Boat wasn't there), and a Boat could not actually move onto Land (if
+the Army wasn't there).
+
+((r1.1.8.1.2)) See (r11) for more details of resolving combat
+interactions.
+
+((r1.1.8.2)) Units that are destroyed before their turn to execute do
+_not_ execute during the update; a City that is conquered before its
+turn to execute _does_ execute, with its new loyalty, during the
+update.
+
+((r1.1.9)) After an update is completed, an outcome phase occurs.
+During an outcome phase all Empires are checked to see if they are
+dead or if they have won the game, and adjustments are made as needed.
+
+---------------------
+((r2)) Space: The torus
+
+((r2.1)) Overview
+
+((r2.1.2)) The TUBE world is a 2-dimensional grid arranged as a torus,
+meaning that the left and right grid edges are treated as adjacent to
+each other, and likewise the top and bottom grid edges.
+
+((r2.1.3)) The size of the grid SHOULD be variable but MUST support at
+least a width of 100 columns and a height of 50 rows.
+
+((r2.1.4)) The indexing system for the grid MUST follow the 'upper
+left is (0,0)' and 'y increases down' conventions.  So, a schematic
+rendering of the possible grid indices, in the general case, is
+
+     (0,0)            (1,0)     ...     (WIDTH-1,0)
+     (0,1)            (1,1)             (WIDTH-1,1)
+      ...                                    ...
+(0,HEIGHT-1)       (1,HEIGHT-1) ...  (WIDTH-1,HEIGHT-1)
+
+((r2.1.4.1)) Taking the special case of a 100 by 50 world, that
+picture would look like:
+
+ (0,0)    (1,0)    (2,0)   (3,0)       ...     (99,0)
+ (0,1)    (1,1)    (2,1)   (3,1)               (99,1)
+ (0,2)    (1,2)    (2,2)   (3,2)               (99,2)
+  ...                                            ...
+ (0,49)   (1,49)   (2,49)  (3,49)      ...     (99,49)
+
+((r2.2)) Neighborhood
+
+((r2.2.1)) For any grid location, the eight grid squares nearest it
+(including torus wraparound) are considered its 'neighborhood'.
+
+((r2.2.1.1)) So in the 100x50 world, for example, the neighborhood of
+(2,1) is the eight locations:
+
+   (1,0)    (2,0)   (3,0)
+   (1,1)     ...    (3,1)
+   (1,2)    (2,2)   (3,2)
+
+((r2.2.1.2)) and the neigborhood of (99,2) is the eight locations:
+
+  (98,1)   (99,1)   (0,1)
+  (98,2)     ...    (0,2)
+  (98,3)   (99,3)   (0,3)
+
+((r2.2.1.3)) and the neigborhood of (0,0) is the eight locations:
+
+  (99,49)   (0,49)  (1,49)
+  (99,0)     ...    (1,0)
+  (99,1)    (0,1)   (1,1)
+
+((r2.3)) Distance
+
+((r2.3.1)) The DISTANCE between two locations is defined to be the
+SMALLEST number of steps required to move from one location to the
+other, where one step is considered to be moving from a location to a
+neighboring location.
+
+((r2.3.2)) (Note that as far as the definition of distance is
+concerned, there is no requirement that each step actually be possible
+-- in the sense of being Land for an Army or Water for a Boat -- this
+is 'as the crow flies' distance.)
+
+((r2.3.3)) So, on a 100x50 grid such as in (r2.2.1.1), all the following
+equations are true:
+
+((r2.3.3.1))  Distance((0,0), (1,0)) == 1;    Distance((1,0), (0,0)) == 1
+((r2.3.3.2))  Distance((0,0), (1,1)) == 1;    Distance((1,1), (0,0)) == 1
+((r2.3.3.3))  Distance((3,0), (1,2)) == 2;    Distance((3,2), (1,1)) == 2
+((r2.3.3.4))  Distance((1,0), (1,2)) == 2;    Distance((3,2), (1,1)) == 2
+((r2.3.3.5))  Distance((0,0), (0,49) == 1;    Distance((0,49), (99,0)) == 1
+((r2.3.3.6))  Distance((0,0), (20,20)) == 20; Distance((0,0), (30,30)) == 30
+((r2.3.3.7))  Distance((0,0), (70,30)) == 30; Distance((0,0), (90,30)) == 20
+((r2.3.3.8))  Distance((0,0), (99,30)) == 20; Distance((0,0), (99,33)) == 17
+
+((r2.4)) Direction
+
+((r2.4.1)) The neighborhood of any given location can also be
+described by directions relative to the center location, using the
+compass directions as follows:
+
+  NW   N   NE
+   W  ...  E
+  SW   S   SE
+
+((r2.4.1.1)) So, statements such as
+
+ '(4,2) is N of (4,3)',
+ 'SW of (77,1) is (76,2)', and
+ '(99,49) is NW of (0,0)'
+
+are all true on a 100x50 grid.
+
+((r2.4.2)) It is somewhat complicated to talk sensibly about the
+direction between locations that are not in each other's neighborhood,
+so we will generally try to avoid talking about directions except in
+the context of a neighborhood.
+
+((r2.4.3)) Contents of grid locations
+
+((r2.4.3.1)) Each grid location contains either open land, a
+impassable mountain, an expanse water, or a city.  Once established at
+the beginning of a game, the type of a grid location never changes --
+Water always remains Water and so forth.  Even if a City is conquered
+and changes what Empire it is loyal to, it still remains a City.
+
+((r2.4.3.2)) Note that some things can contain other things, such as
+Water that can contain a Boat, or Land that contain an Army, but Boats
+or Armys are not contained directly by the grid location itself.
+
+---------------------
+((r3)) Time: Periods, turns, and phases
+
+((r3.1)) Periods
+
+((r3.1.1)) The operation of a TUBE server is divided into a sequence
+of periods where different major events occur.  The periods are:
+
+ - Once-Only Initialization (r3.2)
+ - Game Initialization (r3.3)
+ - Game Play (r3.4)
+ - Game Finalization (r3.5)
+ - Once-Only Finalization (r3.6)
+
+((r3.2)) Once-Only Initialization
+
+((r3.2.1)) During Once-Only Initialization, the server does whatever
+tasks are required independent of game play.  In particular, the
+server will open its 'listening port' to accept connections from TUBE
+clients.
+
+((r3.2.2)) Typically several other implementation-dependent tasks will
+also occur during this period.
+
+((r3.3)) Game Initialization
+
+((r3.3.1)) During Game Initialization, the following tasks are
+performed:
+
+((r3.3.1.1)) Clients connect to the server.  The server manages those
+connections and perhaps allows Clients to exchange chat messages.
+Each client may indicate their willingness to start a game.  Once
+sufficient Clients have connected, and a majority have indicated their
+desire to start a game, a game begins.
+
+((r3.3.1.2)) A world is created.  The grid is cleared (if necessary),
+and Land, Water, Mountain, and Citys are created to fill the grid.
+The exact mechanism by which the world is created is
+implementation-dependent.
+
+((r3.3.1.2.1)) For example, they can be randomly-generated somehow, or
+generated according to some fixed pattern, or read in from files, or
+some other method or combination of methods.
+
+((r3.3.1.2.2)) The world creation process may or may not be sensitive
+to the number of connected Clients, with the proviso that there MUST
+be enough cities that each connected Client can and will start out as
+a Commander of a different Empire and each Empire will control at
+least one city.
+
+((r3.4)) Game Play
+
+((r3.4.1)) The play of the game is divided into Turns.  Each Turn
+consists, in order, of:
+
+ - a Command Phase (r3.4.2),
+ - a Diplomacy Phase (r1.1.7),
+ - an Update Phase (r3.4.3), and
+ - an Outcome Phase (r3.4.4).
+
+((r3.4.2)) During a Command Phase, Commanders send Messages to their
+Empire as desired.  There are a number of Messages possible; the most
+important of which for game play are: DO (p4.4.2) and TELL (p4.4.3).
+DO is used to convey an Order to a specific imperial unit, and TELL is
+used to associate a group of 'standing Orders' with a specific grid
+location.
+
+((r3.4.2.1)) There MAY be an implementation-defined limit to the
+number of Messages that a single Commander can issue during a single
+Command Phase.  If so, and the limit is reached, any further issued
+Messages will simply fail, until the next Command Phase.
+
+((r3.4.3)) During an Update Phase, all active units (Army, Boat, City)
+all update themselves once each.  When a unit updates, it attempts to
+perform whatever orders it has stored for itself from a previous
+Command Phase.
+
+((r3.4.3.1)) The unit updates occur one at a time, in an order that
+changes randomly from one Update Phase to the next.  The specific
+rules governing what happens when a unit updates are discussed below
+(r4)-(r10).  At the end of an active unit's updating (whether it moved
+or not), it checks for any applicable standing orders in its grid
+location, and stores them if so.
+
+((r3.4.4)) During an Outcome Phase, each Empire is checked, in a
+random order, to see if it has died -- meaning that it controls no
+Armys and no Citys.  (Note that Boats alone will not keep an Empire
+alive, since they cannot conquer Citys nor produce Armys.)
+
+((r3.4.4.1)) If an Empire has died, any remaining resources (Boats) it
+has are then destroyed.  The dead Empire's Commanders are reassigned
+to other Empires if possible given any previous Alliances, and are
+destroyed if not (which means the Client associated with that
+Commander will be disconnected).
+
+((r3.4.4.2)) If there is exactly one Empire remaining at the end of an
+Outcome Phase, the game is over and that Empire is declared the
+winner.  Note that it is technically possible that zero living Empires
+may remain at the end of an Outcome Phase.  If that occurs the game is
+over and there is no winner.
+
+((r3.5)) Game Finalization
+
+((r3.5.1)) Whatever post-game wrap-up is needed goes here.
+
+((r3.6)) Once-Only Finalization
+
+((r3.6.1)) If there is a mechanism for shutting down a TUBE server
+cleanly, final cleanups go in here.
+
+---------------------
+((r4)) Units and attributes
+
+((r4.1)) A TUBE world is filled with 'units'.  Units have attributes
+describing their basic properties; in addition, specific unit types
+generally have properties that are specific just to that type.
+
+((r4.2)) The basic attributes and their meanings are:
+
+((r4.2.1)) Attribute FIXED
+
+((r4.2.1.1)) A unit with the FIXED attribute is directly contained by
+the world grid and never moves, and so has a fixed 2D coordinate
+location.
+
+((r4.2.2)) Attribute MOBILE
+
+((r4.2.2.1)) A unit with the MOBILE attribute is capable of moving and
+is never directly contained by the world grid.  As a consequence it
+has no fixed 2D coordinate location of its own; instead, its location
+is determined by its container.
+
+((r4.2.2.2)) The FIXED and MOBILE attributes are mutually exclusive.
+
+((r4.2.3)) Attribute PASSIVE
+
+((r4.2.3.1)) A unit with the PASSIVE attribute does nothing (except
+perhaps contain another unit); it does not get updated during an
+Update Phase.
+
+((r4.2.4)) Attribute ACTIVE
+
+((r4.2.4.1)) A unit with the ACTIVE attribute gets updated once during
+each Update Phase.
+
+((r4.2.4.2)) The PASSIVE and ACTIVE attributes are mutually exclusive.
+
+((r4.3)) Containment
+
+((r4.3.1)) A unit may be able to contain (possibly many) other units,
+subject to various type-specific restrictions.
+
+((r4.3.2)) Different unit types have different combinations of
+attribute values.  All unit types are described below, along with
+their basic attributes and specific processing details.
+
+((r4.4)) Unit visibility
+
+((r4.4.1)) It is possible for a unit to contain other unit, which may
+in turn contain other units, all at one set of grid coordinates.
+
+((r4.4.2)) So there is a question as to what the answer should be to
+the question 'What is visible at grid location (X,Y)?'
+
+((r4.4.2.1)) The answer is: The 'most-contained' unit is visible,
+except Armys inside Boats cannot be seen.
+
+((r4.4.3)) So, all of the following statements are true:
+
+  ((r4.4.3.1)) If (X,Y) contains an empty Land, then VisibleAt(X,Y) is
+   that Land.
+
+  ((r4.4.3.2)) If (X,Y) contains a Land that contains an Army, then
+   VisibleAt(X,Y) is that Army.
+
+  ((r4.4.3.3)) If (X,Y) contains a City, then VisibleAt(X,Y) is that
+   City.
+
+  ((r4.4.3.4)) If (X,Y) contains an empty Water, then VisibleAt(X,Y)
+   is that Water.
+
+  ((r4.4.3.5)) If (X,Y) contains a Water that contains an empty Boat,
+   then VisibleAt(X,Y) is that Boat.
+
+  ((r4.4.3.6)) If (X,Y) contains a Water that contains a Boat that
+   contains an Army (or several), then VisibleAt(X,Y) is that Boat.
+
+((r4.4.4)) This unit visibility rule is critical during active unit
+updating, because it determines what a unit 'sees' when it examines
+the contents of its neigborhood.
+
+((r4.4.5)) If a Boat is visible in a location, its class and
+MaxCapacity (r9.2.3) can be detected as well, but not its
+CurrentCapacity or the number of Armys it is carrying.
+
+---------------------
+((r5)) Land
+
+((r5.1)) Attributes: FIXED, PASSIVE.    Contains: 0 or 1 Army
+
+((r5.2)) Description
+
+((r5.2.1)) Land forms the bulk of the 'continents' of the world.  As a
+FIXED unit, Land is directly contained by the grid, has a fixed
+coordinate location, and never moves.
+
+((r5.2.3)) Land is where Armys can maneuver; each Land unit can hold up
+to one Army.
+
+((r5.2.3)) Land is passive and thus does not update and cannot be
+controlled by any Empire.
+
+((r5.3)) Creation and destruction
+
+((r5.3.1)) Land is created in the Game Initialization period
+(r3.3.1.2), remains unaltered throughout Game Play (r3.4), and is
+(likely) destroyed during Game Finalization (r3.5).
+
+((r5.4)) Behavior
+
+((r5.4.1)) Land is passive and so has no behavior.
+
+---------------------
+((r6)) Mountain
+
+((r6.1)) Attributes: FIXED, PASSIVE.    Contains: Nothing
+
+((r6.2)) Description
+
+((r6.2.1)) A Mountain is fixed and passive like Land, but it is
+impassable --- it can contain nothing.  Armys cannot move through
+Mountain locations (neither can Boats, for that matter); Mountains
+must be maneuvered around.
+
+((r6.3)) Creation and destruction
+
+((r6.3.1)) Like all FIXED units, a Mountain is created in the Game
+Initialization period (r3.3.1.2), remains unaltered throughout Game
+Play (r3.4), and is (likely) destroyed during Game Finalization
+(r3.5).
+
+((r6.4)) Behavior
+
+((r6.4.1)) Mountain is passive and so has no behavior.
+
+---------------------
+((r7)) Water
+
+((r7.1)) Attributes: FIXED, PASSIVE.    Contains: 0 or 1 Boat
+
+((r7.2)) Description
+
+((r7.2.1)) Water is fixed and passive like Land, but it can contain
+zero or one Boat, and nothing else.
+
+((r7.3)) Creation and destruction
+
+((r7.3.1)) Water is created in the Game Initialization period
+(r3.3.1.2), remains unaltered throughout Game Play (r3.4), and is
+(likely) destroyed during Game Finalization (r3.5).
+
+((r7.4)) Behavior
+
+((r7.4.1)) Water is passive and so has no behavior.
+
+---------------------
+((r8)) Army
+
+((r8.1)) Attributes: MOBILE, ACTIVE.    Contains: Nothing
+
+((r8.2)) Description
+
+((r8.2.1)) An Army is a mobile unit, capable of changing its position
+over time.  An Army is always contained either by a Land or by a
+Boat.  An Army cannot move onto Water (except when a unfilled Boat is
+there) and can never move into a Mountain.
+
+((r8.2.2)) An Army, once created, is eternally loyal to the Empire
+that created it; an Army cannot be taken over by another Empire, it
+can only be destroyed.
+
+((r8.3)) Creation and destruction
+
+((r8.3.1)) An Army is created by a City that has been ordered to raise
+Armys.  The Empire that controls the City at the time that the Army is
+released determines the loyalty of the Army.
+
+((r8.3.1.1)) If a City has an Order to raise an Army, and has reduced
+that Order's RemainingWork to zero, but there are no neighboring
+locations which are enterable by an Army, then no Army is raised,
+until an enterable neighboring location becomes available.  
+
+((r8.3.1.2)) If multiple neighboring locations are available when a
+City completes an Order to raise an Army, the Army is released into
+any one of them chosen uniformly at random.
+
+((r8.3.2)) An Army, once created, will survive indefinitely until it
+is destroyed in combat.  It can be destroyed by either an Army or a
+Boat of another Empire, or it can be destroyed in an attempt to
+conquer a City held by another Empire.
+
+((r8.4)) Behavior
+
+((r8.4.1)) As an active unit, an Army updates during the Update Phase,
+at which time it attempts to carry out its most-recently-received
+Order.  Such an Order may have been received directly via a prior DO
+(p4.4.2) Message, or indirectly via a prior TELL Message (p4.4.3).
+
+((r8.4.2)) During succeeding Update Phases, an Army will continue to
+attempt to carry out the same Order, until another Order is received
+or the Army is destroyed.
+
+((r8.4.3)) Each Army Order includes an order type saying what to
+(attempt to) do, and a 2D coordinate providing additional command
+detail.  See the protocol document for the exact Message formats for
+Orders (p6.2) transmitted from Client to Server -- note that other
+information is included in a standard Order Description even though
+Army doesn't use it.
+
+((r8.4.3.1)) The possible Orders that an Army understands are: Explore
+(r8.4.3.2), March (r8.4.3.3), Defend (r8.4.3.4), and Wait (r8.4.3.5).
+
+---
+((r8.4.3.2)) Explore: (Order Code 'XP').  The rules of engagement for
+an Army with an Explore Order are:
+
+ ((r8.4.3.2.1)) Examine the neighborhood, and apply the following
+  rules, in order:
+
+ ((r8.4.3.2.1.1)) If there are any Citys that are not already held by
+  an allied Empire, then pick one uniformly at random and attempt to
+  conquer it.
+
+ ((r8.4.3.2.1.2)) Otherwise, if there are any Armys or Boats that are
+  not already held by an allied Empire, then pick one uniformly at
+  random and attempt to destroy it (i.e., attempt to move into the
+  location of the enemy unit).
+
+ ((r8.4.3.2.1.3)) Otherwise, if there are any enterable neighboring
+  units (i.e., empty Land or unfilled Boats held by the Army's
+  Empire), pick one uniformly at random and move into it.
+
+ ((r8.4.3.2.1.4)) Otherwise the Army stands its ground.
+
+((r8.4.3.2.2)) Note that the Coordinate associated with an Explore
+Order is ignored.
+
+((r8.4.3.2.3)) Note also that the rules of engagement in (r8.4.3.2)
+apply whether the Army is currently on Land or in a Boat.  If an
+Exploring Army on a Boat finds itself adjacent to an enemy Boat, it
+will attack it if (r8.4.3.2.1.2) ends up being what applies.
+
+((r8.4.3.2.4)) Note also that after all the above steps have been
+completed, the Army (if it survived) examines its (now) current
+location to see if any applicable Orders have been left there, and
+accepts them if so.
+
+---
+((r8.4.3.3)) March: (Order Code 'MR').  The rules of engagement for
+an Army with a March Order are:
+
+ ((r8.4.3.3.1)) Compute the Distance (using the (r2.3) rules) from the
+  Army's current location and the destination coordinate contained in
+  the Order.
+
+ ((r8.4.3.3.2)) If that distance is 0, the Army stands its ground.
+
+ ((r8.4.3.3.3)) Otherwise the distance is greater than 0.  Consider
+  all neighbors, and for each one that is enterable (i.e., empty Land
+  or unfilled Boat of the Army's Empire), compute the Distance from
+  that neighbor to the destination coordinate.  Choose randomly from
+  among all locations tied for the shortest resulting distance.  (Note
+  that neighbor MIGHT be at a greater distance from the destination
+  than the current location.)
+
+ ((r8.4.3.3.4)) Otherwise, there are no enterable neighbors.  The Army
+  stands its ground.
+
+((r8.4.3.3.5)) Note also that the rules of engagement in (r8.4.3.3)
+apply whether the Army is currently on Land or in a Boat.  If a
+Marching Army on a Boat finds itself adjacent to an unfilled Boat of
+the Army's Empire, it may choose to enter it if (r8.4.3.3.3) ends up
+being what applies, even if that Boat is 'heading in the wrong
+direction' for strategic purposes.
+
+((r8.4.3.3.6)) Note also that after all the above steps have been
+completed, the Army (if it survived) examines its (now) current
+location to see if any applicable Orders have been left there, and
+accepts them if so.
+
+---
+((r8.4.3.4)) Defend: (Order Code 'DF').  The rules of engagement for
+an Army with a Defend Order are:
+
+ ((r8.4.3.4.1)) Examine the neighborhood, and apply the following
+  rules, in order:
+
+ ((r8.4.3.4.1.1)) If there are any Citys that are not already held by
+  an allied Empire, then pick one uniformly at random and attempt to
+  conquer it.
+
+ ((r8.4.3.4.1.2)) Otherwise, if there are any Armys or Boats that are
+  not already held by an allied Empire, then pick one uniformly at
+  random and attempt to destroy it (i.e., attempt to move into the
+  location of the enemy unit).
+
+ ((r8.4.3.4.2)) Otherwise there are no enemies in the neighborhood.
+  Compute the Distance (using the (r2.3) rules) from the Army's
+  current location and the destination coordinate contained in the
+  Order.
+
+ ((r8.4.3.4.3)) If that distance is equal to 0, the Army stands its
+  ground.
+
+ ((r8.4.3.4.4)) Otherwise, consider all neighbors, and for each one
+  that is enterable (i.e., empty Land or unfilled Boat of the Army's
+  Empire), compute the Distance from that neighbor to the destination
+  coordinate.  Choose randomly from among all locations tied for the
+  shortest resulting distance.  (Note that neighbor MIGHT be at a
+  greater distance from the destination than the current location.)
+
+ ((r8.4.3.4.5)) Otherwise, there are no enterable neighbors.  The Army
+  stands its ground.
+
+((r8.4.3.4.6)) Note also that the rules of engagement in (r8.4.3.4)
+apply whether the Army is currently on Land or in a Boat.  If a
+Defending Army on a Boat finds itself adjacent to an unfilled Boat of
+the Army's Empire, it may choose to enter it if (r8.4.3.4.4) ends up
+being what applies, even if that Boat is 'heading in the wrong
+direction' for strategic purposes.
+
+((r8.4.3.4.6.1)) It may likewise attack a passing Boat of an unallied
+Empire, if (r8.4.3.4.1.2) ends up being what applies.
+
+((r8.4.3.4.7)) Note also that after all the above steps have been
+completed, the Army (if it survived) examines its (now) current
+location to see if any applicable Orders have been left there, and
+accepts them if so.
+
+---
+((r8.4.3.5)) Wait: (Order Code 'WT').  The rules of engagement for
+an Army with a Wait Order are:
+
+ ((r8.4.3.5.1)) The Army stands its ground.
+
+((r8.4.3.5.2)) Note that an Army with a Wait order will not attack
+anything under any circumstances, nor will it (attempt to) move to
+another container on its own initiative.
+
+((r8.4.3.5.3)) Note also that after all the above steps have been
+completed, the Army (if it survived) examines its (now) current
+location to see if any applicable Orders have been left there, and
+accepts them if so.
+
+---------------------
+((r9)) Boat
+
+((r9.1)) Attributes: MOBILE, ACTIVE.    Contains: variable # Armys
+
+((r9.2)) Description
+
+((r9.2.1)) A Boat is an active unit capable of travelling only on Water
+units; it cannot enter any other unit type.
+
+((r9.2.2)) A Boat is also capable of containing some number of Armys
+ranging from 0 up to the CurrentCapacity of the Boat.  When a Boat
+moves, all Armys on board move with it.
+
+((r9.2.2.1)) If a Boat is destroyed, any Armys on board at that time
+are also destroyed.
+
+((r9.2.3)) There are three types of Boats, with different MaxCapacity
+values.  A Boat's MaxCapacity determines the maximum number of Armys
+it can carry and also how much damage it can sustain before sinking.
+They are:
+
+  ((r9.2.3.1)) DESTROYER class Boats have a MaxCapacity of 2 --- i.e.,
+   they can carry up to two Armys when fully repaired, and can sustain
+   up to two 'hits' (see (r11.1.4)) in single combat before sinking.
+   Of the three Boat classes, DESTROYERs are the cheapest for a City
+   to build but have the weakest transport and combat capabilities.
+
+  ((r9.2.3.2)) CRUISER class Boats have a MaxCapacity of 5 Armys/hits,
+   and are of otherwise intermediate cost and combat properties.
+
+  ((r9.2.3.3)) EMPEROR class Boats have a MaxCapacity of 10
+   Armys/hits, and are the most expensive and powerful Boats
+   available.
+
+((r9.3)) Creation and destruction
+
+((r9.3.1)) A Boat of any particular class is created by a City that
+has been ordered to build that class of Boats.  The Empire that
+controls the City at the time that the Boat is launched determines the
+loyalty of the Boat.
+
+((r9.3.2)) Any controlled City can be Ordered to build a Boat, but it
+makes no sense to do so unless that City has at least one Water unit
+in its neighborhood where the Boat may be launched.
+
+((r9.3.2.1)) If a port City (i.e., a City with at least one Water in
+its neighborhood) completes the construction of a Boat but no
+neighboring Water is currently available, the Boat is simply held in
+the City and nothing else is done until a neighboring Water unit is
+available in a subsequent Update Phase.
+
+((r9.3.2.2)) If a landlocked City completes the construction of a
+Boat, it acts like a port City for which no neighboring Water ever
+becomes available.  Such a City will do nothing further until new
+Orders are given to it (and the work invested in that Boat will be
+lost when a new Order is accepted).
+
+((r9.3.3)) A Boat, once launched, will survive indefinitely until it
+is destroyed in combat, or the Empire it is loyal to dies (in which
+case the (necessarily empty) Boat is also destroyed).  It can be
+destroyed by either an Army of another Empire or a Boat of another
+Empire.
+
+((r9.4)) Behavior
+
+((r9.4.1)) As an active unit, a Boat updates during the Update Phase,
+at which time it attempts to carry out its most-recently-received
+Order.  Such an Order may have been received directly via a prior Do
+Message, or indirectly via a prior Tell Message.
+
+((r9.4.2)) During succeeding Update Phases, a Boat will continue to
+attempt to carry out the same Order, until another Order is received
+or the Boat is destroyed.
+
+((r9.4.3)) Each Boat Order consists of a Verb saying what to (attempt
+to) do, an unsigned integer 'wait time' indicating how many updates to
+wait before attempting to do the order, and a 2D coordinate providing
+a destination.  See (p6.2) for the exact Message format transmitted
+from client to server.
+
+((r9.4.3.1)) The possible Orders that a Boat understands are: Explore
+(r9.4.3.2), Sail (r9.4.3.3), and Defend (r9.4.3.4).
+
+---
+((r9.4.3.2)) Explore: (Order Code 'XP').  The rules of engagement for
+a Boat with an Explore Order are:
+
+ ((r9.4.3.2.1)) Repairs: Examine the CurrentCapacity of the Boat.  If
+  it is less than its MaxCapacity, increment the CurrentCapacity by
+  one.  However, if there is an allied City in the neighborhood, and
+  the CurrentCapacity is at least two less than the MaxCapacity,
+  increment the CurrentCapacity by two instead.
+
+ ((r9.4.3.2.2)) Hold: Examine the current value of wait counter.  If
+  it is not zero, decrement it by one and hold the current position.
+
+ ((r9.4.3.2.3)) Otherwise, the wait counter is zero.  Examine the
+  neighborhood, and apply the following rules, in order:
+
+ ((r9.4.3.2.3.1)) If there are any Armys that are not already held by
+   an allied Empire, then pick one uniformly at random and attempt to
+   destroy it (i.e., attempt to move into the location of the enemy
+   Army).
+
+  ((r9.4.3.2.3.2)) If there are any Boats that are not already held by
+   an allied Empire, and are a smaller class than the class of the
+   Boat that is updating, then choose randomly from all such Boats and
+   attempt to destroy it.
+
+  ((r9.4.3.2.3.3)) Otherwise there are no enemy Armies and no smaller
+   enemy Boats in the neighborhood.  If there are any enterable
+   neighboring locations (i.e., Water units not already containing a
+   Boat), then pick randomly among them and move into that one.
+
+  ((r9.4.3.2.3.4)) Otherwise there are no enterable neighboring
+   locations.  The Boat holds in its current position.
+
+((r9.4.3.2.4)) Note also that after all the above steps have been
+completed, the Boat (if it survived) examines its (now) current
+location to see if any applicable Orders have been left there, and
+accepts them if so.
+
+((r9.4.3.2.4.1)) A Boat's 'wait counter' is set only when an Order is
+accepted.  Once the wait counter has been decremented to zero it
+remains zero until a new Order is accepted.
+
+---
+((r9.4.3.3)) Sail: (Order Code 'SL').  The rules of engagement for
+a Boat with a Sail Order are:
+
+ ((r9.4.3.3.1)) Repairs: Follow the instructions in (r9.4.3.2.1)
+
+ ((r9.4.3.3.2)) Hold: Follow the instructions in (r9.4.3.2.2).
+
+ ((r9.4.3.3.3)) Otherwise, the wait counter is zero.  Examine the
+  neighborhood, and apply the following rules, in order:
+
+ ((r9.4.3.3.3.1)) Compute the Distance (using the (r2.3) rules) from
+  the Boat's current location and the destination coordinate contained
+  in the Order.
+
+ ((r9.4.3.3.3.2)) If the distance is 0, the Boat holds its position.
+
+ ((r9.4.3.3.3.3)) Otherwise the distance is greater than 0.  Consider
+  all neighbors, and for each one that is enterable (i.e., Water not
+  already containing a Boat), compute the Distance from that neighbor
+  to the destination coordinate.  If there are any such neighbors,
+  choose randomly from among all locations tied for the shortest
+  resulting distance.  (Note that neighbor MIGHT be at a greater
+  distance from the destination than the current location.)  The Boat
+  moves to the chosen location.
+
+ ((r9.4.3.3.3.4)) Otherwise, there are no enterable neighbors.  The
+  Boat holds its position.
+
+((r9.4.3.3.4)) The instructions in (r9.4.3.2.4) and (r9.4.3.2.4.1)
+also apply in this case.
+
+---
+((r9.4.3.4)) Defend: (Order Code 'DF').  The rules of engagement for
+a Boat with a Defend Order are:
+
+ ((r9.4.3.4.1)) Repairs: Follow the instructions in (r9.4.3.2.1)
+
+ ((r9.4.3.4.2)) Hold: Follow the instructions in (r9.4.3.2.2).
+
+ ((r9.4.3.4.3)) Otherwise, the wait counter is zero.  Examine the
+  neighborhood, and apply the following rules, in order:
+
+ ((r9.4.3.4.3.1)) If there are any Armys that are not already held by
+   an allied Empire, then pick one uniformly at random and attempt to
+   destroy it.
+
+ ((r9.4.3.4.3.2)) Otherwise there are no enemy Armys in the
+  neighborhood.  If there are any Boats that are not already held by
+  an allied Empire, pick randomly from those Boats tied for smallest
+  class and attempt to destroy it.  (Note that under this rule an
+  attacked Boat MIGHT be a larger class than the Boat that is
+  updating.)
+
+ ((r9.4.3.4.3.3)) Otherwise there are no enemy Armys or enemy Boats in
+  the neighborhood.  Follow the instructions in (r9.4.3.3.3.1) through
+  (r9.4.3.3.3.4) as needed.
+
+((r9.4.3.4.4)) The instructions in (r9.4.3.2.4) and (r9.4.3.2.4.1)
+also apply in this case.
+
+---------------------
+((r10)) City
+
+((r10.1)) Attributes: FIXED, ACTIVE.     Contains: Nothing
+
+((r10.2)) Description
+
+((r10.2.1)) A City is an active unit that has a fixed 2D coordinate
+location.  It never moves and is contained directly by the spatial
+grid.
+
+((r10.2.2)) A City can be part of an Empire, or it can be Independent.
+When it is Independent, it always executes a GROW Order.  When it is
+part of an Empire, it produces whatever the Commander(s) of the Empire
+tell it to produce.
+
+((r10.2.3)) A City has a Size.  A City with a bigger Size can fulfill
+a given Command more quickly that a smaller Size City given the same
+Command.  (CHANGE FROM 0.9.0: The concept of a 'ResourceLevel' of a
+City is gone.  Instead of 'increasing resources' in the City, we
+instead have decreasing 'RemainingWork' on the Order being executed.
+This works a lot better.)  The Size of a City can potentially increase
+by completing a Grow order, and can be reduced by being attacked.
+
+((r10.3)) Creation and destruction
+
+((r10.3.1)) Citys are created only in the Game Initialization period
+(r3.3.1.2), and although they may change hands possibly many times
+during Game Play (r3.4), and may grow and shrink in size, they are
+never destroyed until Game Finalization (r3.5).
+
+((r10.3.2)) Except for the individual Citys that are initially
+assigned to the Empires at the end of Game Initialization
+(r3.3.1.2.2), all other Citys start out as Independent.
+
+((r10.3.3)) Once a City is held by any Empire, there is no mechanism
+by which it can become Independent; it can only be taken over by
+another Empire.
+
+((r10.3.4)) When a City is first created its Size is 1.  The Size can
+increase and decrease during Game Play but never can be smaller than
+1.
+
+((r10.4)) Behavior
+
+((r10.4.1)) As an active unit, a City updates during the Update Phase,
+at which time it works on its most-recently-received Order.  Such an
+Order may have been received directly via a prior Do Message, or
+indirectly via a prior Tell Message.  If the RemainingWork on a City's
+Order is reduced to zero, then the Order is Complete and further
+actions are taken as described below.
+
+((r10.4.1.1)) (Note that unlike other active units, Citys only check
+for standing Orders at certain times, not necessarily in every Update
+Phase.)
+
+((r10.4.2)) During succeeding Update Phases, a City will continue to
+attempt to work on same Order until it is completed, or until another
+Order is accepted, or the City is conquered by a different Empire.  
+
+((r10.4.2.1)) If an Order is completed successfully and no other Order
+is available to be accepted, the City restarts the existing Order,
+resetting the RemainingWork back to the full value required for that
+type of Order.
+
+((r10.4.3)) A City Order is either 'GROW', meaning that the City
+should work towards increasing the Size of the City, or it is the
+description of a unit that the City should work towards building.  See
+(p6.2) for the exact Message format transmitted from Client to Server.
+
+((r10.4.3.1)) Overall, the possible Orders that a City understands
+are: ARMY, DESTROYER, CRUISER, EMPEROR (all described jointly in
+(r10.4.4)), and GROW (r10.4.5).
+
+---
+((r10.4.4)) ARMY, DESTROYER, CRUISER, EMPEROR: (Order Code 'BA', 'BD',
+'BC', and 'BE', respectively).  The rules to be followed for a City with
+one of these Orders, are, in order:
+
+ ((r10.4.4.1)) When the order is first accepted, the Order's
+  RemainingWork is set to the full amount of work necessary to make
+  the specified type of unit:
+   ((r10.4.4.1.1)) TOTAL WORK REQUIRED FOR BUILDING UNITS
+   ((r10.4.4.1.2))  ARMY:       5
+   ((r10.4.4.1.3))  DESTROYER: 12
+   ((r10.4.4.1.4))  CRUISER:   30
+   ((r10.4.4.1.5))  EMPEROR:   50
+
+ ((r10.4.4.1.6)) Then on each Update Phase, the RemainingWork is
+  compared to the City's Size.  If the RemainingWork is larger, then
+  the RemainingWork is decremented by the City's Size, and the update
+  ends.
+
+ ((r10.4.4.2)) Otherwise, the City's Size is sufficient to complete
+  the Ordered unit type.  The RemainingWork is set to zero.  The
+  neighborhood is then examined, looking for locations that are
+  enterable by the ordered unit type (i.e., an empty Water for
+  DESTROYER, CRUISER, or EMPEROR; or an empty Land or unfilled Boat
+  for an ARMY).
+
+ ((r10.4.4.3)) If there are no such appropriately enterable locations,
+  the update ends.
+
+ ((r10.4.4.4)) Otherwise there is at least one location enterable by
+  the Ordered type of unit.  Select a location uniformly at random
+  from all such locations.  
+
+ ((r10.4.4.5)) Create the new unit and place it in the selected
+  location.  Other details of this new creation are:
+
+    ((r10.4.4.5.1)) The new unit is part of the same Empire as the
+     City that built it.
+
+    ((r10.4.4.5.2)) All newly created units start out with an initial
+     Order of EXPLORE (see (r8.4.3.2) for Armys and (r9.4.3.2) for
+     Boats).  However, that initial Order may change immediately,
+     during the same City update that creates the unit:
+
+    ((r10.4.4.5.3)) If the location for the new unit selected in
+     (r10.4.4.4) contains standing Orders that apply to the unit being
+     placed there, the appropriate standing Order is accepted
+     immediately by the newly created unit.
+
+ ((r10.4.4.6)) After the newly created unit has been deployed, the
+  City checks the City's own location to see if any applicable
+  standing Order can be found.  If so, it accepts the appropriate
+  Order.  Otherwise it restarts the existing Order (r10.4.2.1).
+
+---
+((r10.4.5)) GROW: (Order Code 'GR').  The rules to be followed for a
+City with a GROW Order, are, in order:
+
+ ((r10.4.5.1)) When a GROW order is first accepted, the Order's
+  RemainingWork is set to the full amount of work necessary to make
+  the specified type of unit:
+
+ ((r10.4.5.1.1)) WORK REQUIRED TO ATTEMPT TO GROW A CITY: 60
+
+ ((r10.4.5.1.2)) On each Update Phase, the RemainingWork is compared
+  to the City's Size.  If the RemainingWork is larger, then the
+  RemainingWork is decremented by the City's Size, and the update
+  ends.
+
+ ((r10.4.5.2)) Otherwise, the City's Size is sufficient to attempt to
+  grow the City's Size even larger.  The following steps happen, in
+  order:
+
+    ((r10.4.5.2.1)) The Order's RemainingWork is set to zero.
+
+    ((r10.4.5.2.2)) A random number is drawn in the range from 0 to
+     (Size*Size-1).  For example, if the City Size is currently 1,
+     then the random number is drawn in the range 0..0 (so the result
+     will definitely be 0).  If the City Size is currently 5, the
+     range would be 0..(5*5-1) == 0..24, and so forth.
+
+    ((r10.4.5.2.2.1)) If the random numer drawn is equal to zero,
+     increment the City's Size by one.
+
+    ((r10.4.5.2.3)) The City checks the City's own location to see if
+     any applicable standing Order can be found.  If so, it accepts
+     the appropriate Order.
+
+---------------------
+((r11)) Combat and conquest
+
+((r11.1)) General principles
+
+((r11.1.1)) Combat occurs when an active unit attempts to move into a
+location containing another active unit that is part of an Empire that
+is not allied with the currently updating unit.  (If the behavior
+rules in (r8)-(r10) are properly designed, an active unit should never
+attempt to move into a location containing an allied unit.)
+
+((r11.1.2)) Each combat is pairwise.  When it makes a difference, the
+unit that is currently updating (attempting to move) is called the
+Attacker, and the unit being attacked is called the Defender.
+
+((r11.1.3)) Combat can occur between Army and Army, Army and Boat, and
+Boat and Boat.  Only an Army can attack a City.  Citys never initiate
+attacks on anything.
+
+((r11.1.4)) Each combat consists of a series of Rounds.  In each
+Round, according to a weighted random number as described below
+(r11.2) one 'hit' is applied to either the Attacker or the Defender.
+
+((r11.1.5)) Each combat is 'to the death', and there are no ties.
+Rounds continue until exactly one of the Attacker and the Defender is
+destroyed (or conquered, if the Defender is a City).
+
+((r11.1.6)) Each active unit has a certain number of 'hits', which
+amounts to damage that they can sustain before they are destroyed (or
+conquered, in the case of a City).  
+
+  ((r11.1.6.1)) An Army has 1 hit.  As soon as it is hit, it is
+   destroyed.
+
+  ((r11.1.6.2)) A City's Size is its number of hits.  Each time it is
+   hit in combat, its Size is reduced by one, except that the Size can
+   never be reduced to zero.  If a hit would have reduced the Size to
+   zero, the Size remains equal to one and the City is conquered by
+   the attacking Army.
+
+  ((r11.1.6.3)) A Boat's CurrentCapacity is its numbers of hits.  Each
+   time it is hit in combat, its CurrentCapacity is reduced by one.
+   If its CurrentCapacity becomes zero, the Boat sinks and is
+   destroyed.
+
+     ((r11.1.6.3.1)) Note that a Boat can never have more Armys aboard
+      than its CurrentCapacity.  If being hit during combat causes a
+      Boat's CurrentCapacity to drop below the number of Armys aboard,
+      shipboard Armys are destroyed as well until the Army count is no
+      larger than the CurrentCapacity.
+
+((r11.2)) Round Probabilities
+
+((r11.2.1)) In a Round, the determination of whether the Attacker or
+the Defender takes a hit is determined by drawing a random number from
+0..99 and comparing it to a given Threshold.  
+
+((r11.2.2)) If the random number is LESS than the Threshold, the
+Defender is hit; otherwise the Attacker is hit.
+
+((r11.2.3)) When an Army attacks a City, the Threshold is 25.  That
+means about three times out of four, the attacker Army will be hit and
+will be destroyed.  About one time out of four the defender City will
+be hit and will either be conquered or have its size reduced.
+
+((r11.2.4)) For all other cases, the Threshold is 55.  In the Ultra
+Blitz spirit, this Threshold provides a small but significant
+advantage to being the attacker.
+
+((r11.3)) Post-combat movement
+
+((r11.3.1)) If the Defender wins the combat, it remains in the same
+location as it was before the combat began.
+
+((r11.3.2)) If the Attacker wins, and the combat was between
+compatible types (i.e., either Army vs Army or Boat vs Boat), then the
+Attacker moves into the location previously occupied by the
+now-destroyed Defender. 
+
+---------------------
+((r12)) Diplomacy
+
+((r12.1)) Any pair of Empires can establish an Alliance by extending
+declaring Peace to each other.  Declarations of Peace can be made at
+any time during a Command Phase, and they take effect during the
+Diplomacy Phase of the Turn in which they are offered.
+
+((r12.2)) An Alliance exists between two Empires for the duration of
+an update phase if and only if both Empires have currently declared
+peace towards each other.  If peace is declared in only one direction,
+no Alliance exists.
+
+((r12.2.1)) So, an Alliance can only be established bilaterally, but
+it can be broken unilaterally.
+
+((r12.3)) At the start of a game all Empires are assumed to have
+declared peace towards no one.
+
+((r12.4)) When an Alliance exists between two Empires, the active
+units that are part of the allied Empires cannot fight.  (If the
+behavior rules in (r8)-(r10) are properly designed, at any rate.)  If
+a Commander wishes to attack a unit of an allied Empire, the Commander
+must first disrupt the Alliance by withdrawing the declaration of
+peaceful intentions to that Empire.
+
+((r12.5)) When an Empire dies, during an outcome phase, what happens
+to that Empire's Commanders depends on whether the dying Empire had
+any Alliances. 
+
+((r12.5.1)) If the dying Empire has no Alliances, the Commanders are
+destroyed along with the Empire, and the connected Clients that had
+been controlling those Commanders are disconnected.
+
+((r12.5.2)) If the dying Empire has one or more established Alliances,
+the Commander(s) of the dying Empire are redistributed to the allied
+Empires in a round-robin fashion, where the specific ordering is
+implementation-dependent.
+
+---------------------
+((r13)) Error conditions
+
+((r13.1)) There are various boundary cases that can occur during
+processing that have not been covered above.
+
+((r13.2)) Client disconnection
+
+((r13.2.1)) If a Client program disconnects from a TUBE server while a
+game is in progress, the associated Commander object should be
+destroyed.  
+
+((r13.2.2)) This may cause that Commander's Empire to have zero
+Commanders.  TUBE servers SHOULD handle this case gracefully, allowing
+all imperial units to continue performing their last orders as if a
+Commander was still present but issuing no orders.
+
+---------------------
+((r14)) Simplified No Diplomacy Game
+
+((r14.1)) TUBE implementations MAY choose to simplify the game by
+adopting the following rules changes:
+
+((r14.2)) You MAY assume that all Empires are always hostile toward
+each other, so that no alliances can be formed, and so that no Empire
+can ever have more than one Commander, and clients are always simply
+disconnected if their empire dies.
+
+((r14.3)) Under this 'No Diplomacy' option, your client and server MAY
+skip diplomacy processing as follows: 
+
+ ((r14.3.1)) Your client would send no Communiques.  
+ ((r14.3.2)) Your server would ignore any Communiques received.  
+ ((r14.3.3)) Your server would send 'AL 0' for all allies messages.
+ ((r14.3.4)) Your client would ignore any allies messages received.
+
+((r14.5)) The goal of the rules in (r14) is to maintain a
+significant degree of interoperability between clients that implement
+the full game and servers that implement the Simplified No Diplomacy
+Game.
+
+((r14.5.1)) For that reason, that even under this 'No Diplomacy'
+option, your client and server must be aware of the existence of
+Communique and Allies messages and so forth, just to be able to ignore
+them properly.
+
+((r14.6)) Under this option, any rules or protocol descriptions that
+refer to 'allies', 'allied cities', 'allied armies', or the like, will
+all be interpreted as referring to only the Empire itself, or the
+appropriate resources within it.
+
+((r14.7)) Correct implementations of the full diplomacy-included TUBE
+game will be eligible for extra credit.
+
