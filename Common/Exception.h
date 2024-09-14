@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Exception.h,v 1.1 2003/05/03 00:21:42 rlpm Exp $
 
 #ifndef EXCEPTION_H
 #define EXCEPTION_H

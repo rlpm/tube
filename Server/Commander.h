@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Commander.h,v 1.13 2003/05/08 21:31:41 rlpm Exp $
 
 #ifndef COMMANDER_H
 #define COMMANDER_H

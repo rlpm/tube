@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Active.C,v 1.14 2003/05/10 08:07:54 rory Exp $
 
 #include "Active.h"
 #include "Empire.h"

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Water.h,v 1.15 2003/05/13 22:43:30 rory Exp $
 
 #ifndef WATER_H
 #define WATER_H

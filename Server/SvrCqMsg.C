@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: SvrCqMsg.C,v 1.4 2003/05/13 22:35:17 madanie Exp $
 
 #include <cassert>
 #include <string>

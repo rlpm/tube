@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Boat.h,v 1.28 2003/05/14 02:03:12 jckopriv Exp $
 
 #ifndef BOAT_H
 #define BOAT_H

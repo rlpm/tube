@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Army.C,v 1.28 2003/05/13 22:43:30 rory Exp $
 
 #include "Static.h"
 #include "Army.h"

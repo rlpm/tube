@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Grid.h,v 1.18 2003/05/11 18:50:10 rlpm Exp $
 
 #ifndef GRID_H
 #define GRID_H

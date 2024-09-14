@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: ChatMsg.C,v 1.3 2003/05/02 07:19:03 rlpm Exp $
 
 #include <iostream>
 #include <sstream>

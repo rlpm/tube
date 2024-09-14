@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Control.C,v 1.27 2003/05/14 23:17:59 rlpm Exp $
 
 #include <iostream>
 #include <string>

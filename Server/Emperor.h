@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Emperor.h,v 1.10 2003/05/13 22:43:30 rory Exp $
 
 #ifndef EMPEROR_H
 #define EMPEROR_H

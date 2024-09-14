@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Army.h,v 1.22 2003/05/13 22:43:30 rory Exp $
 
 #ifndef ARMY_H
 #define ARMY_H

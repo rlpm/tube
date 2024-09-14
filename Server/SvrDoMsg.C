@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: SvrDoMsg.C,v 1.3 2003/05/13 22:35:17 madanie Exp $
 
 #include <sstream>
 #include "SvrDoMsg.h"

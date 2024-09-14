@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Order.C,v 1.13 2003/05/13 22:54:59 rlpm Exp $
 
 #include "Order.h"
 #include "FrameParser.h"

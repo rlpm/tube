@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Cview.h,v 1.11 2003/05/14 21:52:10 rlpm Exp $
 #ifndef CVIEW_H
 #define CVIEW_H
 #include <string>

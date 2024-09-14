@@ -3,7 +3,6 @@
 // Version 3.0 Thu Nov 14 01:17:01 2002 Ackley Refreshed for CS351 F02
 
 // Stonecutters CS351 S03
-// $Id: Curse.C,v 1.10 2003/05/15 02:35:27 rlpm Exp $
 
 #include <sys/types.h>		/* For select */
 #include <sys/time.h>		/* For struct timeval */

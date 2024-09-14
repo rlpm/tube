@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Active.h,v 1.20 2003/05/13 22:35:54 jckopriv Exp $
 
 #ifndef ACTIVE_H
 #define ACTIVE_H

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CliEmpireMsg.h,v 1.1 2003/05/09 04:53:17 rlpm Exp $
 
 #ifndef CLIEMPIREMSG_H
 #define CLIEMPIREMSG_H

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Destroyer.h,v 1.12 2003/05/13 22:43:30 rory Exp $
 
 #ifndef DESTROYER_H
 #define DESTROYER_H

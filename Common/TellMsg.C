@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: TellMsg.C,v 1.1 2003/05/08 23:52:41 rlpm Exp $
 
 #include <sstream>
 #include <iostream>

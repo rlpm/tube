@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Cruiser.h,v 1.11 2003/05/13 22:43:30 rory Exp $
 
 #ifndef CRUISER_H
 #define CRUISER_H

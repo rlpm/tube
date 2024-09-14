@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: FrameParser.h,v 1.8 2003/05/11 18:50:10 rlpm Exp $
 
 #ifndef FRAMEPARSER_H
 #define FRAMEPARSER_H

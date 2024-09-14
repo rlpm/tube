@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Mobile.h,v 1.16 2003/05/12 06:14:53 rlpm Exp $
 
 #ifndef MOBILE_H
 #define MOBILE_H

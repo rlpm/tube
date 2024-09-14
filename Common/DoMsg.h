@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: DoMsg.h,v 1.1 2003/05/07 22:58:56 rlpm Exp $
 
 #ifndef DOMSG_H
 #define DOMSG_H

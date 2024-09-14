@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: AlliesMsg.h,v 1.1 2003/05/05 20:31:01 rlpm Exp $
 
 #ifndef ALLIESMSG_H
 #define ALLIESMSG_H

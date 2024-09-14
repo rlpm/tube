@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: HelloMsg.h,v 1.6 2003/05/11 18:50:10 rlpm Exp $
 
 #ifndef HELLOMSG_H
 #define HELLOMSG_H

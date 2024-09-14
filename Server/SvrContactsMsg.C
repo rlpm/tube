@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: SvrContactsMsg.C,v 1.1 2003/05/06 00:58:24 rlpm Exp $
 
 #include "SvrContactsMsg.h"
 #include "Exception.h"

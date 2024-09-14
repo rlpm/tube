@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Message.C,v 1.10 2003/05/10 20:37:46 rory Exp $
 
 #include <iostream>
 #include <sstream>

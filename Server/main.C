@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: main.C,v 1.10 2003/05/14 03:53:58 rlpm Exp $
 
 #include <iostream>
 #include <string>

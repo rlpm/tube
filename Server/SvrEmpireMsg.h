@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: SvrEmpireMsg.h,v 1.1 2003/05/07 22:26:01 rlpm Exp $
 
 #ifndef SVREMPIREMSG_H
 #define SVREMPIREMSG_H

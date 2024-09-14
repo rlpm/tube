@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: MarkMsg.C,v 1.2 2003/05/03 00:13:26 rlpm Exp $
 
 #include <iostream>
 #include <sstream>

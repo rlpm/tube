@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: World.C,v 1.44 2003/05/15 02:35:27 rlpm Exp $
 
 #include <iostream>
 #include <sstream>

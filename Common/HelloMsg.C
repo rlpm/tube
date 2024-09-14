@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: HelloMsg.C,v 1.3 2003/05/03 00:13:26 rlpm Exp $
 
 #include <iostream>
 #include <sstream>

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Coord.h,v 1.9 2003/05/08 23:52:41 rlpm Exp $
 
 #ifndef COORD_H
 #define COORD_H

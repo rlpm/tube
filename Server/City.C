@@ -1,5 +1,4 @@
 // Stonecutters C2351 S03 -*- C++ -*-
-// $Id: City.C,v 1.23 2003/05/13 22:43:30 rory Exp $
 
 #include <iostream>
 #include "City.h"

@@ -2,7 +2,6 @@
 # Tue Apr  8 14:50:23 2003 Ackley for CS351 S03
 
 # Stonecutters CS351 S03
-# $Id: Makefile,v 1.2 2003/04/18 23:35:43 rlpm Exp $
 
 # NOTES ON HOW TO USE THIS MAKE STUFF:
 #

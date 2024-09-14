@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Static.h,v 1.18 2003/05/13 22:43:30 rory Exp $
 
 #ifndef STATIC_H
 #define STATIC_H

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Connection.h,v 1.2 2003/04/29 00:14:04 rlpm Exp $
 
 // This code is based on ChatO by Dave Ackley
 // Original Copyright notice and GPL disclaimer:

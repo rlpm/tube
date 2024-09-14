@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: EmpireMsg.C,v 1.1 2003/05/07 22:26:02 rlpm Exp $
 
 #include <iostream>
 #include <sstream>

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Water.C,v 1.12 2003/05/13 22:43:30 rory Exp $
 
 #include "Water.h"
 #include "Boat.h"

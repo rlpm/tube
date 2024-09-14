@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: City.h,v 1.18 2003/05/13 22:43:30 rory Exp $
 
 #ifndef CITY_H
 #define CITY_H

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CqMsg.h,v 1.1 2003/05/05 12:04:37 rlpm Exp $
 
 #ifndef CQMSG_H
 #define CQMSG_H

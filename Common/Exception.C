@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Exception.C,v 1.1 2003/05/03 00:21:42 rlpm Exp $
 
 #include <iostream>
 #include <sstream>

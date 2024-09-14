@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Static.C,v 1.16 2003/05/13 22:43:30 rory Exp $
 #include "Mobile.h"
 #include "Static.h"
 #include "City.h"

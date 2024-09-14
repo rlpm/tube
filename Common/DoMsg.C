@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: DoMsg.C,v 1.1 2003/05/07 22:58:56 rlpm Exp $
 
 #include <sstream>
 #include <iostream>

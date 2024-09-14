@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CliConn.C,v 1.10 2003/05/13 22:54:59 rlpm Exp $
 
 #include <sstream>
 #include <time.h>

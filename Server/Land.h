@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Land.h,v 1.14 2003/05/13 22:43:30 rory Exp $
 
 #ifndef LAND_H
 #define LAND_H

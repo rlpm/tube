@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Boat.C,v 1.33 2003/05/13 22:43:30 rory Exp $
 
 #include <algorithm> // for find
 #include "Water.h"

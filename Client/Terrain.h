@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Terrain.h,v 1.5 2003/05/13 22:54:59 rlpm Exp $
 
 #ifndef TERRAIN_H
 #define TERRAIN_H

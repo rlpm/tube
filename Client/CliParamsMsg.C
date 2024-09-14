@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CliParamsMsg.C,v 1.4 2003/05/13 22:54:59 rlpm Exp $
 
 #include "CliParamsMsg.h"
 #include "Control.h"

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Mobile.C,v 1.17 2003/05/11 23:24:49 rlpm Exp $
 
 #include <stddef.h>
 #include "Mobile.h"

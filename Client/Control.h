@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Control.h,v 1.20 2003/05/13 22:54:59 rlpm Exp $
 
 #ifndef CONTROL_H
 #define CONTROL_H

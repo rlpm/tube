@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: EmpireMsg.h,v 1.1 2003/05/07 22:26:02 rlpm Exp $
 
 #ifndef EMPIREMSG_H
 #define EMPIREMSG_H

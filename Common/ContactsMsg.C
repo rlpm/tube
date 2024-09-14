@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: ContactsMsg.C,v 1.4 2003/05/12 19:31:12 rlpm Exp $
 
 #include <sstream>
 #include <iostream>

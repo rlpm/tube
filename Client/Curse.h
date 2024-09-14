@@ -3,7 +3,6 @@
 // Version 3.0 Thu Nov 14 01:17:01 2002 Ackley Refreshed for CS351 F02
 
 // Stonecutters CS351 S03
-// $Id: Curse.h,v 1.6 2003/05/13 22:54:59 rlpm Exp $
 
 #ifndef CURSE_H
 #define CURSE_H

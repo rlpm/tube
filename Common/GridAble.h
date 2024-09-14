@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: GridAble.h,v 1.12 2003/05/11 06:18:00 rlpm Exp $
 
 #ifndef GRIDABLE_H
 #define GRIDABLE_H

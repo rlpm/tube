@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Message.h,v 1.8 2003/05/04 20:44:04 rlpm Exp $
 
 #ifndef MESSAGE_H
 #define MESSAGE_H

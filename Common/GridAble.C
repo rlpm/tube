@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: GridAble.C,v 1.7 2003/05/11 06:18:00 rlpm Exp $
 
 #include "GridAble.h"
 #include "Grid.h"

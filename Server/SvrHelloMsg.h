@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: SvrHelloMsg.h,v 1.2 2003/05/02 10:08:06 rlpm Exp $
 
 #ifndef SVRHELLOMSG_H
 #define SVRHELLOMSG_H

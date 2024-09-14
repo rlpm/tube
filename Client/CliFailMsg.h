@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CliFailMsg.h,v 1.1 2003/05/05 22:53:27 rlpm Exp $
 
 #ifndef CLIFAILMSG_H
 #define CLIFAILMSG_H

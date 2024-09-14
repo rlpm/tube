@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Empire.C,v 1.18 2003/05/14 02:34:36 rlpm Exp $
 
 #include <algorithm>
 #include "Empire.h"

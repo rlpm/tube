@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: FrameParser.C,v 1.7 2003/05/03 00:13:26 rlpm Exp $
 
 #include <iostream>
 #include <sstream>

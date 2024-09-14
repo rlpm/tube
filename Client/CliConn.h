@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CliConn.h,v 1.5 2003/05/10 01:12:12 rlpm Exp $
 
 #ifndef CLICONN_H
 #define CLICONN_H

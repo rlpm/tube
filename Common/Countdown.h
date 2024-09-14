@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Countdown.h,v 1.1 2003/05/04 01:44:56 rlpm Exp $
 
 #ifndef COUNTDOWN_H
 #define COUNTDOWN_H

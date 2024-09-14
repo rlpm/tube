@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: SvrMarkMsg.C,v 1.6 2003/05/11 23:24:49 rlpm Exp $
 
 #include <cassert>
 #include <string>

@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Coord.C,v 1.6 2003/05/08 23:52:41 rlpm Exp $
 
 #include "Coord.h"
 #include "Grid.h"

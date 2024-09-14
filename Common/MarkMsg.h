@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: MarkMsg.h,v 1.2 2003/05/11 18:50:10 rlpm Exp $
 
 #ifndef MARKMSG_H
 #define MARKMSG_H

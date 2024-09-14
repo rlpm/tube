@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Mountain.h,v 1.7 2003/05/09 03:49:58 rlpm Exp $
 
 #ifndef MOUNTAIN_H
 #define MOUNTAIN_H

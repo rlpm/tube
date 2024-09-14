@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CliAlliesMsg.h,v 1.1 2003/05/05 22:53:26 rlpm Exp $
 
 #ifndef CLIALLIESMSG_H
 #define CLIALLIESMSG_H

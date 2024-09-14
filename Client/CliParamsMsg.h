@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: CliParamsMsg.h,v 1.1 2003/05/05 22:53:27 rlpm Exp $
 
 #ifndef CLIPARAMSMSG_H
 #define CLIPARAMSMSG_H

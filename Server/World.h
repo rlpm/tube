@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: World.h,v 1.24 2003/05/14 03:53:58 rlpm Exp $
 
 #ifndef WORLD_H
 #define WORLD_H

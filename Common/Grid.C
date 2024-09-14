@@ -1,5 +1,4 @@
 // Stonecutters CS351 S03 -*- C++ -*-
-// $Id: Grid.C,v 1.19 2003/05/09 19:29:08 rlpm Exp $
 
 #include <assert.h>
 #include <cmath>
