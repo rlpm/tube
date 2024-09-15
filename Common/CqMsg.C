@@ -5,9 +5,9 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const string CqMsg::_keyword("CQ");
+const std::string CqMsg::_keyword("CQ");
 
-CqMsg::CqMsg(istream &in)
+CqMsg::CqMsg(std::istream &in)
   : Message(_keyword), _tofrom(FrameParser::GrabInt(in)) {
   int tmp = FrameParser::GrabInt(in);
   if (tmp != 0 && tmp != 1)
@@ -16,8 +16,8 @@ CqMsg::CqMsg(istream &in)
   _text = FrameParser::GrabString(in);
 }
 
-const string CqMsg::Innards() const {
-  ostringstream buf;
+const std::string CqMsg::Innards() const {
+  std::ostringstream buf;
   buf << _tofrom << " ";
   if (_peace) buf << "1";
   else buf << "0";

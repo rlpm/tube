@@ -10,20 +10,20 @@
 class AlliesMsg : public Message {
 public:
 
-  AlliesMsg(vector<int> i)
+  AlliesMsg(std::vector<int> i)
     : Message(_keyword), _i(i) {};
-  AlliesMsg(istream &);
+  AlliesMsg(std::istream &);
   ~AlliesMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
-  vector<int> GetVec() const { return _i; };
+  std::vector<int> GetVec() const { return _i; };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
 
-  vector<int> _i;
+  std::vector<int> _i;
 };
 
 #endif // ALLIESMSG_H

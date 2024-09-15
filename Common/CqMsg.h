@@ -9,23 +9,23 @@
 
 class CqMsg : public Message {
 public:
-  CqMsg(int tf, bool p, string tx)
+  CqMsg(int tf, bool p, std::string tx)
     : Message(_keyword), _tofrom(tf), _peace(p), _text(tx) {};
-  CqMsg(istream &);
+  CqMsg(std::istream &);
   ~CqMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
   int GetToFrom() const { return _tofrom; };
   bool GetPeace() const { return _peace; };
-  string GetText() const { return _text;};
+  std::string GetText() const { return _text;};
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
   int _tofrom;
   bool _peace;
-  string _text;
+  std::string _text;
 };
 
 #endif // CQMSG_H
