@@ -18,18 +18,18 @@ public:
   class Contact {
   public:
     Contact(Coord c, Order::UnitType t, int e):_c(c),_type(t),_e(e){};
-    Contact(istream &in) { in >> *this; };
+    Contact(std::istream &in) { in >> *this; };
     ~Contact(){};
 
     Coord GetCoord() const { return _c; };
     Order::UnitType GetType() const { return _type; };
     int GetEmp() const { return _e; };
 
-    string ToString() const;
-    friend ostream& operator<<(ostream &o, const Contact &c) {
+    std::string ToString() const;
+    friend std::ostream& operator<<(std::ostream &o, const Contact &c) {
       o << c.ToString(); return o;
     };
-    friend istream& operator>>(istream &, Contact&);
+    friend std::istream& operator>>(std::istream &, Contact&);
 
     bool operator==(const Contact &c) const;
 
@@ -49,28 +49,28 @@ public:
     };
 
     Terrain(Coord c, Type t):_c(c),_type(t){};
-    Terrain(istream &in) { in >> *this; };
+    Terrain(std::istream &in) { in >> *this; };
     ~Terrain(){};
 
     Coord GetCoord() const { return _c; };
     Type GetType() const { return _type; };
 
-    string ToString() const;
-    friend ostream& operator<<(ostream &o, const Terrain &t) {
+    std::string ToString() const;
+    friend std::ostream& operator<<(std::ostream &o, const Terrain &t) {
       o << t.ToString(); return o;
     };
-    friend istream& operator>>(istream &, Terrain&);
+    friend std::istream& operator>>(std::istream &, Terrain&);
 
   private:
     Coord _c;
     Type _type;
-    const string Innards() const;
+    const std::string Innards() const;
   };
 
   class Active {
   public:
     Active(Coord c, int i, int h, Order o):_c(c),_id(i),_hits(h),_o(o){};
-    Active(istream &in) : _o(Order(Order::CT,Order::GR,Coord(0,0),0)) {
+    Active(std::istream &in) : _o(Order(Order::CT,Order::GR,Coord(0,0),0)) {
       in >> *this;
     };
     ~Active(){};
@@ -80,11 +80,11 @@ public:
     int GetHits() const { return _hits; };
     Order GetOrder() const { return _o; };
 
-    string ToString() const;
-    friend ostream& operator<<(ostream &o, const Active &a) {
+    std::string ToString() const;
+    friend std::ostream& operator<<(std::ostream &o, const Active &a) {
       o << a.ToString(); return o;
     };
-    friend istream& operator>>(istream &, Active&);
+    friend std::istream& operator>>(std::istream &, Active&);
 
   private:
     Coord _c;
@@ -93,24 +93,24 @@ public:
     Order _o;
   };
 
-  ContactsMsg(vector<Contact> c, vector<Terrain> t, vector<Active> a)
+  ContactsMsg(std::vector<Contact> c, std::vector<Terrain> t, std::vector<Active> a)
     : Message(_keyword), _c(c), _t(t), _a(a) {};
-  ContactsMsg(istream &);
+  ContactsMsg(std::istream &);
   ~ContactsMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
-  vector<Contact> GetContacts() const { return _c; };
-  vector<Terrain> GetTerrains() const { return _t; };
-  vector<Active> GetActives() const { return _a; };
+  std::vector<Contact> GetContacts() const { return _c; };
+  std::vector<Terrain> GetTerrains() const { return _t; };
+  std::vector<Active> GetActives() const { return _a; };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
 
-  vector<Contact> _c;
-  vector<Terrain> _t;
-  vector<Active> _a;
+  std::vector<Contact> _c;
+  std::vector<Terrain> _t;
+  std::vector<Active> _a;
 };
 
 #endif // CONTACTSMSG_H

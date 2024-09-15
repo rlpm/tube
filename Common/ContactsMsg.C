@@ -1,5 +1,6 @@
 // Stonecutters CS351 S03 -*- C++ -*-
 
+#include <cassert>
 #include <sstream>
 #include <iostream>
 #include <stdlib.h>
@@ -7,9 +8,9 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const string ContactsMsg::_keyword("CO");
+const std::string ContactsMsg::_keyword("CO");
 
-ContactsMsg::ContactsMsg(istream &in)
+ContactsMsg::ContactsMsg(std::istream &in)
   : Message(_keyword) {
   int i = FrameParser::GrabInt(in);
   for (;i!=0;i--) {
@@ -28,8 +29,8 @@ ContactsMsg::ContactsMsg(istream &in)
   }
 }
 
-const string ContactsMsg::Innards() const {
-  ostringstream buf;
+const std::string ContactsMsg::Innards() const {
+  std::ostringstream buf;
 
   buf << _c.size();
   for (unsigned int i = 0; i<_c.size(); i++)
@@ -46,8 +47,8 @@ const string ContactsMsg::Innards() const {
   return buf.str();
 }
 
-string ContactsMsg::Contact::ToString() const {
-  ostringstream buf;
+std::string ContactsMsg::Contact::ToString() const {
+  std::ostringstream buf;
   buf << _c << " ";
   switch (_type) {
 #define XX(a) case Order::a: buf << #a; break;
@@ -62,8 +63,8 @@ string ContactsMsg::Contact::ToString() const {
 }
 
 
-string ContactsMsg::Terrain::ToString() const {
-  ostringstream buf;
+std::string ContactsMsg::Terrain::ToString() const {
+  std::ostringstream buf;
   buf << _c << " ";
   switch (_type) {
 #define XX(a) case Terrain::a: buf << #a; break;
@@ -76,19 +77,19 @@ string ContactsMsg::Terrain::ToString() const {
 }
 
 
-string ContactsMsg::Active::ToString() const {
-  ostringstream buf;
+std::string ContactsMsg::Active::ToString() const {
+  std::ostringstream buf;
   buf << _c << " " << _id << " " << _hits << " " << _o;
   return buf.str();
 }
 
-istream& operator>>(istream &in, ContactsMsg::Contact &con) {
+std::istream& operator>>(std::istream &in, ContactsMsg::Contact &con) {
   in >> con._c;
 
   FrameParser::SkipSpace(in);
 
   con._type = Order::__UT_END__;
-  string u = FrameParser::GrabKW(in);
+  std::string u = FrameParser::GrabKW(in);
 #define XX(a) if (u == #a) con._type = Order::a;
 #include "UnitTypes"
 #undef XX
@@ -101,13 +102,13 @@ istream& operator>>(istream &in, ContactsMsg::Contact &con) {
   return in;
 }
 
-istream& operator>>(istream &in, ContactsMsg::Terrain &t) {
+std::istream& operator>>(std::istream &in, ContactsMsg::Terrain &t) {
   in >> t._c;
 
   FrameParser::SkipSpace(in);
 
   t._type = ContactsMsg::Terrain::__TR_END__;
-  string u = FrameParser::GrabKW(in);
+  std::string u = FrameParser::GrabKW(in);
 #define XX(a) if (u == #a) t._type = ContactsMsg::Terrain::a;
 #include "TerrainTypes"
 #undef XX
@@ -118,7 +119,7 @@ istream& operator>>(istream &in, ContactsMsg::Terrain &t) {
   return in;
 }
 
-istream& operator>>(istream &in, ContactsMsg::Active &a) {
+std::istream& operator>>(std::istream &in, ContactsMsg::Active &a) {
   in >> a._c;
 
   a._id = FrameParser::GrabInt(in);
