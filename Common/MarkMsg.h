@@ -16,24 +16,24 @@ public:
     __MK_END__
   };
 
-  MarkMsg(Type t, int c, string tx)
+  MarkMsg(Type t, int c, std::string tx)
     : Message(_keyword), _type(t), _code(c), _text(tx) {};
-  MarkMsg(istream &);
+  MarkMsg(std::istream &);
   ~MarkMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
   Type GetType() const { return _type; };
-  static Type GrabType(istream &);
+  static Type GrabType(std::istream &);
   int GetCode() const { return _code; };
-  string GetText() const { return _text; };
+  std::string GetText() const { return _text; };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
   Type _type;
   int _code;
-  string _text;
+  std::string _text;
 };
 
 #endif // MARKMSG_H

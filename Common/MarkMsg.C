@@ -6,17 +6,17 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const string MarkMsg::_keyword("MK");
+const std::string MarkMsg::_keyword("MK");
 
-MarkMsg::MarkMsg(istream &in)
+MarkMsg::MarkMsg(std::istream &in)
   : Message(_keyword),
     _type(GrabType(in)),
     _code(FrameParser::GrabInt(in)),
     _text(FrameParser::GrabString(in)) {}
 
-MarkMsg::Type MarkMsg::GrabType(istream &in) {
+MarkMsg::Type MarkMsg::GrabType(std::istream &in) {
   Type t=__MK_END__;
-  string tt(FrameParser::GrabKW(in));
+  std::string tt(FrameParser::GrabKW(in));
 // Do a little Macro dance
 #define XX(a) if (tt == #a) t = a;
 #include "MarkTypes"
@@ -28,9 +28,9 @@ MarkMsg::Type MarkMsg::GrabType(istream &in) {
   return t;
 }
 
-const string MarkMsg::Innards() const {
-  ostringstream buf;
-  string t;
+const std::string MarkMsg::Innards() const {
+  std::ostringstream buf;
+  std::string t;
 
 #define XX(a) if (_type == a) t=#a;
 #include "MarkTypes"
