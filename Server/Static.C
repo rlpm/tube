@@ -30,7 +30,7 @@ bool Static::IsPrioAttack(Active* e) const
 Static* Static::MinMove(bool is_walk,Coord to, Active* a) {
   Neighborhood n = GetNeighborhood();
 
-  vector<GridAble*> ok;
+  std::vector<GridAble*> ok;
   for (Neighborhood::iterator i = n.begin() ; i != n.end() ; i++) {
     Static *stmp = dynamic_cast<Static*>(*i);
     assert(stmp);
@@ -47,7 +47,7 @@ Static* Static::MinMove(bool is_walk,Coord to, Active* a) {
 
 bool Static::GetStandingOrder(Empire *e, Order &o) const
 {
-  vector<Order> ord =  _orders[e->GetId()];
+  std::vector<Order> ord =  _orders[e->GetId()];
   for(int i = ord.size() - 1; i >= 0; i--){
     if(ord[i].GetUnit() == o.GetUnit()){
       o = ord[i];

@@ -13,12 +13,12 @@ class istream;
 
 class SvrContactsMsg : public ContactsMsg {
 public:
-  SvrContactsMsg(vector<ContactsMsg::Contact>c, vector<ContactsMsg::Terrain>t,
-		 vector<ContactsMsg::Active>a) : ContactsMsg(c,t,a) {};
-  SvrContactsMsg(istream &i) : ContactsMsg(i) {};
+  SvrContactsMsg(std::vector<ContactsMsg::Contact>c, std::vector<ContactsMsg::Terrain>t,
+		 std::vector<ContactsMsg::Active>a) : ContactsMsg(c,t,a) {};
+  SvrContactsMsg(std::istream &i) : ContactsMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrContactsMsg(i);
   }
 

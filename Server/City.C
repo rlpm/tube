@@ -56,7 +56,7 @@ void City::Update(){
 // done updating, time to make something
 bool City::Build(Order::CmdType which){
   Neighborhood current = GetNeighborhood();
-  vector<Static*> validloc;
+  std::vector<Static*> validloc;
 
   // check for valid spots to place unit
   for(int ct = 0; ct <8; ct++){

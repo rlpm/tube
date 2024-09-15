@@ -13,11 +13,11 @@ class istream;
 
 class SvrChatMsg : public ChatMsg {
 public:
-  SvrChatMsg(string t, string x) : ChatMsg(t,x) {};
-  SvrChatMsg(istream &i) : ChatMsg(i) {};
+  SvrChatMsg(std::string t, std::string x) : ChatMsg(t,x) {};
+  SvrChatMsg(std::istream &i) : ChatMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrChatMsg(i);
   }
 };

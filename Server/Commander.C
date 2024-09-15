@@ -16,7 +16,7 @@
 Commander::Commander(Network *n, iosockinet *i,sockinetaddr p)
   : Connection(n,i,p), _world(NULL), _empire(NULL), _hellod(false),
     _iscurrent(false), _badmsgs(0) {
-  ostringstream tmp;
+  std::ostringstream tmp;
   tmp << Port() << "@" << Host();
   _id = tmp.str();
 }
@@ -34,9 +34,9 @@ Commander::~Commander(){
 Connection* Commander::BuildCmdr(Network *n, iosockinet *i,
                                       sockinetaddr p) {
     return new Commander(n,i,p);
-};
+}
 
-void Commander::Process(const string & b) // Called with new input in b
+void Commander::Process(const std::string & b) // Called with new input in b
 {
   _fp.AddData(b);
 
@@ -49,7 +49,7 @@ void Commander::Process(const string & b) // Called with new input in b
     }
   }
   catch (Exception e) {
-    cerr << "Cmdr:" << _id << " " << e << endl;
+    std::cerr << "Cmdr:" << _id << " " << e << std::endl;
     Notify(SvrFailMsg(e.ToString()));
     delete this;
   }
@@ -59,7 +59,7 @@ void Commander::Notify(const Message &b) {
   Connection::Send(b.ToFrame());
 }
 
-void Commander::SetId(string name) {
+void Commander::SetId(std::string name) {
   if (name == _id) return;
   if (_world -> IdOK(name))
     _id = name;
@@ -72,7 +72,7 @@ void Commander::ThrowIfNotHellod() {
     throw EXCEPTION("Did not receive HI message");
 }
 
-void Commander::BadMessage(string what) {
+void Commander::BadMessage(std::string what) {
   if (_badmsgs++ >= 10)
     throw EXCEPTION("Too many bad messages. Did you ride the short bus "
 		    "to school today? Goodbye.");

@@ -17,8 +17,8 @@ Empire::~Empire()
 {
   // destroy all actives, keepalives first, so we don't accidentally remove
   // a boat before it's marines
-  for (list<Active*>::iterator i = _actives.begin(); i != _actives.end();) {
-    list<Active*>::iterator j(i);
+  for (std::list<Active*>::iterator i = _actives.begin(); i != _actives.end();) {
+    std::list<Active*>::iterator j(i);
     i++;
     if ((*j)->KeepAlive()) {
       Mobile *m = dynamic_cast<Mobile*>(*j);
@@ -30,8 +30,8 @@ Empire::~Empire()
   }
 
   // do it again - this time, should be all boats
-  for (list<Active*>::iterator i = _actives.begin(); i != _actives.end();) {
-    list<Active*>::iterator j(i);
+  for (std::list<Active*>::iterator i = _actives.begin(); i != _actives.end();) {
+    std::list<Active*>::iterator j(i);
     i++;
     Mobile *m = dynamic_cast<Mobile*>(*j);
     assert(m);
@@ -40,8 +40,8 @@ Empire::~Empire()
   }
 
   // place commanders in allied empires
-  for (list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end();) {
-    list<Commander*>::iterator j(i);
+  for (std::list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end();) {
+    std::list<Commander*>::iterator j(i);
     i++;
     _w->ReassignCommander(*j,this);
   }
@@ -51,7 +51,7 @@ Empire::~Empire()
 }
 
 void Empire::Broadcast(Message &m) const {
-  for (list<Commander*>::const_iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
+  for (std::list<Commander*>::const_iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
     (*i)->Notify(m);
 }
 
@@ -64,7 +64,7 @@ void Empire::AddActive(Active* a)
 
 void Empire::RemoveActive(Active* a)
 {
-  list<Active*>::iterator i = find(_actives.begin(),_actives.end(),a);
+  std::list<Active*>::iterator i = find(_actives.begin(),_actives.end(),a);
   assert (i!=_actives.end());
   _actives.erase(i);
   a->_e = NULL;
@@ -82,17 +82,17 @@ void Empire::AddCommander(Commander *c) {
 }
 
 void Empire::RemoveCommander(Commander *c) {
-  list<Commander*>::iterator i = find(_cmdrs.begin(),_cmdrs.end(),c);
+  std::list<Commander*>::iterator i = find(_cmdrs.begin(),_cmdrs.end(),c);
   assert(i!=_cmdrs.end());
   _cmdrs.erase(i);
   c->_empire = NULL;
 }
 
 void Empire::SendContactsMsg() {
-  vector<ContactsMsg::Contact> c;
-  vector<ContactsMsg::Terrain> t;
-  vector<ContactsMsg::Active> a;
-  for (list<Active*>::const_iterator i = _actives.begin(); i != _actives.end(); i++) {
+  std::vector<ContactsMsg::Contact> c;
+  std::vector<ContactsMsg::Terrain> t;
+  std::vector<ContactsMsg::Active> a;
+  for (std::list<Active*>::const_iterator i = _actives.begin(); i != _actives.end(); i++) {
     a.push_back((*i)->GetActive());
     Neighborhood n = (*i)->GetHolder()->GetNeighborhood();
     for (size_t j=0;j<8;j++) {
@@ -102,7 +102,7 @@ void Empire::SendContactsMsg() {
       if (act) {
 	if (act->GetEmpire() != this) {
 	  ContactsMsg::Contact who = act->GetContact();
-	  vector<ContactsMsg::Contact>::iterator found =
+	  std::vector<ContactsMsg::Contact>::iterator found =
 	    find(c.begin(),c.end(),who);
 	  if (found == c.end())
 	    c.push_back(act->GetContact());
@@ -120,7 +120,7 @@ void Empire::SendContactsMsg() {
 }
 
 bool Empire::Do(int id, Order o) {
-  list<Active*>::const_iterator i = _actives.begin();
+  std::list<Active*>::const_iterator i = _actives.begin();
   for (; i != _actives.end(); i++) {
     if ((*i)->GetId() == id) {
       (*i)->SetOrder(o);
@@ -131,7 +131,7 @@ bool Empire::Do(int id, Order o) {
     return false;
 }
 
-void Empire::Tell(Coord c, vector<Order> o) {
+void Empire::Tell(Coord c, std::vector<Order> o) {
   GetWorld()->Tell(this,c,o);
 }
 
@@ -149,7 +149,7 @@ bool Empire::IsAllyOf(Empire *e) const {
 
 bool Empire::CheckAlive() const
 {
-  for (list<Active*>::const_iterator i = _actives.begin();
+  for (std::list<Active*>::const_iterator i = _actives.begin();
        i != _actives.end();
        i++) {
     if ((*i)->KeepAlive()) return true;

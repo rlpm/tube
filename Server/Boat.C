@@ -20,9 +20,9 @@ void Boat::Sail(){
 
 void Boat::Explore(){
   Neighborhood n = GetHolder()->GetNeighborhood();
-  vector<Active*> armies;
-  vector<Boat*> lesserboat; // We don't see a way around dynamic casting here...
-  vector<Static*> floatables; 
+  std::vector<Active*> armies;
+  std::vector<Boat*> lesserboat; // We don't see a way around dynamic casting here...
+  std::vector<Static*> floatables; 
  
   Boat* tempboat;
   for(int i = 0; i < 8; i++){
@@ -55,8 +55,8 @@ void Boat::Explore(){
 
 void Boat::Defend(){
   //repairs and hold done in update
-  vector<Active*> attackables; // holder for armies
-  vector< vector<Boat*> > boats;
+  std::vector<Active*> attackables; // holder for armies
+  std::vector< std::vector<Boat*> > boats;
  
   Neighborhood n = GetHolder()->GetNeighborhood();  // examine neighborhood
   
@@ -67,7 +67,7 @@ void Boat::Defend(){
     tempboat = dynamic_cast<Boat*>(temp->GetVisible());
     if(tempboat && !(GetEmpire()->IsAllyOf(tempboat->GetEmpire()))) {
       while (boats.size() < (static_cast<size_t>(tempboat->MaxCap() + 1))) {
-	vector<Boat*> tmp;
+	std::vector<Boat*> tmp;
 	boats.push_back(tmp);
       }
       boats[tempboat->MaxCap()].push_back(tempboat);
@@ -91,7 +91,7 @@ void Boat::Defend(){
 }
 
 bool Boat::AllyCities(){
-  vector<City*> cities; 
+  std::vector<City*> cities; 
   Neighborhood n=GetHolder()->GetNeighborhood();
   for(int i=0; i<8; i++) {
     if(City * C =dynamic_cast<City*>(n[i]))
@@ -132,7 +132,7 @@ void Boat::Update() {
     Explore();
   
   // Army inside boats need to check for standing orders 
-  for(list<Army*>::iterator i = _marines.begin(); i != _marines.end(); i++) {
+  for(std::list<Army*>::iterator i = _marines.begin(); i != _marines.end(); i++) {
     (*i)->GetStandingOrders();
   }
   
@@ -150,7 +150,7 @@ void Boat::PlaceArmy(Army* A){
 }
 
 void Boat::RemoveArmy(Army* A) {
-  list<Army*>::iterator i = find(_marines.begin(),_marines.end(),A);
+  std::list<Army*>::iterator i = find(_marines.begin(),_marines.end(),A);
   assert(i!=_marines.end()); // make sure we found it
   _marines.erase(i);
   A->SetHolder(NULL);
@@ -159,7 +159,7 @@ void Boat::RemoveArmy(Army* A) {
 
 bool Boat::GetHitBy(Active*){
   if (_marines.size() == static_cast<size_t>(_cap)){
-    list<Army*>::iterator dead = _marines.begin();
+    std::list<Army*>::iterator dead = _marines.begin();
     delete (*dead); // kill a marine from the boat
   }
   _cap--; // decrease the current capacity
@@ -173,7 +173,7 @@ bool Boat::GetHitBy(Active*){
 
 // make sure not to drop armies into the drink
 void Boat::UpdateMarines() {
-  for (list<Army*>::iterator i = _marines.begin(); i != _marines.end() ; i++) {
+  for (std::list<Army*>::iterator i = _marines.begin(); i != _marines.end() ; i++) {
     (*i)->SetHolder(GetHolder());  
   }
 }

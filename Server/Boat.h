@@ -37,7 +37,7 @@ private:
 
   size_t _cap; // Same as _maxcap to begin with
   size_t _maxcap; // Pulled up from boat subclasses ctors
-  list<Army*> _marines; // These are the guys on our boats
+  std::list<Army*> _marines; // These are the guys on our boats
 };
 
 #endif

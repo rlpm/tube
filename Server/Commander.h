@@ -26,7 +26,7 @@ public:
   // factory method
   static Connection* BuildCmdr(Network *n, iosockinet *i,sockinetaddr p);
 
-  virtual void Process(const string&); // process data read in
+  virtual void Process(const std::string&); // process data read in
                                        // (called by Connection::Input)
   void Notify(const Message&);         // format message and send
 
@@ -37,14 +37,14 @@ public:
   World* GetWorld() {return _world;};
   Empire* GetEmpire() {return _empire;};
 
-  string GetId() {return _id;};
-  void SetId(string);
+  std::string GetId() {return _id;};
+  void SetId(std::string);
   bool CheckHello() { return _hellod; };
   void GoodHello() { _hellod = true; };
   void ThrowIfNotHellod();
   bool CheckCurrent() { return _iscurrent; };
   void GoodCurrent() { _iscurrent = true; };
-  void BadMessage(string);
+  void BadMessage(std::string);
 
 private:
   // define away shallow copies
@@ -52,12 +52,12 @@ private:
   void operator=(const Commander&);
 
   // don't let anyone call Send directly through a Commander*
-  virtual void Send(const string &){assert(0);};
+  virtual void Send(const std::string &){assert(0);};
 
   FrameParser _fp;    // The FrameParser to parse input and format output
   World *_world;
   Empire *_empire;
-  string _id;
+  std::string _id;
   bool _hellod;    // whether initial HI msg rcvd or not
   bool _iscurrent;
   int _badmsgs;    // how many bad messages have been sent

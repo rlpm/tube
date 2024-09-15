@@ -15,7 +15,7 @@ Army::~Army(){
 }
 
 bool Army::Explore(){
-  vector<Static*> walkables;
+  std::vector<Static*> walkables;
   Neighborhood n = GetHolder()->GetNeighborhood(); //get the neighborhood
 
   // try to attack!
@@ -81,8 +81,8 @@ bool Army::GetHitBy(Active*){
 }
 
 bool Army::FindAttackable(Neighborhood n, bool &stillalive){
-  vector<Static*> priorities;  // holder for cities
-  vector<Static*> attackables;
+  std::vector<Static*> priorities;  // holder for cities
+  std::vector<Static*> attackables;
   
   for(int i=0; i<8; i++) {
     Static *temp = dynamic_cast<Static*>(n[i]);

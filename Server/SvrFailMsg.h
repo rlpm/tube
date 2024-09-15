@@ -12,11 +12,11 @@ class istream;
 
 class SvrFailMsg : public FailMsg {
 public:
-  SvrFailMsg(string t) : FailMsg(t) {};
-  SvrFailMsg(istream &i) : FailMsg(i) {};
+  SvrFailMsg(std::string t) : FailMsg(t) {};
+  SvrFailMsg(std::istream &i) : FailMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrFailMsg(i);
   }
 };
