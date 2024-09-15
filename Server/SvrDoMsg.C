@@ -19,7 +19,7 @@ void SvrDoMsg::Execute(Model *m) {
 
   // do actual stuff
   if (!c->GetEmpire()->Do(GetId(),GetOrder())) {
-    ostringstream tmp;
+    std::ostringstream tmp;
     tmp << "You do not command Unit #" << GetId();
     SvrChatMsg ob("",tmp.str());
     c->Notify(ob);

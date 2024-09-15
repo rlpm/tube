@@ -9,15 +9,14 @@
 // forward declare
 class Model;
 class Commander;
-class istream;
 
 class SvrHelloMsg : public HelloMsg {
 public:
-  SvrHelloMsg(int v, Type t, string id, string vl) : HelloMsg(v,t,id,vl) {};
-  SvrHelloMsg(istream &i) : HelloMsg(i) {};
+  SvrHelloMsg(int v, Type t, std::string id, std::string vl) : HelloMsg(v,t,id,vl) {};
+  SvrHelloMsg(std::istream &i) : HelloMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrHelloMsg(i);
   }
 

@@ -30,7 +30,7 @@ void SvrHelloMsg::Execute(Model *m) {
   if (t == SV)
     throw EXCEPTION("Cannot connect server to server!!!");
 
-  string name = GetId();
+  std::string name = GetId();
   if (!name.size())
     throw EXCEPTION("Id must contain at least one character");
   if (name.size() > 15)

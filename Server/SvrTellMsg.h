@@ -8,15 +8,14 @@
 
 // forward declare
 class Model;
-class istream;
 
 class SvrTellMsg : public TellMsg {
 public:
-  SvrTellMsg(Coord c, vector<Order> os) : TellMsg(c,os) {};
-  SvrTellMsg(istream &i) : TellMsg(i) {};
+  SvrTellMsg(Coord c, std::vector<Order> os) : TellMsg(c,os) {};
+  SvrTellMsg(std::istream &i) : TellMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrTellMsg(i);
   }
 

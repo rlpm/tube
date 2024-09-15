@@ -7,29 +7,29 @@
 #include "World.h"
 
 void usage() {
-  string n("tubes");
-  cerr << "Usage: " << n << " [options]" << endl
-       << "Options:" << endl
-       << " -p <port>      Port number on which to accept connections." << endl
-       << "                If that port is not available, it will try to bind to " << endl
-       << "                the next 9 numbers" << endl
-       << "                default: 8000  min:1025  max:60999" << endl
-       << " -s <gamespeed> Number of seconds for each COMMAND phase" << endl
-       << "                default:1" << endl
-       << " -m <maxcmdrs>  Maximum number of Commanders" << endl
-       << "                default:10  max:25" << endl
-       << " -w <waittime>  Number of seconds to wait for Commanders before" << endl
-       << "                starting the game" << endl
-       << "                default:30" << endl
-       << " -t <maxturns>  Maximum number of turns before forced game end" << endl
-       << "                (Not including turn #0" << endl
-       << "                default:5000" << endl
-       << " -x <cols>      Number of columns in torus" << endl
-       << "                default:100" << endl
-       << " -y <rows>      Number of rows in torus" << endl
-       << "                default:50" << endl
-       << " -g             Print Map and turn number at end of each turn" << endl
-       << endl;
+  std::string n("tubes");
+  std::cerr << "Usage: " << n << " [options]" << std::endl
+            << "Options:" << std::endl
+            << " -p <port>      Port number on which to accept connections." << std::endl
+            << "                If that port is not available, it will try to bind to " << std::endl
+            << "                the next 9 numbers" << std::endl
+            << "                default: 8000  min:1025  max:60999" << std::endl
+            << " -s <gamespeed> Number of seconds for each COMMAND phase" << std::endl
+            << "                default:1" << std::endl
+            << " -m <maxcmdrs>  Maximum number of Commanders" << std::endl
+            << "                default:10  max:25" << std::endl
+            << " -w <waittime>  Number of seconds to wait for Commanders before" << std::endl
+            << "                starting the game" << std::endl
+            << "                default:30" << std::endl
+            << " -t <maxturns>  Maximum number of turns before forced game end" << std::endl
+            << "                (Not including turn #0" << std::endl
+            << "                default:5000" << std::endl
+            << " -x <cols>      Number of columns in torus" << std::endl
+            << "                default:100" << std::endl
+            << " -y <rows>      Number of rows in torus" << std::endl
+            << "                default:50" << std::endl
+            << " -g             Print Map and turn number at end of each turn" << std::endl
+            << std::endl;
 }
 
 int main(int argc,char **argv)
@@ -39,8 +39,8 @@ int main(int argc,char **argv)
 
   enum { NONE, PORT, SPEED, MAXC, WAIT, TURNS, X, Y, GRACE } state = NONE;
   while (--argc && ++argv) {
-    string param(*argv);
-    istringstream iss(param);
+    std::string param(*argv);
+    std::istringstream iss(param);
     switch (state) {
     case NONE:
       if ( param == "-p") {

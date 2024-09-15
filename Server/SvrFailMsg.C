@@ -14,7 +14,7 @@ void SvrFailMsg::Execute(Model *m) {
   Commander *c = dynamic_cast<Commander *>(m);
   assert(c);
 
-  ostringstream tmp;
+  std::ostringstream tmp;
   tmp << "FAIL: Cmdr:" << c->GetId() << " " << GetText();
   throw EXCEPTION(tmp.str());
 }
