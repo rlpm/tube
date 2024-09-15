@@ -66,8 +66,6 @@ Connection::~Connection()
   if (_net) {
     _net->Remove(this);         // then remove from network if any
   }
-  int i;
-  i = 0;
 }
 
 void Connection::Input()

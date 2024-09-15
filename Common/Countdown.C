@@ -5,7 +5,7 @@
 Countdown::Countdown(size_t add_secs) {
   gettimeofday(&_tv,0);
   _tv.tv_sec += add_secs;
-};
+}
 
 Countdown::operator bool() const {
   timeval tv;
