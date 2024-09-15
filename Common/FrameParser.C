@@ -24,10 +24,10 @@ Message* FrameParser::GetMsg() {
   size_t pos;
   if (_state==HEADER) {
     pos = _in.find(":");           // Hunt for : (header delimiter)
-    if (pos==string::npos)
+    if (pos==std::string::npos)
       return NULL;                 // not enough data yet
 
-    string count(_in,0,pos);       // get integer
+    std::string count(_in,0,pos);  // get integer
     _in.erase(0,pos+1);            // Get rid of header
 
     for (unsigned int i=0;i<count.size();i++) {
@@ -51,7 +51,7 @@ Message* FrameParser::GetMsg() {
     if (_in.size() < _flen)
       return NULL;                  // not enough data
 
-    string msg(_in,0,_flen);        // the payload
+    std::string msg(_in,0,_flen);   // the payload
     _in.erase(0,_flen);             // get rid of excess
     _msg = msg;                     // remember it for next state
 
@@ -79,7 +79,7 @@ Message* FrameParser::GetMsg() {
     _state = DONE;                 // back to reading header
   }
   if (_state == DONE) {
-    istringstream tmp(_msg);
+    std::istringstream tmp(_msg);
     Message* msg = Message::GenMsg(tmp);
     Reset();
     return msg;
@@ -88,23 +88,23 @@ Message* FrameParser::GetMsg() {
   return NULL;
 }
 
-string FrameParser::GenFrame(const string &in) {
-  ostringstream buf;
+std::string FrameParser::GenFrame(const std::string &in) {
+  std::ostringstream buf;
   buf << GenString(in);
   buf << "\n";
   return buf.str();
 }
 
-string FrameParser::GenString(const string &in) {
-  ostringstream buf;
+std::string FrameParser::GenString(const std::string &in) {
+  std::ostringstream buf;
   buf << in.size();
   buf << ":";
   buf << in;
   return buf.str();
 }
 
-string FrameParser::GrabKW(istream &in) {
-  string out;
+std::string FrameParser::GrabKW(std::istream &in) {
+  std::string out;
   char c;
   for (int i=0;i<2;i++) {
     if (!in.get(c))
@@ -120,10 +120,10 @@ string FrameParser::GrabKW(istream &in) {
   return out;
 }
 
-string FrameParser::GrabString(istream &in) {
-  string out;
+std::string FrameParser::GrabString(std::istream &in) {
+  std::string out;
   char c;
-  string len;
+  std::string len;
 
   // get the length chars
   while(in.get(c)) {
@@ -147,10 +147,10 @@ string FrameParser::GrabString(istream &in) {
   return out;
 }
 
-int FrameParser::GrabInt(istream &in) {
+int FrameParser::GrabInt(std::istream &in) {
   int out;
   char c;
-  string it;
+  std::string it;
   
   // get the chars
   while(in.get(c)) {
@@ -168,7 +168,7 @@ int FrameParser::GrabInt(istream &in) {
   return out;
 }
 
-void FrameParser::SkipSpace(istream &in) {
+void FrameParser::SkipSpace(std::istream &in) {
   char c = ' ';
   while(isspace(c))
     if (!in.get(c)) return;
