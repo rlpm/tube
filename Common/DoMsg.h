@@ -7,24 +7,21 @@
 #include "Message.h"
 #include "Order.h"
 
-class ostream;
-class istream;
-
 class DoMsg : public Message {
 public:
 
   DoMsg(int i, Order o) : Message(_keyword), _i(i), _o(o) {};
-  DoMsg(istream &);
+  DoMsg(std::istream &);
   ~DoMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
   int GetId() const { return _i; };
   Order GetOrder() const { return _o; };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
 
   int _i;
   Order _o;

@@ -8,27 +8,24 @@
 #include "Message.h"
 #include "Order.h"
 
-class ostream;
-class istream;
-
 class TellMsg : public Message {
 public:
 
-  TellMsg(Coord c, vector<Order> os) : Message(_keyword), _c(c), _os(os) {};
-  TellMsg(istream &);
+  TellMsg(Coord c, std::vector<Order> os) : Message(_keyword), _c(c), _os(os) {};
+  TellMsg(std::istream &);
   ~TellMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
   Coord GetCoord() const { return _c; };
-  vector<Order> GetOrders() const { return _os; };
+  std::vector<Order> GetOrders() const { return _os; };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
 
   Coord _c;
-  vector<Order> _os;
+  std::vector<Order> _os;
 };
 
 #endif // TELLMSG_H

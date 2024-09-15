@@ -7,13 +7,13 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const string DoMsg::_keyword("DO");
+const std::string DoMsg::_keyword("DO");
 
-DoMsg::DoMsg(istream &in)
+DoMsg::DoMsg(std::istream &in)
   : Message(_keyword), _i(FrameParser::GrabInt(in)), _o(in) {}
 
-const string DoMsg::Innards() const {
-  ostringstream buf;
+const std::string DoMsg::Innards() const {
+  std::ostringstream buf;
 
   buf << _i << ' ' << _o;
   return buf.str();

@@ -7,9 +7,9 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const string TellMsg::_keyword("TL");
+const std::string TellMsg::_keyword("TL");
 
-TellMsg::TellMsg(istream &in)
+TellMsg::TellMsg(std::istream &in)
   : Message(_keyword), _c(in) {
   int i = FrameParser::GrabInt(in);
   for (;i!=0;i--) {
@@ -18,8 +18,8 @@ TellMsg::TellMsg(istream &in)
   }
 }
 
-const string TellMsg::Innards() const {
-  ostringstream buf;
+const std::string TellMsg::Innards() const {
+  std::ostringstream buf;
 
   buf << _c << ' ' << _os.size();
   for (unsigned int i = 0; i < _os.size(); i++)

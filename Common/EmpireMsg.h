@@ -12,16 +12,16 @@ public:
 
   EmpireMsg(int e)
     : Message(_keyword), _e(e) {};
-  EmpireMsg(istream &);
+  EmpireMsg(std::istream &);
   ~EmpireMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
   int GetEmpire() const { return _e; };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
   int _e;
 };
 
