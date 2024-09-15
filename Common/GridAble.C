@@ -1,9 +1,9 @@
 // Stonecutters CS351 S03 -*- C++ -*-
 
+#include <cassert>
 #include "GridAble.h"
 #include "Grid.h"
 #include "Neighborhood.h"
-#include <assert.h>
 
 GridAble::GridAble() : _g(NULL), _loc(0,0) {}
 

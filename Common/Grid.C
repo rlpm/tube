@@ -1,6 +1,6 @@
 // Stonecutters CS351 S03 -*- C++ -*-
 
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include "Grid.h"
 #include "GridAble.h"

@@ -3,7 +3,7 @@
 #include "Coord.h"
 #include "Grid.h"
 #include "FrameParser.h"
-#include  <assert.h>
+#include <cassert>
 
 Coord::Coord(int X, int Y) : _x(X),_y(Y) {}
 

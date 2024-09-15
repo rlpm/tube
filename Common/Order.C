@@ -1,9 +1,9 @@
 // Stonecutters CS351 S03 -*- C++ -*-
 
+#include <cassert>
 #include "Order.h"
 #include "FrameParser.h"
 #include "Exception.h"
-#include <assert.h>
 
 Order::Order(UnitType u,CmdType c, Coord l, int i) 
 :_unit(u), _cmd(c), _loc(l), _count(i) {}
