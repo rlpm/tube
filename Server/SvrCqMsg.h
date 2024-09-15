@@ -9,15 +9,14 @@
 // forward declare
 class Model;
 class Commander;
-class istream;
 
 class SvrCqMsg : public CqMsg {
 public:
-  SvrCqMsg(int t, bool p, string x) : CqMsg(t,p,x) {};
-  SvrCqMsg(istream &i) : CqMsg(i) {};
+  SvrCqMsg(int t, bool p, std::string x) : CqMsg(t,p,x) {};
+  SvrCqMsg(std::istream &i) : CqMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrCqMsg(i);
   }
 };

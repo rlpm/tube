@@ -13,11 +13,11 @@ class istream;
 
 class SvrMarkMsg : public MarkMsg {
 public:
-  SvrMarkMsg(Type t, int c, string tx) : MarkMsg(t,c,tx) {};
-  SvrMarkMsg(istream &i) : MarkMsg(i) {};
+  SvrMarkMsg(Type t, int c, std::string tx) : MarkMsg(t,c,tx) {};
+  SvrMarkMsg(std::istream &i) : MarkMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrMarkMsg(i);
   }
 

@@ -8,15 +8,14 @@
 
 // forward declare
 class Model;
-class istream;
 
 class SvrEmpireMsg : public EmpireMsg {
 public:
   SvrEmpireMsg(int e) : EmpireMsg(e) {};
-  SvrEmpireMsg(istream &i) : EmpireMsg(i) {};
+  SvrEmpireMsg(std::istream &i) : EmpireMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrEmpireMsg(i);
   }
 

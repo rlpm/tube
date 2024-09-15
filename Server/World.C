@@ -46,7 +46,7 @@ World::World(Coord size, int maxc, int speed, int wait, int port, int turns,
   srandom(time(NULL));
 
   // print host and port info
-  cout << "Server " << _net.Host() << " listening on port " << _net.Port() << endl;
+  std::cout << "Server " << _net.Host() << " listening on port " << _net.Port() << std::endl;
 
 }
 
@@ -58,7 +58,7 @@ World::~World()
       delete _empires[i];
     }
   }
-  for (list<Commander*>::iterator i = _cmdrs.begin(); i!=_cmdrs.end(); i++) {
+  for (std::list<Commander*>::iterator i = _cmdrs.begin(); i!=_cmdrs.end(); i++) {
     (*i)->_empire = NULL;
   }
   if(_grid)
@@ -97,7 +97,7 @@ void World::BuildGrid() {
 
   // new output string and chat msg for output to cout, clients
   SvrChatMsg ob("","foo!");
-  string gen("Generating random map continents:");
+  std::string gen("Generating random map continents:");
 
   _blastoff = Countdown(2);
   Countdown longtime(10);
@@ -136,7 +136,7 @@ void World::BuildGrid() {
 
       // send update to client and cout
       if (_blastoff) {
-	ostringstream tmp;
+	std::ostringstream tmp;
 	tmp << gen << ' ' << ((wantdryland - dryland) * 100 / wantdryland) << '%';
 	if (longtime) {
 	  tmp << " This is taking forever. Why such a big map?";
@@ -145,7 +145,7 @@ void World::BuildGrid() {
 	ob = SvrChatMsg("",tmp.str());
 	Broadcast(ob);
 	_net.Output();
-	cout << tmp.str() << endl;
+	std::cout << tmp.str() << std::endl;
 	_blastoff = Countdown(2);
       }
 
@@ -199,12 +199,12 @@ void World::BuildGrid() {
     }
   }
 
-  string tmp(gen + " 100%");
+  std::string tmp(gen + " 100%");
   if (reallylongtime) tmp += " It's about friggin' time!";
   ob = SvrChatMsg("",tmp);
   Broadcast(ob);
   _net.Output();
-  cout << tmp << endl;
+  std::cout << tmp << std::endl;
 
   gen =  "Filling remaining map with water:";
   _blastoff = Countdown(2);
@@ -216,7 +216,7 @@ void World::BuildGrid() {
     for (int j = 0; j != _size.GetY(); j++) {
       // send update to client and cout
       if (_blastoff) {
-	ostringstream tmp;
+	std::ostringstream tmp;
 	tmp << gen << ' ' << (((i * _size.GetY()) + j) * 100 / area) << '%';
 	if (longtime) {
 	  tmp << " Torrential downpour, eh?";
@@ -225,7 +225,7 @@ void World::BuildGrid() {
 	SvrChatMsg ob("",tmp.str());
 	Broadcast(ob);
 	_net.Output();
-	cout << tmp.str() << endl;
+	std::cout << tmp.str() << std::endl;
 	_blastoff = Countdown(2);
       }
 
@@ -261,7 +261,7 @@ void World::BuildGrid() {
   ob = SvrChatMsg("",tmp);
   Broadcast(ob);
   _net.Output();
-  cout << tmp << endl;
+  std::cout << tmp << std::endl;
 }
 
 // find a place at random, if it has walkable and floatable nearby, build it,
@@ -331,7 +331,7 @@ void World::Run() {
 }
 
 void World::RemoveCommander(Commander *c) {
-  list<Commander*>::iterator i = find(_cmdrs.begin(),_cmdrs.end(),c);
+  std::list<Commander*>::iterator i = find(_cmdrs.begin(),_cmdrs.end(),c);
   assert(i!=_cmdrs.end());
   _cmdrs.erase(i);
 }
@@ -352,19 +352,19 @@ void World::RemoveEmpire(Empire *e)
 }
 
 void World::Broadcast(Message &m) {
-  for (list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
+  for (std::list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
     (*i)->Notify(m);
 }
 
-bool World::IdOK(string n) {
-  for (list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
+bool World::IdOK(std::string n) {
+  for (std::list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
     if ((*i)->_id == n)
       return false;
   return true;
 }
 
-Commander* World::GetCommanderById(string n) {
-  for (list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
+Commander* World::GetCommanderById(std::string n) {
+  for (std::list<Commander*>::iterator i = _cmdrs.begin(); i != _cmdrs.end(); i++)
     if ((*i)->_id == n)
       return *i;
   return NULL;
@@ -372,7 +372,7 @@ Commander* World::GetCommanderById(string n) {
 
 bool World::CheckGamePlay(Commander *c) const {
   if (_period != GAMEPLAY) {
-    ostringstream tmp;
+    std::ostringstream tmp;
     tmp << "Message ignored. Not yet accepting GAME PLAY messages!!!";
     c->BadMessage(tmp.str());
     return false;
@@ -382,7 +382,7 @@ bool World::CheckGamePlay(Commander *c) const {
 
 bool World::CheckGracePhase(Commander *c) const {
   if (_phase == GRACE) {
-    ostringstream tmp;
+    std::ostringstream tmp;
     if (!c->_iscurrent) {
       tmp << "Message ignored. You must send MK TN soon!!!";
       c->BadMessage(tmp.str());
@@ -398,7 +398,7 @@ bool World::CheckGracePhase(Commander *c) const {
 
 bool World::CheckHellod(Commander *c) const {
   if (!c->_hellod) {
-    ostringstream tmp; //easter egg message
+    std::ostringstream tmp; //easter egg message
     tmp << "Get off the short bus and send hello message already!!!";
     c->BadMessage(tmp.str());
     return false;
@@ -418,9 +418,9 @@ void World::ProcessTurnMessage(Commander *c, int which, bool gm=false) {
 
 //send the entire grid down to the client
 void World::GodMode(Commander *cmdr) {
-  vector<ContactsMsg::Contact> c;
-  vector<ContactsMsg::Terrain> t;
-  vector<ContactsMsg::Active> a;
+  std::vector<ContactsMsg::Contact> c;
+  std::vector<ContactsMsg::Terrain> t;
+  std::vector<ContactsMsg::Active> a;
   for (int x = 0; x != _grid->GetSize().GetX(); x++) {
     for (int y = 0; y != _grid->GetSize().GetY(); y++) {
       GridAble *g = _grid->Get(Coord(x,y));
@@ -447,7 +447,7 @@ void World::UpdatePeriod() {
     // don't send the MK PD message until clients connect
   } else if (_period == GAMEINIT) {
     size_t cmdrs = 0;
-    for (list<Commander*>::iterator i = _cmdrs.begin();
+    for (std::list<Commander*>::iterator i = _cmdrs.begin();
          i != _cmdrs.end() ; i++) {
       if ((*i)->CheckHello()) cmdrs++;
     }
@@ -471,11 +471,11 @@ void World::UpdatePeriod() {
       BuildGrid();
 
       // send some output to clients
-      string tmp = "Building cities and Empires...";
+      std::string tmp = "Building cities and Empires...";
       SvrChatMsg ob("",tmp);
       Broadcast(ob);
       _net.Output();
-      cout << tmp << endl;
+      std::cout << tmp << std::endl;
 
       // assign extra cities to dummy Empire #0
       // if no needed extra cities, that empire is not created
@@ -492,7 +492,7 @@ void World::UpdatePeriod() {
       }
 
       // assign each commander to an Empire, and give them a city
-      for (list<Commander*>::iterator j = _cmdrs.begin();
+      for (std::list<Commander*>::iterator j = _cmdrs.begin();
 	   j != _cmdrs.end(); j++,i++) {
 	Empire *e = new Empire(this);
 	BuildCity(e);
@@ -513,13 +513,13 @@ void World::UpdatePeriod() {
 
 	  if (i) {
 	    // send output message
-	    ostringstream tmp;
+	    std::ostringstream tmp;
 	    tmp << "Commander of Empire #" << i << ": "
 		<< (*(_empires[i]->_cmdrs.begin()))->GetId();
 	    SvrChatMsg ob("",tmp.str());
 	    Broadcast(ob);
 	    _net.Output();
-	    cout << tmp.str() << endl;
+	    std::cout << tmp.str() << std::endl;
 	  }
 	}
 
@@ -537,7 +537,7 @@ void World::UpdatePeriod() {
 
       // setup the standing orders vector for each terrain
       Coord size = _grid->GetSize();
-      vector<Order> no;
+      std::vector<Order> no;
       for (int x = 0; x < size.GetX(); x++) {
 	for (int y = 0; y < size.GetY(); y++) {
 	  GridAble *gable = _grid->Get(Coord(x,y));
@@ -576,7 +576,7 @@ void World::UpdatePeriod() {
 
     // check for dead empires
     int goodemps = 0;
-    for (vector<Empire*>::iterator i = _empires.begin();
+    for (std::vector<Empire*>::iterator i = _empires.begin();
          i < _empires.end() ; i++) {
       if (*i) goodemps++;
     }
@@ -591,14 +591,14 @@ void World::UpdatePeriod() {
       UpdatePhase();
     }
   } else if (_period == GAMEFIN) {
-    vector<int> winners;
+    std::vector<int> winners;
     for (size_t i = 0;i < _empires.size(); i++) {
       if (_empires[i]) {
 	winners.push_back(i);
       }
     }
 
-    ostringstream gameover;
+    std::ostringstream gameover;
     gameover << "GAME OVER! Turn: " << _current_turn << " Winner";
     if (winners.size() > 1)
       gameover << "s";
@@ -611,7 +611,7 @@ void World::UpdatePeriod() {
       }
     }
 
-    cout << gameover.str() << endl;
+    std::cout << gameover.str() << std::endl;
 
     SvrChatMsg obc("",gameover.str());
     Broadcast(obc);
@@ -631,7 +631,7 @@ void World::UpdatePhase() {
     PrintGrid();
 
     // reset Commanders' grace period flag
-    for (list<Commander*>::iterator i = _cmdrs.begin() ;
+    for (std::list<Commander*>::iterator i = _cmdrs.begin() ;
 	 i != _cmdrs.end(); i++ ) {
       (*i)->_iscurrent = false;
     }
@@ -648,8 +648,8 @@ void World::UpdatePhase() {
     }
   } else if (_phase == GRACE) {
     // check for cmdrs who haven't sent MK TN
-    list<Commander*> badcmdrs;
-    for (list<Commander*>::iterator i = _cmdrs.begin();
+    std::list<Commander*> badcmdrs;
+    for (std::list<Commander*>::iterator i = _cmdrs.begin();
          i != _cmdrs.end() ; i++) {
       if (!((*i)->CheckCurrent()))
 	badcmdrs.push_back(*i);
@@ -658,9 +658,9 @@ void World::UpdatePhase() {
     bool nextphase = false;
     if (badcmdrs.size()) { // still have commanders left to send MK TN
       if (_blastoff) { // kill them all!!!
-	for(list<Commander*>::iterator i = badcmdrs.begin();
+	for(std::list<Commander*>::iterator i = badcmdrs.begin();
          i != badcmdrs.end() ; ) {
-	  list<Commander*>::iterator j(i);
+	  std::list<Commander*>::iterator j(i);
 	  i++;
 	  delete (*j);
 	}
@@ -693,7 +693,7 @@ void World::UpdatePhase() {
 
     //send ally msgs
     for (size_t i=0;i!=_empires.size();i++) {
-      vector<int> tmp;
+      std::vector<int> tmp;
       Empire *me = _empires[i];
       if (!me) continue;  // if this empire dead, ignore it
 
@@ -734,7 +734,7 @@ void World::UpdatePhase() {
     // Check for empires that should die
     for (size_t i = 0; i < _empires.size(); i++) {
       if (_empires[i] && !_empires[i]->CheckAlive()) {
-	ostringstream buf;
+	std::ostringstream buf;
 	buf << "Empire #" << i << " has fallen!";
 	SvrChatMsg ob("",buf.str());
 	Broadcast(ob);
@@ -782,7 +782,7 @@ void World::AddActive(Active* a)
 
 void World::RemoveActive(Active* a)
 {
-  list<Active*>::iterator i = find(_actives.begin(),_actives.end(),a);
+  std::list<Active*>::iterator i = find(_actives.begin(),_actives.end(),a);
   assert (i!=_actives.end());
   _actives.erase(i);
   if (_up_actives.size() && a->_w_loc) {
@@ -797,7 +797,7 @@ void World::ShuffleActives() {
   _up_actives[0] = NULL;
 
   size_t j = 0;
-  for (list<Active*>::iterator i = _actives.begin(); i!=_actives.end(); i++) {
+  for (std::list<Active*>::iterator i = _actives.begin(); i!=_actives.end(); i++) {
     _up_actives[j+1] = *i;
     j++;
   }
@@ -815,7 +815,7 @@ void World::ShuffleActives() {
 // specify with -g on the command line, dumps entire grid
 void World::PrintGrid() {
   if (!_printgrid)  {
-    cout << "\rTurn: " << _current_turn << '\r' << flush;
+    std::cout << "\rTurn: " << _current_turn << '\r' << std::flush;
     return;
   }
   system("clear");
@@ -824,24 +824,24 @@ void World::PrintGrid() {
     for (int x = 0;x<c.GetX();x++) {
       GridAble *g = _grid->Get(Coord(x,y));
       if (!g) {
-	cout << ' ';
+	std::cout << ' ';
       } else {
 	Static *s = dynamic_cast<Static*>(g);
 	assert(s);
 	Active *a = s->GetVisible();
 	if (!a)
-	  cout << s->GridTestChar();
+	  std::cout << s->GridTestChar();
 	else 
-	  cout << a->GridTestChar();
+	  std::cout << a->GridTestChar();
       }
     }
-    cout << '\n';
+    std::cout << '\n';
   }
 }
 
 // if a commander's empire is destroyed and he has allies, then assign him to an ally
 void World::ReassignCommander(Commander *c, Empire *old) {
-  vector<Empire*> allies;
+  std::vector<Empire*> allies;
   for (size_t i = 0; i < _empires.size(); i++) {
     if (_empires[i] && _empires[i] != old && old->IsAllyOf(_empires[i])) {
       allies.push_back(_empires[i]);
@@ -861,9 +861,9 @@ void World::ReassignCommander(Commander *c, Empire *old) {
 
     // send down seen terrain
     Coord size = _grid->GetSize();
-    vector<ContactsMsg::Contact> con;
-    vector<ContactsMsg::Terrain> ter;
-    vector<ContactsMsg::Active> act;
+    std::vector<ContactsMsg::Contact> con;
+    std::vector<ContactsMsg::Terrain> ter;
+    std::vector<ContactsMsg::Active> act;
     for (int x = 0; x < size.GetX(); x++) {
       for (int y = 0; y < size.GetY(); y++) {
 	GridAble *gable = _grid->Get(Coord(x,y));
@@ -883,7 +883,7 @@ void World::ReassignCommander(Commander *c, Empire *old) {
   }
 }
 
-void World::Tell(Empire *e, Coord c, vector<Order> o) {
+void World::Tell(Empire *e, Coord c, std::vector<Order> o) {
   GridAble *g = _grid->Get(c);
   Static *s = dynamic_cast<Static*>(g);
   assert(s);

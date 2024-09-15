@@ -13,10 +13,10 @@ class istream;
 class SvrParamsMsg : public ParamsMsg {
 public:
   SvrParamsMsg(int w, int h, int e, int s) : ParamsMsg(w,h,e,s) {};
-  SvrParamsMsg(istream &i) : ParamsMsg(i) {};
+  SvrParamsMsg(std::istream &i) : ParamsMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new SvrParamsMsg(i);
   }
 
