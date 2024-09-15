@@ -13,11 +13,11 @@ class istream;
 
 class CliCqMsg : public CqMsg {
 public:
-  CliCqMsg(int t, bool p, string x) : CqMsg(t,p,x) {};
-  CliCqMsg(istream &i) : CqMsg(i) {};
+  CliCqMsg(int t, bool p, std::string x) : CqMsg(t,p,x) {};
+  CliCqMsg(std::istream &i) : CqMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliCqMsg(i);
   }
 };

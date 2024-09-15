@@ -22,14 +22,14 @@
 #include "ContactsMsg.h"
 #include "Exception.h"
 
-Control::Control(string server, int port):_grid(0), _hellod(false),
+Control::Control(std::string server, int port):_grid(0), _hellod(false),
 					  _dead(false), _godmode(false)
 {
-  string username;
+  std::string username;
   try {
     _sock = new CliConn(this,server, port);
   } catch (...) {
-    cerr << "Could not connect to " << server << " " << port << endl;
+    std::cerr << "Could not connect to " << server << " " << port << std::endl;
     exit(1);
   }
   _display = new Cview(this);
@@ -41,13 +41,13 @@ Control::~Control(){
   if(_grid) delete _grid;
   if(_sock) delete _sock;
   if (_period != 2) {
-    string extra("Server closed connection");
+    std::string extra("Server closed connection");
     if (_donemsg.size())
       _donemsg = extra + ": " + _donemsg;
     else
       _donemsg = extra;
   }
-  cout << _donemsg << endl;
+  std::cout << _donemsg << std::endl;
 }
 
 bool Control::Run(){
@@ -58,18 +58,18 @@ bool Control::Run(){
   return 1;
 }
 
-void Control::GotHello(string input){
+void Control::GotHello(std::string input){
   _hellod = true;
-  _display->PrintServerMsg(string("Handshake completed to server: ") + input);
+  _display->PrintServerMsg(std::string("Handshake completed to server: ") + input);
   _display->PrintServerMsg("Press <enter> to send a chat message, h for help");
 }
 
-void Control::SendChat(string to, string message){
+void Control::SendChat(std::string to, std::string message){
   CliChatMsg msg(to, message);
   _sock->Notify(msg);
 }
 
-void Control::SetPeriod(int period, string text){
+void Control::SetPeriod(int period, std::string text){
   if(period == 0){
     _period = INITIAL;
   }
@@ -80,10 +80,10 @@ void Control::SetPeriod(int period, string text){
     _period = FINAL;
   }
   if (text.size())
-    _display->PrintServerMsg(string("Period message from server: ") + text);
+    _display->PrintServerMsg(std::string("Period message from server: ") + text);
 }
 
-void Control::SetPhase(int phase, string text){
+void Control::SetPhase(int phase, std::string text){
   if(phase == 0){
     _phase = COMMAND;
   }
@@ -97,14 +97,14 @@ void Control::SetPhase(int phase, string text){
     _phase = OUTCOME;
   }
   if (text.size())
-    _display->PrintServerMsg(string("Phase message from server: ") + text);
+    _display->PrintServerMsg(std::string("Phase message from server: ") + text);
 }
 
-void Control::SetTurn(int turn, string text){
+void Control::SetTurn(int turn, std::string text){
   _turn = turn;
   if (text.size())
-    _display->PrintServerMsg(string("Turn message from server: ") + text);
-  string gm;
+    _display->PrintServerMsg(std::string("Turn message from server: ") + text);
+  std::string gm;
   if (_godmode) {
     gm = "god mode";
     _godmode = false;
@@ -130,10 +130,10 @@ void Control::SetSpeed(int speed){
   _speed = speed;
 }
 
-void Control::SetAllies(vector<int> allies) {
+void Control::SetAllies(std::vector<int> allies) {
   if (_allies != allies) {
     _allies = allies;
-    ostringstream buf;
+    std::ostringstream buf;
     if (!_allies.size()) {
       buf << "You now have no allies!";
     } else {
@@ -148,27 +148,27 @@ void Control::SetAllies(vector<int> allies) {
   }
 }
 
-void Control::ChatIn(string tf, string text) {
+void Control::ChatIn(std::string tf, std::string text) {
   if (!tf.size())
     tf = "Chat message from server";
   _display->PrintServerMsg(tf + ": " + text);
 }
 
-void Control::FailMsg(string in) {
+void Control::FailMsg(std::string in) {
   _donemsg = in;
   _dead = true;
 }
 
-void Control::SendHello(string name) {
+void Control::SendHello(std::string name) {
   CliHelloMsg ob(HelloMsg::CurrentVersion(),HelloMsg::HM,name,"");
   _sock->Notify(ob);
 }
 
-void Control::PlaceObjects(vector<ContactsMsg::Contact> contacts,
-			   vector<ContactsMsg::Terrain> terrains,
-			   vector<ContactsMsg::Active> actives) {
+void Control::PlaceObjects(std::vector<ContactsMsg::Contact> contacts,
+			   std::vector<ContactsMsg::Terrain> terrains,
+			   std::vector<ContactsMsg::Active> actives) {
   // keep track of old cities just in case they get taken over
-  list<Coord> oldcities;
+  std::list<Coord> oldcities;
 
   for (size_t i = 0; i < _mobiles.size(); i++) {
     GridAble *g = _grid->Get(_mobiles[i]);
@@ -186,7 +186,7 @@ void Control::PlaceObjects(vector<ContactsMsg::Contact> contacts,
   }
   _mobiles.resize(0);
 
-  for (vector<ContactsMsg::Contact>::iterator i = contacts.begin();
+  for (std::vector<ContactsMsg::Contact>::iterator i = contacts.begin();
        i != contacts.end(); i++) {
     GridAble *g = _grid->Get((*i).GetCoord());
     Terrain *t;
@@ -200,7 +200,7 @@ void Control::PlaceObjects(vector<ContactsMsg::Contact> contacts,
 
       // make sure to remove it from oldcities list
       Coord c = (*(t->_c.begin())).GetCoord();
-      list<Coord>::iterator j=find(oldcities.begin(),oldcities.end(),c);
+      std::list<Coord>::iterator j=find(oldcities.begin(),oldcities.end(),c);
       if (j != oldcities.end()) {
 	oldcities.erase(j);
       }
@@ -212,7 +212,7 @@ void Control::PlaceObjects(vector<ContactsMsg::Contact> contacts,
     _mobiles.push_back((*i).GetCoord());
   }
 
-  for (vector<ContactsMsg::Terrain>::iterator i = terrains.begin();
+  for (std::vector<ContactsMsg::Terrain>::iterator i = terrains.begin();
        i != terrains.end(); i++) {
     GridAble *g = _grid->Get((*i).GetCoord());
     Terrain *t;
@@ -230,7 +230,7 @@ void Control::PlaceObjects(vector<ContactsMsg::Contact> contacts,
   // so we can jump to the first active guy
   if (actives.size()) _first_active = (*(actives.begin())).GetCoord();
 
-  for (vector<ContactsMsg::Active>::iterator i = actives.begin();
+  for (std::vector<ContactsMsg::Active>::iterator i = actives.begin();
        i != actives.end(); i++) {
     GridAble *g = _grid->Get((*i).GetCoord());
     Terrain *t;
@@ -251,7 +251,7 @@ void Control::PlaceObjects(vector<ContactsMsg::Contact> contacts,
 
       // make sure to remove our cities from oldcities list
       Coord c = (*(t->_a.begin())).GetCoord();
-      list<Coord>::iterator j=find(oldcities.begin(),oldcities.end(),c);
+      std::list<Coord>::iterator j=find(oldcities.begin(),oldcities.end(),c);
       if (j != oldcities.end()) {
 	oldcities.erase(j);
       }
@@ -267,7 +267,7 @@ void Control::PlaceObjects(vector<ContactsMsg::Contact> contacts,
     _display->CenterOn(c);
   }
 
-  for(list<Coord>::iterator i=oldcities.begin();i!=oldcities.end();i++) {
+  for(std::list<Coord>::iterator i=oldcities.begin();i!=oldcities.end();i++) {
     GridAble *g = _grid->Get(*i);
     assert(g);
     Terrain *t = dynamic_cast<Terrain*>(g);
@@ -283,19 +283,19 @@ void Control::SendOrder(int i, Order o) {
   _sock->Notify(ob);
 }
 
-void Control::SendCq(int e, int p, string m) {
+void Control::SendCq(int e, int p, std::string m) {
   CliCqMsg ob(e,p,m);
   _sock->Notify(ob);
 }
 
 void Control::HandleEmpireMsg(int i) {
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "You now command Empire #" << i;
   _display->PrintServerMsg(buf.str());
   _display->SetEmpire(i);
 }
 
-void Control::HandleCqText(string s) {
+void Control::HandleCqText(std::string s) {
   _display->PrintServerMsg(s);
 }
 
@@ -307,7 +307,7 @@ bool Control::IsAlly(int e) {
   return false;
 }
 
-void Control::SendStandingOrders(Coord &c, vector<Order>&o) {
+void Control::SendStandingOrders(Coord &c, std::vector<Order>&o) {
   CliTellMsg ob(c,o);
   _sock->Notify(ob);
 }

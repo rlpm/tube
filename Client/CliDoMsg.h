@@ -14,10 +14,10 @@ class istream;
 class CliDoMsg : public DoMsg {
 public:
   CliDoMsg(int i, Order o) : DoMsg(i,o) {};
-  CliDoMsg(istream &i) : DoMsg(i) {};
+  CliDoMsg(std::istream &i) : DoMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliDoMsg(i);
   }
 

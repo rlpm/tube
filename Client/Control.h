@@ -18,36 +18,36 @@ class Cview;
 
 class Control : public Model {
 public:
-  Control(string, int);
+  Control(std::string, int);
   ~Control();
 
   bool Run();
 
   void RemoveConn() {_sock = NULL;};
-  void GotHello(string);
-  void FailMsg(string);
-  void ChatIn(string,string);
-  void SendChat(string, string);
-  void SetPeriod(int, string);
-  void SetPhase(int, string);
-  void SetTurn(int, string);
+  void GotHello(std::string);
+  void FailMsg(std::string);
+  void ChatIn(std::string,std::string);
+  void SendChat(std::string, std::string);
+  void SetPeriod(int, std::string);
+  void SetPhase(int, std::string);
+  void SetTurn(int, std::string);
   void SetGridSize(int, int);
   void SetEmpires(int);
   void SetSpeed(int);
-  void SetAllies(vector<int>);
-  void SendHello(string);
+  void SetAllies(std::vector<int>);
+  void SendHello(std::string);
   bool CheckHello() { return _hellod; };
-  void PlaceObjects(vector<ContactsMsg::Contact>,
-		    vector<ContactsMsg::Terrain>,
-		    vector<ContactsMsg::Active>);
+  void PlaceObjects(std::vector<ContactsMsg::Contact>,
+		    std::vector<ContactsMsg::Terrain>,
+		    std::vector<ContactsMsg::Active>);
   void SendOrder(int,Order);
-  void SendCq(int,int,string);
+  void SendCq(int,int,std::string);
   void GodMode() { _godmode = true; };
   Coord FirstActive() { return _first_active; };
   void HandleEmpireMsg(int);
-  void HandleCqText(string);
+  void HandleCqText(std::string);
   bool IsAlly(int);
-  void SendStandingOrders(Coord&,vector<Order>&);
+  void SendStandingOrders(Coord&,std::vector<Order>&);
 
 private:
   Grid* _grid;
@@ -56,12 +56,12 @@ private:
   int _turn;
   int _speed;
   int _empires;
-  vector<int> _allies;
-  vector<Coord> _mobiles;
+  std::vector<int> _allies;
+  std::vector<Coord> _mobiles;
   Coord _first_active;
   bool _hellod;
   bool _dead;
-  string _donemsg;
+  std::string _donemsg;
 
   enum Period{
     INITIAL = 0,

@@ -26,8 +26,8 @@ public:
 private:
   Control *_control;
   ContactsMsg::Terrain _t;
-  list<ContactsMsg::Contact> _c;
-  list<ContactsMsg::Active> _a;
+  std::list<ContactsMsg::Contact> _c;
+  std::list<ContactsMsg::Active> _a;
 };
 
 #endif

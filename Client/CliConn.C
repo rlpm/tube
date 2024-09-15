@@ -12,7 +12,7 @@
 #include "CliFailMsg.h"
 
 // create a client-side connection
-CliConn::CliConn(Control *f, string host, int port)
+CliConn::CliConn(Control *f, std::string host, int port)
   : Connection(host,port), _control(f) {}
 
 CliConn::~CliConn() {
@@ -39,7 +39,7 @@ void CliConn::Run() {
   }
 }
 
-void CliConn::Process(const string & b) // Called with new input in b
+void CliConn::Process(const std::string & b) // Called with new input in b
 {
   Message *msg;
   _fp.AddData(b);

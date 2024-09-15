@@ -1,5 +1,6 @@
 // Stonecutters CS351 S03 -*- C++ -*-
 
+#include <cassert>
 #include "CliFailMsg.h"
 #include "Control.h"
 

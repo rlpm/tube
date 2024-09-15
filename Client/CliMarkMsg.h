@@ -13,11 +13,11 @@ class istream;
 
 class CliMarkMsg : public MarkMsg {
 public:
-  CliMarkMsg(Type t, int c, string tx) : MarkMsg(t,c,tx) {};
-  CliMarkMsg(istream &i) : MarkMsg(i) {};
+  CliMarkMsg(Type t, int c, std::string tx) : MarkMsg(t,c,tx) {};
+  CliMarkMsg(std::istream &i) : MarkMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliMarkMsg(i);
   }
 

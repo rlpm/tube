@@ -13,11 +13,11 @@ class istream;
 
 class CliAlliesMsg : public AlliesMsg {
 public:
-  CliAlliesMsg(vector<int> i) : AlliesMsg(i) {};
-  CliAlliesMsg(istream &i) : AlliesMsg(i) {};
+  CliAlliesMsg(std::vector<int> i) : AlliesMsg(i) {};
+  CliAlliesMsg(std::istream &i) : AlliesMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliAlliesMsg(i);
   }
 

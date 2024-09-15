@@ -1,5 +1,6 @@
 // Stonecutters CS351 S03 -*- C++ -*-
 #include "Cview.h"
+#include <cassert>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -88,10 +89,10 @@ void Cview::GridWindowSize() {
 
 void Cview::DrawDisplay(){
   if(_screen->IsActive() && _grid) {
-    vector<string> stuff;
+    std::vector<std::string> stuff;
 
     // the turn number
-    ostringstream turn;
+    std::ostringstream turn;
     turn << "Turn: " << _turn;
     stuff.push_back(turn.str());
     turn.seekp(0);
@@ -99,7 +100,7 @@ void Cview::DrawDisplay(){
     stuff.push_back(turn.str());
 
     // the location on the grid
-    ostringstream location;
+    std::ostringstream location;
     Coord loc(GetCenter());
     location << "X:" << loc.GetX() << " Y:" << loc.GetY();
     stuff.push_back(location.str());
@@ -110,7 +111,7 @@ void Cview::DrawDisplay(){
     for (size_t i = 0; i < stuff.size() && _curs_y < _grid_height;i++,_curs_y++) {
       _curs_x = _screen_width - _display_width;
       _screen->GoTo(_curs_x,_curs_y);
-      string tmp = stuff[i];
+      std::string tmp = stuff[i];
       if (tmp.size() > _display_width) {
 	tmp.resize(_display_width - 1);
 	tmp += ">";
@@ -133,7 +134,7 @@ void Cview::DrawMessages() {
     size_t y = _grid_height;
 
     // ignore enough messages at top of list
-    list<string>::iterator i = _messages.begin();
+    std::list<std::string>::iterator i = _messages.begin();
     size_t j = 0;
     while(_messages.size()-j>_message_height) {
       i++;
@@ -142,7 +143,7 @@ void Cview::DrawMessages() {
 
     // print the most recent messages
     for(;i!= _messages.end();i++) {
-      string op(*i);
+      std::string op(*i);
       if(op.size()>_screen_width) {
 	op.resize(_screen_width-1);
 	op += ">";
@@ -178,7 +179,7 @@ void Cview::DrawInput() {
   if(_screen->IsActive()){
     _curs_y = _screen_height - 1;
     _curs_x = 0;
-    string tmp(_output);
+    std::string tmp(_output);
 
     if (_label.size()) {
       PrintInputLabel(_label.c_str(), _curs_x, _curs_y);
@@ -273,7 +274,7 @@ void Cview::DrawGrid(){
   }
 }
 
-void Cview::PrintServerMsg(string in){
+void Cview::PrintServerMsg(std::string in){
   _messages.push_back(in);
   if(_messages.size()>10000) _messages.pop_front();
   DrawMessages();
@@ -489,7 +490,7 @@ int Cview::GetText(){     //currently only used for chat
 }
 
 
-void Cview::PrintInputLabel(string text, int x, int y){ 
+void Cview::PrintInputLabel(std::string text, int x, int y){ 
   _bspc_min_x = text.length() + x;
   _bspc_min_y = y;
   _curs_x = x;
@@ -588,7 +589,7 @@ void Cview::Communique(){
     if (c == -1) {
       ResetInput(false);
     } else if (c == 1){
-      istringstream buf(_output);
+      std::istringstream buf(_output);
       try {
 	FrameParser::GrabInt(buf);
       } catch (...) {
@@ -608,7 +609,7 @@ void Cview::Communique(){
     if (c == -1) {
       ResetInput(false);
     } else if(c == 1) {
-      istringstream buf(_output);
+      std::istringstream buf(_output);
       try {
 	FrameParser::GrabInt(buf);
       } catch (...) {
@@ -627,9 +628,9 @@ void Cview::Communique(){
     c = GetText();
     if (c != 0) {
       if(c == 1){
-	istringstream buf(_output1);
+	std::istringstream buf(_output1);
 	int e = FrameParser::GrabInt(buf);
-	istringstream buf2(_output2);
+	std::istringstream buf2(_output2);
 	int p = FrameParser::GrabInt(buf2);
 	_control->SendCq(e,p,_output);
       }
@@ -666,7 +667,7 @@ void Cview::Backspace(){
   }
 }
 
-string Cview::MapUnitToName(Order::UnitType t) {
+std::string Cview::MapUnitToName(Order::UnitType t) {
   switch (t) {
   case Order::CT: return "City";
   case Order::AR: return "Army";
@@ -677,20 +678,20 @@ string Cview::MapUnitToName(Order::UnitType t) {
   }
 }
 
-void Cview::GetInfo(vector<string>&ret) {
+void Cview::GetInfo(std::vector<std::string>&ret) {
   Coord c(GetCenter());
   GridAble *g = _grid->Get(c);
   if (!g) return;
   Terrain *t = dynamic_cast<Terrain*>(g);
   assert(t);
-  ostringstream buf;
+  std::ostringstream buf;
   if (t->_a.size()) {
     if (t->_a.size()>1) {
       buf << "Total: " << t->_a.size();
       ret.push_back(buf.str());
       buf.seekp(0);
     }  
-    for (list<ContactsMsg::Active>::iterator i = t->_a.begin();
+    for (std::list<ContactsMsg::Active>::iterator i = t->_a.begin();
 	 i != t->_a.end();
 	 i++) {
       Order o = (*i).GetOrder();
@@ -728,7 +729,7 @@ void Cview::GetInfo(vector<string>&ret) {
       }
     }
   } else if (t->_c.size()) {
-    ostringstream buf;
+    std::ostringstream buf;
     int e = (*(t->_c.begin())).GetEmp();
     buf << MapUnitToName((*(t->_c.begin())).GetType());
     ret.push_back(buf.str());
@@ -759,7 +760,7 @@ Coord Cview::GetCenter() {
 
 void Cview::CancelOrder() {
   if (_orderee) {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "Order aborted for "
 	<< MapUnitToName(_orderee->second.GetUnit())
 	<< ' ' << _orderee->first;
@@ -777,14 +778,14 @@ void Cview::MakeOrder(Order::CmdType w) {
   Coord where(GetCenter());
   GridAble *gable = _grid->Get(Coord(where));
   if (!gable) {
-    ostringstream buf;
+    std::ostringstream buf;
     buf << "The fog of war prevents you from issuing an order @ " << where;
     PrintServerMsg(buf.str());
   } else {
     Terrain *t = dynamic_cast<Terrain*>(gable);
     assert (t);
     if (!t->_a.size()) {
-      ostringstream buf;
+      std::ostringstream buf;
       buf << "You do not command a unit @ " << where;
       PrintServerMsg(buf.str());
     } else {
@@ -792,7 +793,7 @@ void Cview::MakeOrder(Order::CmdType w) {
       // must iterate through all units in this spot to see if order is
       // valid
       ContactsMsg::Active *valid = NULL;
-      for (list<ContactsMsg::Active>::iterator i = t->_a.begin();
+      for (std::list<ContactsMsg::Active>::iterator i = t->_a.begin();
 	   i != t->_a.end();
 	   i++) {
 	if (Order::ValidCommand((*i).GetOrder().GetUnit(),w)) {
@@ -801,7 +802,7 @@ void Cview::MakeOrder(Order::CmdType w) {
 	}
       }
       if (!valid) {
-	ostringstream buf;
+	std::ostringstream buf;
 	buf << "Invalid command for any units at that location";
 	PrintServerMsg(buf.str());
       } else if (!Order::NeedsCoord(w) && 
@@ -811,7 +812,7 @@ void Cview::MakeOrder(Order::CmdType w) {
 				  w,Coord(0,0),0));
       } else {
 	if (_orderee) delete _orderee;
-	_orderee = new pair<int,Order>(valid->GetId(),
+	_orderee = new std::pair<int,Order>(valid->GetId(),
 				       Order(valid->GetOrder().GetUnit(),
 					     w,Coord(0,0),0));
 	if (Order::NeedsCoord(w)) {
@@ -835,7 +836,7 @@ void Cview::SetStandingOrderLabel() {
     return;
   }
 
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "Standing Orders (" << _stdorders.size() << "): ";
   if (_other_state > FIRST) {
     buf << MapUnitToName(_stdu) << ' ';
@@ -1032,7 +1033,7 @@ void Cview::StandingOrder() {
 	// default to 0 for wait time
 	int i = 0;
 	if (_output.size()) {
-	  istringstream buf(_output);
+	  std::istringstream buf(_output);
 	  try {
 	    i = FrameParser::GrabInt(buf);
 	  } catch (...) {
@@ -1100,7 +1101,7 @@ void Cview::OrderWait() {
 	// default to 0 for wait time
 	int i = 0;
 	if (_output.size()) {
-	  istringstream buf(_output);
+	  std::istringstream buf(_output);
 	  try {
 	    i = FrameParser::GrabInt(buf);
 	  } catch (...) {

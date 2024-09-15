@@ -13,10 +13,10 @@ class istream;
 class CliEmpireMsg : public EmpireMsg {
 public:
   CliEmpireMsg(int i) : EmpireMsg(i) {};
-  CliEmpireMsg(istream &i) : EmpireMsg(i) {};
+  CliEmpireMsg(std::istream &i) : EmpireMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliEmpireMsg(i);
   }
 

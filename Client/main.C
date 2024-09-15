@@ -9,7 +9,7 @@
 int main(int argc, char ** argv)
 {
   if (argc != 3) {
-    cerr << "Usage: " << argv[0] << " host port" << endl;
+    std::cerr << "Usage: " << argv[0] << " host port" << std::endl;
     exit(1);
   }
 

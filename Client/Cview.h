@@ -24,7 +24,7 @@ public:
   void DrawMessages();
   void DrawInput();
   void DrawDisplay();
-  void PrintServerMsg(string);
+  void PrintServerMsg(std::string);
   void CenterOn(Coord);
   void SetTurn(int i) { _turn = i; };
   void SetEmpire(int i) { _emp = i; };
@@ -39,7 +39,7 @@ private:
   void Communique();
   void MakeOrder(Order::CmdType);
   void CancelOrder();
-  string MapUnitToName(Order::UnitType);
+  std::string MapUnitToName(Order::UnitType);
   void OrderMore();
   void OrderWait();
   void StandingOrder();
@@ -47,8 +47,8 @@ private:
   int GetText();
   void Backspace();
   void ClearInput();
-  void PrintInputLabel(string, int, int);
-  void GetInfo(vector<string>&);
+  void PrintInputLabel(std::string, int, int);
+  void GetInfo(std::vector<std::string>&);
   Coord GetCenter();
   void ResetInput(bool);
   void SetStandingOrderLabel();
@@ -71,20 +71,20 @@ private:
   size_t _bspc_min_x;
   size_t _bspc_min_y;
 
-  list<string> _messages;
+  std::list<std::string> _messages;
 
   size_t _message_height;
   size_t _display_width;
 
-  string _label;
-  string _output;
-  string _output1;
-  string _output2;
+  std::string _label;
+  std::string _output;
+  std::string _output1;
+  std::string _output2;
   bool _focus;
 
   unsigned char _fog;
 
-  pair<int,Order> *_orderee;
+  std::pair<int,Order> *_orderee;
 
   int _turn;
   int _empires;
@@ -92,7 +92,7 @@ private:
 
   // standing orders
   Coord _stdwhere;
-  vector<Order> _stdorders;
+  std::vector<Order> _stdorders;
   Order::UnitType _stdu;
   Order::CmdType _stdw;
   Coord _stdloc;

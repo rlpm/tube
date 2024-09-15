@@ -1,5 +1,6 @@
 // Stonecutters CS351 S03 -*- C++ -*-
 
+#include <cassert>
 #include "CliCqMsg.h"
 #include "Control.h"
 
@@ -9,7 +10,7 @@ void CliCqMsg::Execute(Model *m) {
   Control *c = dynamic_cast<Control*>(m);
   assert(c);
   
-  ostringstream buf;
+  std::ostringstream buf;
   buf << "Empire " << GetToFrom() << " wishes ";
   if (!GetPeace()) buf << "NOT ";
   buf << "to ally";

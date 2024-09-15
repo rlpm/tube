@@ -15,11 +15,11 @@ class istream;
 
 class CliTellMsg : public TellMsg {
 public:
-  CliTellMsg(Coord c, vector<Order> o) : TellMsg(c,o) {};
-  CliTellMsg(istream &i) : TellMsg(i) {};
+  CliTellMsg(Coord c, std::vector<Order> o) : TellMsg(c,o) {};
+  CliTellMsg(std::istream &i) : TellMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliTellMsg(i);
   }
 

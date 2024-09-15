@@ -13,12 +13,12 @@ class istream;
 
 class CliChatMsg : public ChatMsg {
 public:
-  CliChatMsg(string t, string x) : ChatMsg(t,x) {};
-  CliChatMsg(istream &i) : ChatMsg(i) {};
+  CliChatMsg(std::string t, std::string x) : ChatMsg(t,x) {};
+  CliChatMsg(std::istream &i) : ChatMsg(i) {};
   ~CliChatMsg(){};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliChatMsg(i);
   }
 };

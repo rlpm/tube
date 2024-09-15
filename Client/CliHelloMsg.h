@@ -12,11 +12,11 @@ class istream;
 
 class CliHelloMsg : public HelloMsg {
 public:
-  CliHelloMsg(int v, Type t, string id, string vl) : HelloMsg(v,t,id,vl) {};
-  CliHelloMsg(istream &i) : HelloMsg(i) {};
+  CliHelloMsg(int v, Type t, std::string id, std::string vl) : HelloMsg(v,t,id,vl) {};
+  CliHelloMsg(std::istream &i) : HelloMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliHelloMsg(i);
   }
 

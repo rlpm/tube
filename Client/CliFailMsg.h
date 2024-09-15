@@ -12,11 +12,11 @@ class istream;
 
 class CliFailMsg : public FailMsg {
 public:
-  CliFailMsg(string t) : FailMsg(t) {};
-  CliFailMsg(istream &i) : FailMsg(i) {};
+  CliFailMsg(std::string t) : FailMsg(t) {};
+  CliFailMsg(std::istream &i) : FailMsg(i) {};
   virtual void Execute(Model*);
 
-  static Message* GenMsg(istream &i) {
+  static Message* GenMsg(std::istream &i) {
     return new CliFailMsg(i);
   }
 };
