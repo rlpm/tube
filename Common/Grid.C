@@ -102,10 +102,10 @@ void Grid::Normalize(Coord &C) const
   return;
 }
 
-GridAble* Grid::MinDist(vector<GridAble*> from, Coord to){
+GridAble* Grid::MinDist(std::vector<GridAble*> from, Coord to){
   Normalize(to);
   if (!from.size()) return NULL;                // nowhere passed in
-  vector<GridAble*> least;                      // to store possible directions
+  std::vector<GridAble*> least;                      // to store possible directions
   size_t leastdist =_size.GetX() + _size.GetY();// greater than max dist
 
   for(unsigned int i = 0; i < from.size(); i++){         // to check all directions
