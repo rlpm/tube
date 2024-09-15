@@ -10,19 +10,17 @@
 class DoMsg : public Message {
 public:
 
-  DoMsg(int i, Order o) : Message(_keyword), _i(i), _o(o) {};
+  DoMsg(int i, Order o) : Message(Keyword()), _i(i), _o(o) {};
   DoMsg(std::istream &);
   ~DoMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "DO"; };
   virtual const std::string Innards() const;
 
   int GetId() const { return _i; };
   Order GetOrder() const { return _o; };
 
 private:
-  static const std::string _keyword;
-
   int _i;
   Order _o;
 };

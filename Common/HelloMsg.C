@@ -6,10 +6,8 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const std::string HelloMsg::_keyword("HI");
-
 HelloMsg::HelloMsg(std::istream &in)
-  : Message(_keyword), _version(FrameParser::GrabInt(in)),
+  : Message(Keyword()), _version(FrameParser::GrabInt(in)),
     _type(GrabType(in)), _id(FrameParser::GrabString(in)),
     _validator(FrameParser::GrabString(in)) {}
 

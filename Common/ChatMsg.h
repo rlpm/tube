@@ -10,18 +10,17 @@
 class ChatMsg : public Message {
 public:
   ChatMsg(std::string tf, std::string tx)
-    : Message(_keyword), _tofrom(tf), _text(tx) {};
+    : Message(Keyword()), _tofrom(tf), _text(tx) {};
   ChatMsg(std::istream &);
   ~ChatMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "CH"; };
   virtual const std::string Innards() const;
 
   std::string GetToFrom() const { return _tofrom; };
   std::string GetText() const { return _text;};
 
 private:
-  static const std::string _keyword;
   std::string _tofrom;
   std::string _text;
 };

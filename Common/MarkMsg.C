@@ -6,10 +6,8 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const std::string MarkMsg::_keyword("MK");
-
 MarkMsg::MarkMsg(std::istream &in)
-  : Message(_keyword),
+  : Message(Keyword()),
     _type(GrabType(in)),
     _code(FrameParser::GrabInt(in)),
     _text(FrameParser::GrabString(in)) {}

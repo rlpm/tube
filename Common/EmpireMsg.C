@@ -6,10 +6,8 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const std::string EmpireMsg::_keyword("EM");
-
 EmpireMsg::EmpireMsg(std::istream &in)
-  : Message(_keyword), _e(FrameParser::GrabInt(in)) {}
+  : Message(Keyword()), _e(FrameParser::GrabInt(in)) {}
 
 const std::string EmpireMsg::Innards() const {
   std::ostringstream buf;  

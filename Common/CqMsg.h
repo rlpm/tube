@@ -10,11 +10,11 @@
 class CqMsg : public Message {
 public:
   CqMsg(int tf, bool p, std::string tx)
-    : Message(_keyword), _tofrom(tf), _peace(p), _text(tx) {};
+    : Message(Keyword()), _tofrom(tf), _peace(p), _text(tx) {};
   CqMsg(std::istream &);
   ~CqMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "CQ"; };
   virtual const std::string Innards() const;
 
   int GetToFrom() const { return _tofrom; };
@@ -22,7 +22,6 @@ public:
   std::string GetText() const { return _text;};
 
 private:
-  static const std::string _keyword;
   int _tofrom;
   bool _peace;
   std::string _text;

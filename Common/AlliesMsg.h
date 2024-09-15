@@ -11,18 +11,16 @@ class AlliesMsg : public Message {
 public:
 
   AlliesMsg(std::vector<int> i)
-    : Message(_keyword), _i(i) {};
+    : Message(Keyword()), _i(i) {};
   AlliesMsg(std::istream &);
   ~AlliesMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "AL"; };
   virtual const std::string Innards() const;
 
   std::vector<int> GetVec() const { return _i; };
 
 private:
-  static const std::string _keyword;
-
   std::vector<int> _i;
 };
 

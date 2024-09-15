@@ -5,10 +5,8 @@
 #include "ChatMsg.h"
 #include "FrameParser.h"
 
-const std::string ChatMsg::_keyword("CH");
-
 ChatMsg::ChatMsg(std::istream &in)
-  : Message(_keyword), _tofrom(FrameParser::GrabString(in)),
+  : Message(Keyword()), _tofrom(FrameParser::GrabString(in)),
     _text(FrameParser::GrabString(in)) {}
 
 const std::string ChatMsg::Innards() const {

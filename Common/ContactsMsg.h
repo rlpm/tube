@@ -94,11 +94,11 @@ public:
   };
 
   ContactsMsg(std::vector<Contact> c, std::vector<Terrain> t, std::vector<Active> a)
-    : Message(_keyword), _c(c), _t(t), _a(a) {};
+    : Message(Keyword()), _c(c), _t(t), _a(a) {};
   ContactsMsg(std::istream &);
   ~ContactsMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "CO"; };
   virtual const std::string Innards() const;
 
   std::vector<Contact> GetContacts() const { return _c; };
@@ -106,8 +106,6 @@ public:
   std::vector<Active> GetActives() const { return _a; };
 
 private:
-  static const std::string _keyword;
-
   std::vector<Contact> _c;
   std::vector<Terrain> _t;
   std::vector<Active> _a;

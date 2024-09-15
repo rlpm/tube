@@ -11,19 +11,17 @@
 class TellMsg : public Message {
 public:
 
-  TellMsg(Coord c, std::vector<Order> os) : Message(_keyword), _c(c), _os(os) {};
+  TellMsg(Coord c, std::vector<Order> os) : Message(Keyword()), _c(c), _os(os) {};
   TellMsg(std::istream &);
   ~TellMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "TL"; };
   virtual const std::string Innards() const;
 
   Coord GetCoord() const { return _c; };
   std::vector<Order> GetOrders() const { return _os; };
 
 private:
-  static const std::string _keyword;
-
   Coord _c;
   std::vector<Order> _os;
 };

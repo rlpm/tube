@@ -9,17 +9,20 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-Message::MessageMap Message::_map;
+Message::MessageMap* Message::_map = NULL;
 
 bool Message::Register(std::string kw, Message*(*fn)(std::istream&)) {
-  _map[kw] = fn;
+  if (_map == NULL) {
+    _map = new Message::MessageMap();
+  }
+  (*_map)[kw] = fn;
   return true;
 }   
 
 Message* Message::GenMsg(std::istream &in) {
   std::string kw(FrameParser::GrabKW(in));
-  MessageMap::iterator i = _map.find(kw);
-  if (i == _map.end()) {
+  MessageMap::iterator i = _map->find(kw);
+  if (i == _map->end()) {
     std::ostringstream tmp;
     tmp << "No such Message type: " << kw;
     throw EXCEPTION(tmp.str());

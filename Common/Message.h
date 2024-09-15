@@ -32,10 +32,7 @@ public:
 
 private:
   typedef std::map<std::string,Message*(*)(std::istream&)> MessageMap;
-
-  // [rlpm] NOTE: 
-  // Let's hope the memory manager is up by now
-  static MessageMap _map;
+  static MessageMap* _map;
 
   std::string _keyword;
 };

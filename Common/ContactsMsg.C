@@ -8,10 +8,8 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const std::string ContactsMsg::_keyword("CO");
-
 ContactsMsg::ContactsMsg(std::istream &in)
-  : Message(_keyword) {
+  : Message(Keyword()) {
   int i = FrameParser::GrabInt(in);
   for (;i!=0;i--) {
     Contact c(in);

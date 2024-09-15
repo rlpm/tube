@@ -7,10 +7,8 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const std::string TellMsg::_keyword("TL");
-
 TellMsg::TellMsg(std::istream &in)
-  : Message(_keyword), _c(in) {
+  : Message(Keyword()), _c(in) {
   int i = FrameParser::GrabInt(in);
   for (;i!=0;i--) {
     Order o(in);

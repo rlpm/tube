@@ -17,11 +17,11 @@ public:
   };
 
   HelloMsg(int v, Type t, std::string id, std::string vl)
-    : Message(_keyword),_version(v), _type(t), _id(id), _validator(vl) {};
+    : Message(Keyword()),_version(v), _type(t), _id(id), _validator(vl) {};
   HelloMsg(std::istream &);
   ~HelloMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "HI"; };
   virtual const std::string Innards() const;
 
   int GetVersion() const { return _version; };
@@ -33,7 +33,6 @@ public:
   bool CheckVersion() { return (_version == _current_version); };
 
 private:
-  static const std::string _keyword;
   int _version;
   Type _type;
   std::string _id;

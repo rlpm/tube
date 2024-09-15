@@ -17,11 +17,11 @@ public:
   };
 
   MarkMsg(Type t, int c, std::string tx)
-    : Message(_keyword), _type(t), _code(c), _text(tx) {};
+    : Message(Keyword()), _type(t), _code(c), _text(tx) {};
   MarkMsg(std::istream &);
   ~MarkMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "MK"; };
   virtual const std::string Innards() const;
 
   Type GetType() const { return _type; };
@@ -30,7 +30,6 @@ public:
   std::string GetText() const { return _text; };
 
 private:
-  static const std::string _keyword;
   Type _type;
   int _code;
   std::string _text;

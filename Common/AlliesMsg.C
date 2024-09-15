@@ -4,10 +4,8 @@
 #include "AlliesMsg.h"
 #include "FrameParser.h"
 
-const std::string AlliesMsg::_keyword("AL");
-
 AlliesMsg::AlliesMsg(std::istream &in)
-  : Message(_keyword) {
+  : Message(Keyword()) {
   int i = FrameParser::GrabInt(in);
   for (;i!=0;i--)
     _i.push_back(FrameParser::GrabInt(in));

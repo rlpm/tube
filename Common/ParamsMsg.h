@@ -11,11 +11,11 @@ class ParamsMsg : public Message {
 public:
 
   ParamsMsg(int w, int h, int e, int s)
-    : Message(_keyword), _width(w), _height(h), _empires(e), _speed(s) {};
+    : Message(Keyword()), _width(w), _height(h), _empires(e), _speed(s) {};
   ParamsMsg(std::istream &);
   ~ParamsMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "PM"; };
   virtual const std::string Innards() const;
 
   int GetWidth() const { return _width; };
@@ -24,7 +24,6 @@ public:
   int GetSpeed() const { return _speed; };
 
 private:
-  static const std::string _keyword;
   int _width;
   int _height;
   int _empires;

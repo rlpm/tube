@@ -5,10 +5,8 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const std::string CqMsg::_keyword("CQ");
-
 CqMsg::CqMsg(std::istream &in)
-  : Message(_keyword), _tofrom(FrameParser::GrabInt(in)) {
+  : Message(Keyword()), _tofrom(FrameParser::GrabInt(in)) {
   int tmp = FrameParser::GrabInt(in);
   if (tmp != 0 && tmp != 1)
     throw EXCEPTION("Invalid peace value");

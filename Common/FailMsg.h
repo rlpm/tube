@@ -9,17 +9,16 @@
 
 class FailMsg : public Message {
 public:
-  FailMsg(std::string t) : Message(_keyword), _text(t) {};
+  FailMsg(std::string t) : Message(Keyword()), _text(t) {};
   FailMsg(std::istream &);
   ~FailMsg(){};
 
-  static std::string Keyword() { return _keyword; };
+  static std::string Keyword() { return "FL"; };
   virtual const std::string Innards() const;
 
   std::string GetText() const { return _text;};
 
 private:
-  static const std::string _keyword;
   std::string _text;
 };
 
