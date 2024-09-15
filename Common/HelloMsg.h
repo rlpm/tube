@@ -16,28 +16,28 @@ public:
     __HI_END__
   };
 
-  HelloMsg(int v, Type t, string id, string vl)
+  HelloMsg(int v, Type t, std::string id, std::string vl)
     : Message(_keyword),_version(v), _type(t), _id(id), _validator(vl) {};
-  HelloMsg(istream &);
+  HelloMsg(std::istream &);
   ~HelloMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
   int GetVersion() const { return _version; };
   static int CurrentVersion() { return _current_version; };
   Type GetType() const { return _type; };
-  static Type GrabType(istream &);
-  string GetId() const { return _id; };
-  string GetValidator() const { return _validator; };
+  static Type GrabType(std::istream &);
+  std::string GetId() const { return _id; };
+  std::string GetValidator() const { return _validator; };
   bool CheckVersion() { return (_version == _current_version); };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
   int _version;
   Type _type;
-  string _id;
-  string _validator;
+  std::string _id;
+  std::string _validator;
 
   const static int _current_version = 2;
 };

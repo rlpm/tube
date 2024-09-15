@@ -12,7 +12,6 @@
 // The Footer is an optional '\r' followed by '\n'
 
 class Message; // forward declare what can come out of a FrameParser
-class ostream;
 
 class FrameParser {
 public:
