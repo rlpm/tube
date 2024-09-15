@@ -46,8 +46,8 @@ protected:
 private:
   Static(const Static&);  //no value semantics
   void operator=(const Static&); //no value semantics
-  vector< vector<Order> > _orders;
-  vector<bool> _seen; // whether each empire has seen us
+  std::vector< std::vector<Order> > _orders;
+  std::vector<bool> _seen; // whether each empire has seen us
   ContactsMsg::Terrain::Type _type;
 };
 

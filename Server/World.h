@@ -67,10 +67,10 @@ public:
   void Broadcast(Message &);
 
   // Check to make sure ID is not already in use by another Cmdr
-  bool IdOK(string);
+  bool IdOK(std::string);
 
   // get a cmdr by name
-  Commander* GetCommanderById(string);
+  Commander* GetCommanderById(std::string);
 
   // If not in certain periods phases, or hellod status, send god chat msg
   bool CheckGamePlay(Commander *) const;
@@ -87,7 +87,7 @@ public:
   int NextSerial() { return _next_serial++; };
 
   // set standing orders for a location
-  void Tell(Empire*,Coord,vector<Order>);
+  void Tell(Empire*,Coord,std::vector<Order>);
 
 private:
 
@@ -111,8 +111,8 @@ private:
   void GodMode(Commander *c);
 
   Grid* _grid;
-  vector<Empire*> _empires;
-  list<Commander*> _cmdrs;
+  std::vector<Empire*> _empires;
+  std::list<Commander*> _cmdrs;
   Network _net;
   int _current_turn;
   Period _period;
@@ -124,11 +124,11 @@ private:
   size_t _commandgrace;
   size_t _waitforcmdrs; // how long to stay in GAMEINIT
   int _maxturns;     // how many turns before forced end
-  vector<SvrCqMsg*> _cqs; // all the CQs for this turn
+  std::vector<SvrCqMsg*> _cqs; // all the CQs for this turn
   int _next_serial;
   Coord _size;
-  list<Active*> _actives;
-  vector<Active*> _up_actives;
+  std::list<Active*> _actives;
+  std::vector<Active*> _up_actives;
   bool _printgrid; // whether or not to print the map each turn
   bool _gm; // whether or not god mode is available
 };

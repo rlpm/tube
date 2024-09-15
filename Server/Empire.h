@@ -38,12 +38,12 @@ public:
   void SendContactsMsg();
   World* GetWorld() const { return _w; };
   bool Do(int,Order); // tell a unit to do something
-  void Tell(Coord,vector<Order>); // store standing orders
+  void Tell(Coord,std::vector<Order>); // store standing orders
   bool CheckAlive() const; // if we have sufficient keepalive units to stay alive
 private:
-  list<Active*> _actives;
-  list<Commander*> _cmdrs;
-  vector<bool> _allies;
+  std::list<Active*> _actives;
+  std::list<Commander*> _cmdrs;
+  std::vector<bool> _allies;
   World *_w;
   size_t _id;
 };
