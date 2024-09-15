@@ -35,7 +35,7 @@ Network::Network(int portno)
       _listener.bind(a);        // Make wildcard address w/port and go for it
       break;
     } catch (const sockerr & e) {
-      cerr << "Can't bind port " << i << ": " << e.errstr() << endl;
+      std::cerr << "Can't bind port " << i << ": " << e.errstr() << std::endl;
     }
   }
   _listener.recvtimeout(0);     // Don't block on accept
@@ -81,7 +81,7 @@ void Network::Input()           // Read from existing connections
     try {
       (*j)->Input();              // Then let the connection take a shot
     } catch (...) {
-      cerr << "Unhandled exception in input from connection." << endl;
+      std::cerr << "Unhandled exception in input from connection." << std::endl;
       delete *j;
     }
   }
@@ -93,17 +93,17 @@ void Network::Output()          // Write to existing connections
     try {
       (*i)->Output();
     } catch (...) {
-      cerr << "Unhandled exception in output connection." << endl;
+      std::cerr << "Unhandled exception in output connection." << std::endl;
       delete *i;
     }
   }
 }
 
-void Network::Broadcast(const string & b) 
+void Network::Broadcast(const std::string & b)
 {
   for (Lcxn::iterator i = _us.begin(); i != _us.end(); ++i)
     (*i)->Send(b);
-  if (_logit) cout << b << flush; // If logging, also send to console
+  if (_logit) std::cout << b << std::flush; // If logging, also send to console
 }
 
 void Network::Add(Connection * c) {  _us.push_back(c);  }
