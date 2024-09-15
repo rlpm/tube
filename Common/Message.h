@@ -8,37 +8,36 @@
 #include <map>
 
 // forward declare
-class istream;
 class Model;
 
 class Message {
 public:
   // all msgs have keyword, so derived classes must pass it in
-  Message(string kw) : _keyword(kw) {};
+  Message(std::string kw) : _keyword(kw) {};
   virtual ~Message(){};
 
   // to register factory methods
-  static bool Register(string kw, Message*(*)(istream&));
+  static bool Register(std::string kw, Message*(*)(std::istream&));
 
   // to call factory methods
-  static Message* GenMsg(istream&);
+  static Message* GenMsg(std::istream&);
 
   // to make a frame from the innards and keyword
-  virtual const string Innards() const = 0;
-  const string ToString() const;
-  const string ToFrame() const;
+  virtual const std::string Innards() const = 0;
+  const std::string ToString() const;
+  const std::string ToFrame() const;
 
   // to do the work
   virtual void Execute(Model*) = 0;
 
 private:
-  typedef map<string,Message*(*)(istream&)> MessageMap;
+  typedef std::map<std::string,Message*(*)(std::istream&)> MessageMap;
 
   // [rlpm] NOTE: 
   // Let's hope the memory manager is up by now
   static MessageMap _map;
 
-  string _keyword;
+  std::string _keyword;
 };
 
 #endif // MESSAGE_H

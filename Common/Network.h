@@ -37,7 +37,7 @@ public:
   Network(int portno);  // Initialize a network listener on a port
   ~Network();           // Clean up a network
 
-  string Host() const { return _listener.localhost(); } // Server host name
+  std::string Host() const { return _listener.localhost(); } // Server host name
   int Port() const { return _listener.localport(); }    // Server port
   int Count() const { return _us.size(); }        // User count
 
@@ -49,14 +49,14 @@ public:
   void Input() ;                // Check for input ready from each connection
   void Output() ;               // Ship available output to each connection
 
-  void Broadcast(const string & msg) ; // Send to all connections
+  void Broadcast(const std::string & msg) ; // Send to all connections
 
   void Add(Connection *) ;      // Add a Connection to _us
   void Remove(Connection *) ;   // Remove a Connection from _us
 
 private:
   sockinetbuf _listener;        // Sockbuf for listening for new connections
-  typedef list<Connection*> Lcxn; // Type for our user list
+  typedef std::list<Connection*> Lcxn; // Type for our user list
   Lcxn _us;                     // Master user list
   bool _logit;
 

@@ -8,21 +8,19 @@
 
 class Exception {
 public:
-  Exception(string w, string f, size_t l) : _what(w), _file(f), _line(l) {};
+  Exception(std::string w, std::string f, size_t l) : _what(w), _file(f), _line(l) {};
   ~Exception() {};
-  string ToString();
+  std::string ToString();
 
 private:
-  string _what;  // The excepted text
-  string _file;  // the filename
+  std::string _what;  // The excepted text
+  std::string _file;  // the filename
   size_t _line;  // the line number
 };
 
 // MACROS ARE EVIL!!! :)
 #define EXCEPTION(__x__) Exception(__x__,__FILE__,__LINE__);
 
-class ostream;
-
-ostream& operator<<(ostream&,Exception&);
+std::ostream& operator<<(std::ostream&,Exception&);
 
 #endif

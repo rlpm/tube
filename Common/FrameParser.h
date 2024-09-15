@@ -19,22 +19,22 @@ public:
   FrameParser();                 // Only ctor..
   ~FrameParser();                // free data
 
-  void AddData(const string &b) {_in += b;};  // Add more data
+  void AddData(const std::string &b) {_in += b;};  // Add more data
   Message* GetMsg();              // Return a Message Object if done
 
-  static string GenFrame(const string &); // Generate a frame string
-  static string GenString(const string &); // Generate a message string
+  static std::string GenFrame(const std::string &); // Generate a frame string
+  static std::string GenString(const std::string &); // Generate a message string
 
-  static string GrabKW(istream &);     // get 2 chars off stream
-  static string GrabString(istream &); // Get tubestring
-  static int GrabInt(istream &);       // Get tubeint
-  static void SkipSpace(istream &);    // skip isspace chars
+  static std::string GrabKW(std::istream &);     // get 2 chars off stream
+  static std::string GrabString(std::istream &); // Get tubestring
+  static int GrabInt(std::istream &);       // Get tubeint
+  static void SkipSpace(std::istream &);    // skip isspace chars
   
 private:
 
   void Reset(bool clearbuf=false);   // Reset parser
 
-  string _in;  // the buffer for data passed in
+  std::string _in;  // the buffer for data passed in
 
   // a state enum for what we're reading 
   enum __state {
@@ -48,7 +48,7 @@ private:
   __state _state;    // reading the header, data, footer, or we're
                      // done
   size_t _flen;      // the pending input frame length
-  string _msg;       // the text of the pending message
+  std::string _msg;       // the text of the pending message
 };
 
 #endif // FRAMEPARSER_H

@@ -36,16 +36,16 @@ class Network;
 class Connection {
 public:
   Connection(Network *n,iosockinet *i,sockinetaddr p) ; // Server ctor
-  Connection(string host, int port) ;        // Client ctor
+  Connection(std::string host, int port) ;        // Client ctor
   virtual ~Connection() ;                    // dtor
 
-  const string Host() const { return _peer.gethostname(); } // Far end name
+  const std::string Host() const { return _peer.gethostname(); } // Far end name
   const int Port() const { return _peer.getport(); }        // and port #
 
   void Input() ;                  // Try to read on this connection
   void Output() ;                 // Try to write on this connection
-  virtual void Send(const string & o) { _out += o; } // Queue more output
-  virtual void Process(const string&)=0; // process data read in
+  virtual void Send(const std::string & o) { _out += o; } // Queue more output
+  virtual void Process(const std::string&)=0; // process data read in
                                        // (called by Input)
 
 private:
@@ -53,8 +53,8 @@ private:
   Connection(const Connection&);
   void operator=(const Connection&);
 
-  string _in;       // Incomplete input we've read from guy
-  string _out;      // Stuff pending to send to guy
+  std::string _in;       // Incomplete input we've read from guy
+  std::string _out;      // Stuff pending to send to guy
 
   Network *_net;      // The Network we're in
   sockinetaddr _peer; // Where this connection goes

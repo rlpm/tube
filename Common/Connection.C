@@ -39,7 +39,7 @@ Connection::Connection(Network *n,iosockinet *i,sockinetaddr p)
 }
 
 // create a client-side connection
-Connection::Connection(string hostname, int port)
+Connection::Connection(std::string hostname, int port)
   : _net(NULL), _peer(hostname.c_str(),port), _dying(false)
 {
   _s = new iosockinet;          // Create the new socket
@@ -86,7 +86,7 @@ void Connection::Input()
     delete this;                // Goodbye us
     return;                     // Done.
   } 
-  if (rval>0) Process(string(buf,rval)); // Handle input (being 8BC)
+  if (rval>0) Process(std::string(buf,rval)); // Handle input (being 8BC)
 }
 
 void Connection::Output()
@@ -101,7 +101,7 @@ void Connection::Output()
   }
   catch (const sockerr & e) {   // Something got blown; let's look into it
     if (e.serrno() == ETIMEDOUT) { // Client isn't reading fast enough...
-      cout << "Warning: Slow client!  Pending output = " << count << endl; 
+      std::cout << "Warning: Slow client!  Pending output = " << count << std::endl;
     } else {                    // Some definite error here..  Just kill him..
       if (!_dying)
 	delete this;            // Buh bye
