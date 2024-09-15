@@ -9,21 +9,21 @@
 
 class ChatMsg : public Message {
 public:
-  ChatMsg(string tf, string tx)
+  ChatMsg(std::string tf, std::string tx)
     : Message(_keyword), _tofrom(tf), _text(tx) {};
-  ChatMsg(istream &);
+  ChatMsg(std::istream &);
   ~ChatMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
-  string GetToFrom() const { return _tofrom; };
-  string GetText() const { return _text;};
+  std::string GetToFrom() const { return _tofrom; };
+  std::string GetText() const { return _text;};
 
 private:
-  static const string _keyword;
-  string _tofrom;
-  string _text;
+  static const std::string _keyword;
+  std::string _tofrom;
+  std::string _text;
 };
 
 #endif // CHATMSG_H
