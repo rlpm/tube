@@ -28,7 +28,7 @@ class Order {
   };
 
   Order(UnitType,CmdType,Coord,int);
-  Order(istream &i) { i >> *this; };
+  Order(std::istream &i) { i >> *this; };
   ~Order(){};
 
   UnitType GetUnit() const {return _unit; };
@@ -36,12 +36,12 @@ class Order {
   Coord GetCoord() const {return _loc; };
   int GetCt() const {return _count; };
   void DecCt(int dec) { _count-=dec; };
-  string ToString() const;
-  friend ostream & operator<<(ostream &o, const Order &d) {
+  std::string ToString() const;
+  friend std::ostream & operator<<(std::ostream &o, const Order &d) {
     o << d.ToString(); return o;
   };
 
-  friend istream& operator>>(istream &, Order &);
+  friend std::istream& operator>>(std::istream &, Order &);
 
   void _reset_count(); // set City work automatically
 

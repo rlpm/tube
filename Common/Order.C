@@ -3,6 +3,7 @@
 #include "Order.h"
 #include "FrameParser.h"
 #include "Exception.h"
+#include <assert.h>
 
 Order::Order(UnitType u,CmdType c, Coord l, int i) 
 :_unit(u), _cmd(c), _loc(l), _count(i) {}
@@ -16,15 +17,15 @@ void Order::_reset_count() {
   }
 }
 
-istream& operator>> (istream & in, Order &o) {
-  string u;
+std::istream& operator>> (std::istream & in, Order &o) {
+  std::string u;
   o._unit = Order::__UT_END__;
   o._cmd = Order::__CT_END__;
   try {
     u = FrameParser::GrabKW(in);
   }
   catch (Exception e) {
-    cerr << e;
+    std::cerr << e;
     throw;
   }
 
@@ -37,7 +38,7 @@ istream& operator>> (istream & in, Order &o) {
     u = FrameParser::GrabKW(in);
   }
   catch (Exception e) {
-    cerr << e;
+    std::cerr << e;
     throw;
   }
 
@@ -56,8 +57,8 @@ istream& operator>> (istream & in, Order &o) {
 }
 
 
-string Order::ToString() const {
-  ostringstream o;
+std::string Order::ToString() const {
+  std::ostringstream o;
   switch (_unit) {
 #define XX(a) case a: o << #a; break;
 #include "UnitTypes"
