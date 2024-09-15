@@ -11,16 +11,16 @@
 
 Message::MessageMap Message::_map;
 
-bool Message::Register(string kw, Message*(*fn)(istream&)) {
+bool Message::Register(std::string kw, Message*(*fn)(std::istream&)) {
   _map[kw] = fn;
   return true;
 }   
 
-Message* Message::GenMsg(istream &in) {
-  string kw(FrameParser::GrabKW(in));
+Message* Message::GenMsg(std::istream &in) {
+  std::string kw(FrameParser::GrabKW(in));
   MessageMap::iterator i = _map.find(kw);
   if (i == _map.end()) {
-    ostringstream tmp;
+    std::ostringstream tmp;
     tmp << "No such Message type: " << kw;
     throw EXCEPTION(tmp.str());
   }
@@ -33,12 +33,12 @@ Message* Message::GenMsg(istream &in) {
   return ret;
 }
 
-const string Message::ToString() const {
-  ostringstream buf;
+const std::string Message::ToString() const {
+  std::ostringstream buf;
   buf << _keyword << " " << Innards();
   return buf.str();
 }
 
-const string Message::ToFrame() const {
+const std::string Message::ToFrame() const {
   return FrameParser::GenFrame(ToString());
 }
