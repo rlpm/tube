@@ -12,11 +12,11 @@ public:
 
   ParamsMsg(int w, int h, int e, int s)
     : Message(_keyword), _width(w), _height(h), _empires(e), _speed(s) {};
-  ParamsMsg(istream &);
+  ParamsMsg(std::istream &);
   ~ParamsMsg(){};
 
-  static string Keyword() { return _keyword; };
-  virtual const string Innards() const;
+  static std::string Keyword() { return _keyword; };
+  virtual const std::string Innards() const;
 
   int GetWidth() const { return _width; };
   int GetHeight() const { return _height; };
@@ -24,7 +24,7 @@ public:
   int GetSpeed() const { return _speed; };
 
 private:
-  static const string _keyword;
+  static const std::string _keyword;
   int _width;
   int _height;
   int _empires;

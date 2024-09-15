@@ -6,16 +6,16 @@
 #include "FrameParser.h"
 #include "Exception.h"
 
-const string ParamsMsg::_keyword("PM");
+const std::string ParamsMsg::_keyword("PM");
 
-ParamsMsg::ParamsMsg(istream &in)
+ParamsMsg::ParamsMsg(std::istream &in)
   : Message(_keyword), _width(FrameParser::GrabInt(in)),
     _height(FrameParser::GrabInt(in)),
     _empires(FrameParser::GrabInt(in)),
     _speed(FrameParser::GrabInt(in)) {}
 
-const string ParamsMsg::Innards() const {
-  ostringstream buf;  
+const std::string ParamsMsg::Innards() const {
+  std::ostringstream buf;  
   buf << _width << " " << _height << " " << _empires << " " << _speed;
   return buf.str();
 }
