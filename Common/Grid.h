@@ -43,7 +43,7 @@ public:
 
   // return the GridAble whose distance to another point is least
   // randomize if more than one is least
-  GridAble* MinDist(vector<GridAble*>, Coord);
+  GridAble* MinDist(std::vector<GridAble*>, Coord);
 
   // return the distance between 2 points on the torus
   size_t Distance(Coord, Coord);
@@ -56,7 +56,7 @@ private:
   void DoFlip(int &,int,int);
 
   //a vector of coords to be filled with neighborhood coordinates
-  vector< vector<GridAble*> > _grid;
+  std::vector< std::vector<GridAble*> > _grid;
 
   // the size of the grid
   Coord _size;

@@ -9,6 +9,6 @@
 // forward declarations
 class GridAble;
 
-typedef vector<GridAble*> Neighborhood;
+typedef std::vector<GridAble*> Neighborhood;
 
 #endif
