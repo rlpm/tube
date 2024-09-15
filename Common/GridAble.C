@@ -3,6 +3,7 @@
 #include "GridAble.h"
 #include "Grid.h"
 #include "Neighborhood.h"
+#include <assert.h>
 
 GridAble::GridAble() : _g(NULL), _loc(0,0) {}
 
