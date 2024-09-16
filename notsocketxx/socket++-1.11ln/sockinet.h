@@ -6,6 +6,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <iostream>
 
 class sockerr {
 public:
@@ -40,10 +41,11 @@ struct sockinetaddr {
   // only supports dotted-decimal, not DNS resolution, for simplicity
   sockinetaddr(const std::string host, int port) {
     memset((void*)&_sin,0,sizeof(_sin));
-    int ret = inet_pton(AF_INET, host.c_str(), &_sin);
-    if (ret) throw ret;
-    _sin.sin_family = SOCK_STREAM;
+    _sin.sin_family = AF_INET;
     _sin.sin_port = htons(port);
+    int ret = inet_pton(AF_INET, host.c_str(), &_sin.sin_addr);
+    if (ret == 0) throw sockerr(-1, std::string("failed to parse IP address ") + host);
+    else if (ret == -1) throw sockerr(errno, std::string("inet_pton: ") + strerror(errno));
   }
   std::string gethostname() const { return inet_ntoa(_sin.sin_addr); }
   int getport() const { return ntohs(_sin.sin_port); }
@@ -53,7 +55,6 @@ struct sockinetaddr {
 
 struct sockdesc {
   sockdesc(int fd) : _fd(fd) {}
-  ~sockdesc() { if (_fd != -1) close(_fd); }
   int _fd;
 };
 
@@ -61,6 +62,7 @@ class sockinetbuf {
 public:
   sockinetbuf(sockbuf::type t) : _sock(-1) {}
   sockinetbuf(sockdesc d) : _sock(d) {}
+  ~sockinetbuf() { if (_sock._fd != -1) close(_sock._fd); }
 
   std::string localhost() const {
     struct sockaddr_in sin;
@@ -89,11 +91,46 @@ public:
       throw sockerr(errno, std::string("bind: ") + strerror(errno));
     }
   }
-  sockdesc accept(sockinetaddr& a) { return sockdesc(-1); }
-  void listen() {}
-  void connect(sockinetaddr a) {}
-  int is_readready(int, int) { return 0; }
-  int read(char* buf, const int bufsize) { return ::read(_sock._fd, buf, bufsize); }
+  sockdesc accept(sockinetaddr& a) {
+    socklen_t len = sizeof(a._sin);
+    int fd = ::accept(_sock._fd, (struct sockaddr*)&a._sin, &len);
+    if (-1 == fd) {
+      throw sockerr(errno, std::string("accept: ") + strerror(errno));
+    }
+    return sockdesc(fd);
+  }
+  void listen() {
+    if (0 != ::listen(_sock._fd, 1)) {
+      throw sockerr(errno, std::string("listen: ") + strerror(errno));
+    }
+  }
+  void connect(sockinetaddr a) {
+    std::cout << "connecting to " << a.gethostname() << ":" << a.getport() << std::endl;
+    _sock._fd = ::socket(PF_INET, SOCK_STREAM, 0);
+    if (_sock._fd == -1) {
+      throw sockerr(errno, std::string("socket: ") + strerror(errno));
+    }
+    if (0 != ::connect(_sock._fd, (struct sockaddr*)&a._sin, sizeof(a._sin))) {
+      throw sockerr(errno, std::string("connect: ") + strerror(errno));
+    }
+  }
+  int is_readready(int s, int u=0) {
+    fd_set fds;
+    FD_ZERO(&fds);
+    FD_SET(_sock._fd, &fds);
+    timeval tv = {s, u};
+    int ret = ::select(_sock._fd+1, &fds, 0, 0, &tv);
+    if (-1 == ret) {
+      throw sockerr (errno, std::string("select: ") + strerror(errno));
+    }
+    return ret;
+  }
+  int read(char* buf, const int bufsize) {
+    if (0 == is_readready(0)) {
+      throw sockerr(ETIMEDOUT, "timeout");
+    }
+    return ::read(_sock._fd, buf, bufsize);
+  }
   int write(const char* buf, const int bufsize) { return ::write(_sock._fd, buf, bufsize); }
 private:
   sockdesc _sock;
